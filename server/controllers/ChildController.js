@@ -60,6 +60,8 @@ const updateChild = async (req, res) => {
     if (req.body.address) child.address = req.body.address;
     if (req.body.phone1) child.phone1 = req.body.phone1;
     child.phone2 = req.body.phone2;
+  child.allergies = req.body.allergies;
+  if (typeof req.body.emailConsent !== 'undefined') child.emailConsent = req.body.emailConsent;
     if (req.body.email) child.email = req.body.email;
     child.definition = req.body.definition;
     await child.save();

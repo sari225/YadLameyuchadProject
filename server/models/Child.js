@@ -103,6 +103,16 @@ otp: {
 otpExpires: {
   type: Date
 }
+,
+allergies: {
+    type: [String],
+    default: []
+}
+,
+emailConsent: {
+    type: Boolean,
+    default: false
+}
 
 } , { timestamps: true }
 

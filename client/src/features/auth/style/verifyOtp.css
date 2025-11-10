@@ -1,0 +1,281 @@
+/* Container with background - full screen without scroll */
+.verify-otp-container {
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0;
+  margin: 0;
+  direction: rtl;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Glass morphism form box */
+.verify-otp-form-box {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 3rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  margin: 0 1rem;
+}
+
+/* Success box styling */
+.verify-otp-success-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 4rem 3rem;
+}
+
+/* Success icon */
+.verify-otp-success-icon {
+  font-size: 5rem;
+  color: #4caf50;
+  animation: successPop 0.5s ease-out;
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Success title */
+.verify-otp-success-title {
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Success message */
+.verify-otp-success-message {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.2rem;
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+/* Success submessage */
+.verify-otp-success-submessage {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Title */
+.verify-otp-title {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Subtitle */
+.verify-otp-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Form */
+.verify-otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Alert messages */
+.verify-otp-alert {
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  margin-bottom: 1rem;
+}
+
+/* TextField styling */
+.verify-otp-textfield {
+  margin-bottom: 1rem;
+}
+
+.verify-otp-textfield .MuiInput-root {
+  color: white;
+  font-size: 1rem;
+}
+
+.verify-otp-textfield .MuiInput-root:before {
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+
+.verify-otp-textfield .MuiInput-root:hover:not(.Mui-disabled):before {
+  border-bottom-color: rgba(255, 255, 255, 0.8);
+}
+
+.verify-otp-textfield .MuiInput-root:after {
+  border-bottom-color: white;
+}
+
+.verify-otp-textfield .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 0.9);
+  right: 0;
+  left: auto;
+  transform-origin: top right;
+}
+
+.verify-otp-textfield .MuiInputLabel-root.Mui-focused {
+  color: white;
+}
+
+.verify-otp-textfield .MuiFormHelperText-root {
+  color: #ffcccb;
+  text-align: right;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.verify-otp-textfield input {
+  background: transparent;
+  color: white;
+  font-size: 1rem;
+}
+
+.verify-otp-textfield input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.verify-otp-textfield input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 100px rgba(255, 255, 255, 0.1) inset;
+  -webkit-text-fill-color: white;
+}
+
+/* Buttons base styling */
+.verify-otp-button {
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+/* Submit button - gradient purple */
+.verify-otp-submit-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px 0 rgba(116, 79, 168, 0.4);
+}
+
+.verify-otp-submit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(116, 79, 168, 0.5);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.verify-otp-submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.verify-otp-submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Resend link container */
+.verify-otp-resend-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.verify-otp-resend-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+
+/* Resend link styling */
+.verify-otp-resend-link {
+  color: white;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.95rem;
+}
+
+.verify-otp-resend-link:hover:not(:disabled) {
+  color: #ffd700;
+  text-decoration: underline;
+}
+
+.verify-otp-resend-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .verify-otp-form-box {
+    padding: 2rem 1.5rem;
+    margin: 0 0.5rem;
+  }
+
+  .verify-otp-success-box {
+    padding: 3rem 2rem;
+  }
+
+  .verify-otp-title {
+    font-size: 1.5rem;
+  }
+
+  .verify-otp-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .verify-otp-success-icon {
+    font-size: 4rem;
+  }
+
+  .verify-otp-success-title {
+    font-size: 1.4rem;
+  }
+
+  .verify-otp-success-message {
+    font-size: 1rem;
+  }
+
+  .verify-otp-success-submessage {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,188 @@
+/* Container Styles */
+.register-container {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url(../../../../public/images/loginBackground.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  direction: rtl;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* Form Box Styles */
+.register-form-box {
+  width: 90%;
+  max-width: 900px;
+  padding: 32px 40px;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+/* Scrollbar Styles */
+.register-form-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.register-form-box::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.register-form-box::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.register-form-box::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Tabs Styles */
+.register-tabs .MuiTabs-indicator {
+  background-color: #fff;
+  height: 3px;
+  border-radius: 3px;
+}
+
+.register-tabs .MuiTab-root {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: none;
+  min-height: 48px;
+}
+
+.register-tabs .MuiTab-root.Mui-selected {
+  color: #fff;
+  font-weight: 600;
+}
+
+.register-tabs .MuiTab-root:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Title Styles */
+.register-title {
+  margin-bottom: 16px;
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Alert Styles */
+.register-alert {
+  margin-bottom: 16px;
+  background-color: #fdeded;
+  color: #5f2120;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.register-alert .MuiAlert-icon {
+  color: #ef5350;
+}
+
+/* Grid Styles */
+.register-grid-container {
+  justify-content: center;
+}
+
+/* TextField Styles */
+.register-textfield .MuiInputBase-input {
+  color: white;
+  background-color: transparent;
+  text-align: right;
+}
+
+.register-textfield .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  right: 0;
+  left: auto;
+  transform-origin: top right;
+}
+
+.register-textfield .MuiInputLabel-root.Mui-focused {
+  color: white;
+}
+
+.register-textfield .MuiInput-underline:before {
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+
+.register-textfield .MuiInput-underline:hover:not(.Mui-disabled):before {
+  border-bottom-color: rgba(255, 255, 255, 0.8);
+}
+
+.register-textfield .MuiInput-underline:after {
+  border-bottom-color: white;
+}
+
+.register-textfield .MuiFormHelperText-root {
+  color: rgba(255, 255, 255, 0.95);
+  background-color: transparent;
+  text-align: right;
+  margin: 0;
+  margin-top: 4px;
+}
+
+/* Checkbox Styles */
+.register-checkbox-container {
+  display: flex;
+  justify-content: center;
+}
+
+.register-checkbox {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.register-checkbox.Mui-checked {
+  color: white;
+}
+
+.register-checkbox-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.register-checkbox-label .MuiFormControlLabel-label {
+  font-size: 14px;
+}
+
+/* Button Styles */
+.register-button {
+  margin-top: 16px;
+  padding: 12px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+}
+
+.register-button:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  transform: translateY(-2px);
+}
+
+.register-button:disabled {
+  background: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+}

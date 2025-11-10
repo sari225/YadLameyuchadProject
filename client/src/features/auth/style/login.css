@@ -1,0 +1,148 @@
+/* Container Styles */
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url(../../../../public/images/loginBackground.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  direction: rtl;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* Form Box Styles */
+.login-form-box {
+  width: 90%;
+  max-width: 400px;
+  padding: 32px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Tabs Styles */
+.login-tabs .MuiTabs-indicator {
+  background-color: #fff;
+  height: 3px;
+  border-radius: 3px;
+}
+
+.login-tabs .MuiTab-root {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: none;
+  min-height: 48px;
+}
+
+.login-tabs .MuiTab-root.Mui-selected {
+  color: #fff;
+  font-weight: 600;
+}
+
+.login-tabs .MuiTab-root:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Title Styles */
+.login-title {
+  margin-bottom: 16px;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Alert Styles */
+.login-alert {
+  margin-bottom: 24px;
+  background-color: #fdeded;
+  color: #5f2120;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-alert .MuiAlert-icon {
+  color: #ef5350;
+}
+
+/* Form Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* TextField Styles */
+.login-textfield .MuiInputBase-input {
+  color: white;
+  background-color: transparent;
+  text-align: right;
+}
+
+.login-textfield .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  right: 0;
+  left: auto;
+  transform-origin: top right;
+}
+
+.login-textfield .MuiInputLabel-root.Mui-focused {
+  color: white;
+}
+
+.login-textfield .MuiInput-underline:before {
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+
+.login-textfield .MuiInput-underline:hover:not(.Mui-disabled):before {
+  border-bottom-color: rgba(255, 255, 255, 0.8);
+}
+
+.login-textfield .MuiInput-underline:after {
+  border-bottom-color: white;
+}
+
+.login-textfield .MuiFormHelperText-root {
+  color: rgba(255, 255, 255, 0.95);
+  background-color: transparent;
+  text-align: right;
+  margin: 0;
+  margin-top: 4px;
+}
+
+/* Button Styles */
+.login-button {
+  margin-top: 32px;
+  margin-bottom: 16px;
+  padding: 12px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  transform: translateY(-2px);
+}
+
+.login-button:disabled {
+  background: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+}

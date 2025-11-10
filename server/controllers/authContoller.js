@@ -9,15 +9,38 @@ const {generatePassword}=require("../utils/generatePassword")
 // 1. רישום ילד חדש + שליחת OTP במייל
 const registerChild = async (req, res) => {
   try {
-    const { email, ...rest } = req.body;
-    const child = await Child.findOne({ email }); 
-    if (child && !child.isVerified) {
-      await Child.findByIdAndDelete(child._id);
+    const { email, childId, ...rest } = req.body;
+    
+    // בדיקה אם המייל כבר קיים
+    const existingEmail = await Child.findOne({ email });
+    if (existingEmail && existingEmail.isVerified) {
+      return res.status(400).json({ 
+        message: "Email already exists. Please use a different email address." 
+      });
+    }
+    
+    // בדיקה אם מספר הזהות כבר קיים
+    const existingChildId = await Child.findOne({ childId });
+    if (existingChildId && existingChildId.isVerified) {
+      return res.status(400).json({ 
+        message: "childId already exists. This ID is already registered in the system." 
+      });
+    }
+    
+    // אם המייל קיים אבל לא מאומת - נמחק אותו
+    if (existingEmail && !existingEmail.isVerified) {
+      await Child.findByIdAndDelete(existingEmail._id);
+    }
+    
+    // אם הת"ז קיימת אבל לא מאומתת - נמחק אותה
+    if (existingChildId && !existingChildId.isVerified) {
+      await Child.findByIdAndDelete(existingChildId._id);
     }
 
     // יצירת הילד בבסיס הנתונים
     const newChild = await Child.create({
       ...rest,
+      childId,
       email,
       password: undefined,
       isVerified: false,
@@ -41,6 +64,24 @@ const registerChild = async (req, res) => {
     });
   } catch (err) {
     console.error("Error in registerChild:", err);
+    
+    // טיפול בשגיאות duplicate מ-MongoDB
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      if (field === 'email') {
+        return res.status(400).json({ 
+          message: "Email already exists. Please use a different email address." 
+        });
+      } else if (field === 'childId') {
+        return res.status(400).json({ 
+          message: "childId already exists. This ID is already registered in the system." 
+        });
+      }
+      return res.status(400).json({ 
+        message: "Duplicate entry found. Please check your details." 
+      });
+    }
+    
     res.status(500).json({ message: "Error registering child", error: err.message });
   }
 };

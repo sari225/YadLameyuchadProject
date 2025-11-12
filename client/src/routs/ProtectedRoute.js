@@ -13,19 +13,10 @@ const ProtectedRoute = ({ allowedRoles }) => {
   try {
     // פענוח הטוקן לבדיקת ה-role
     const decodedToken = jwtDecode(token);
-    const userRole = decodedToken.role;
-
-    console.log("🔍 ProtectedRoute Debug:", { 
-      userRole, 
-      allowedRoles, 
-      isAllowed: allowedRoles?.includes(userRole),
-      decodedToken 
-    });
+    const userRole = decodedToken.role; 
 
     // בדיקה אם ה-role של המשתמש מותר
     if (allowedRoles && !allowedRoles.includes(userRole)) {
-      // אם אין הרשאה - הפנייה לדף הבית
-      console.log("❌ Access Denied - redirecting to /");
       return <Navigate to="/" replace />;
     }
 

@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLoginMutation, useForgotPasswordMutation } from "./authApi";
+import { useLoginMutation, useForgotPasswordMutation, useGoogleLoginMutation } from "./authApi";
 import { setToken } from "./authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { GoogleLogin } from '@react-oauth/google';
 import "./style/login.css";
 
 import {
@@ -19,6 +20,7 @@ import {
   CircularProgress,
   Tabs,
   Tab,
+  Divider,
 } from "@mui/material";
 
 const loginSchema = z.object({
@@ -31,6 +33,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
   const [forgotPassword, { isLoading: isForgotLoading }] = useForgotPasswordMutation();
+  const [googleLogin, { isLoading: isGoogleLoading }] = useGoogleLoginMutation();
   const [serverError, setServerError] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -87,6 +90,32 @@ const Login = () => {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setServerError("");
+    try {
+      const res = await googleLogin({ credential: credentialResponse.credential }).unwrap();
+      dispatch(setToken({ token: res.token }));
+      
+      // פענוח הטוקן לבדיקת ה-role
+      const decodedToken = jwtDecode(res.token);
+      const userRole = decodedToken.role;
+      
+      // הפניה בהתאם לסוג המשתמש
+      if (userRole === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/user");
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      setServerError(error?.data?.message || "❌ התחברות עם Google נכשלה. אנא וודא שאתה רשום במערכת.");
+    }
+  };
+
+  const handleGoogleError = () => {
+    setServerError("התחברות עם Google נכשלה");
+  };
+
   return (
     <Box className="login-container">
       <Box className="login-form-box">
@@ -101,10 +130,6 @@ const Login = () => {
           <Tab label="הרשמה" />
         </Tabs>
 
-        <Typography variant="h5" className="login-title">
-          התחברות
-        </Typography>
-
         {serverError && (
           <Alert severity="error" className="login-alert">
             {serverError}
@@ -117,7 +142,7 @@ const Login = () => {
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} className="login-form">
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} className="login-form" sx={{ mt: 2 }}>
           <TextField
             variant="standard"
             label="אימייל"
@@ -175,6 +200,20 @@ const Login = () => {
           >
             {isLoading ? <CircularProgress size={24} color="inherit" /> : "התחבר"}
           </Button>
+
+          <Divider sx={{ my: 3, color: 'rgba(255, 255, 255, 0.7)' }}>או</Divider>
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              text="signin_with"
+              shape="rectangular"
+              theme="outline"
+              size="large"
+              locale="he"
+            />
+          </Box>
         </Box>
       </Box>
     </Box>

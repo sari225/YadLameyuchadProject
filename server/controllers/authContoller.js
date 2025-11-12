@@ -3,7 +3,10 @@ const Admin =require("../models/Admin")
 const jwt = require("jsonwebtoken");
 const  bcrypt = require("bcrypt");
 const { sendMail } = require("../utils/sendMail");
-const {generatePassword}=require("../utils/generatePassword")
+const {generatePassword}=require("../utils/generatePassword");
+const { OAuth2Client } = require('google-auth-library');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 
 // 1. רישום ילד חדש + שליחת OTP במייל
@@ -50,7 +53,7 @@ const registerChild = async (req, res) => {
     // יצירת OTP ידני ושליחתו במייל
     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6 ספרות
     newChild.otp = otp;
-    newChild.otpExpires = Date.now() + 1 * 60 * 1000; // 10 דקות
+    newChild.otpExpires = Date.now() + 10 * 60 * 1000; // 10 דקות
     await newChild.save();
 
     await sendMail(
@@ -206,12 +209,74 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+// התחברות עם Google
+const googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+    
+    // אימות ה-token של Google
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+    
+    const payload = ticket.getPayload();
+    const email = payload.email;
+    const googleId = payload.sub;
+    
+    // חיפוש משתמש קיים - קודם ב-Child ואז ב-Admin
+    let user = await Child.findOne({ email });
+    let role = 'child';
+    
+    if (!user) {
+      // אם לא נמצא ב-Child, נחפש ב-Admin
+      user = await Admin.findOne({ email });
+      role = 'admin';
+    }
+    
+    if (!user) {
+      // אם המשתמש לא קיים בכלל
+      return res.status(404).json({ 
+        message: "משתמש לא נמצא. אנא הירשם תחילה." 
+      });
+    }
+    
+    // בדיקה שהחשבון מאושר (רק אם זה Child)
+    if (role === 'child' && !user.isApproved) {
+      return res.status(401).json({ 
+        message: "החשבון ממתין לאישור מנהל" 
+      });
+    }
+    
+    // יצירת טוקן JWT מותאם לפי סוג המשתמש
+    let token;
+    if (role === 'admin') {
+      token = jwt.sign(
+        { id: user._id, name: user.name, email: user.email, role: user.role },
+        process.env.ACCESS_TOKEN_SECRET
+      );
+    } else {
+      token = jwt.sign(
+        { id: user._id, childId: user.childId, name: user.name, email: user.email, role: user.role },
+        process.env.ACCESS_TOKEN_SECRET
+      );
+    }
+    
+    res.json({ token });
+    
+  } catch (err) {
+    console.error('Google login error:', err);
+    res.status(500).json({ message: "שגיאה בהתחברות עם Google" });
+  }
+};
+
 
 module.exports = {
   registerChild,
   verifyOTP,
   approveChild,
   login,
-  forgotPassword
+  forgotPassword,
+  googleLogin
 };
   

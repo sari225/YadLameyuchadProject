@@ -56,12 +56,13 @@ const updateChild = async (req, res) => {
     if (req.body.parentName) child.parentName = req.body.parentName;
     if (req.body.Fname) child.Fname = req.body.Fname;
     if (req.body.Lname) child.Lname = req.body.Lname;
-    if (req.body.age) child.age = req.body.age;
+  if (req.body.dateOfBirth) child.dateOfBirth = req.body.dateOfBirth;
     if (req.body.address) child.address = req.body.address;
     if (req.body.phone1) child.phone1 = req.body.phone1;
-    child.phone2 = req.body.phone2;
-  child.allergies = req.body.allergies;
-  if (typeof req.body.emailConsent !== 'undefined') child.emailConsent = req.body.emailConsent;
+    if (req.body.phone2) child.phone2 = req.body.phone2;
+    if (req.body.educationInstitution) child.educationInstitution = req.body.educationInstitution;
+    child.allergies = req.body.allergies;
+    if (typeof req.body.emailConsent !== 'undefined') child.emailConsent = req.body.emailConsent;
     if (req.body.email) child.email = req.body.email;
     child.definition = req.body.definition;
     await child.save();

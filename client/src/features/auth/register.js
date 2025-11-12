@@ -32,15 +32,19 @@ const registerSchema = z.object({
   Fname: z.string().nonempty("יש להזין שם פרטי"),
   Lname: z.string().nonempty("יש להזין שם משפחה"),
 
-  age: z.string()
-    .nonempty("יש להזין גיל")
-    .regex(/^[0-9]+$/, "הגיל חייב להיות מספר"),
+  dateOfBirth: z.string()
+    .nonempty("יש להזין תאריך לידה")
+    .refine((val) => !isNaN(Date.parse(val)), "תאריך לידה לא תקין"),
 
   city: z.string().nonempty("יש להזין עיר"),
   street: z.string().nonempty("יש להזין רחוב"),
   building: z.string()
     .nonempty("יש להזין מספר בית")
     .regex(/^[0-9]+$/, "מספר בית חייב להיות מספר"),
+
+  educationInstitution: z.string()
+    .nonempty("יש להזין שם מוסד לימודי")
+    .max(100, "שם המוסד יכול להכיל עד 100 תווים"),
 
   phone1: z.string()
     .nonempty("יש להזין מספר טלפון")
@@ -49,9 +53,10 @@ const registerSchema = z.object({
     .max(10, "טלפון יכול להיות עד 10 ספרות"),
 
   phone2: z.string()
-    .optional()
-    .refine((val) => !val || /^[0-9]+$/.test(val), "טלפון חייב להכיל רק ספרות")
-    .refine((val) => !val || (val.length >= 9 && val.length <= 10), "טלפון חייב להיות 9-10 ספרות"),
+    .nonempty("יש להזין מספר טלפון נוסף")
+    .regex(/^[0-9]+$/, "טלפון חייב להכיל רק ספרות")
+    .min(9, "טלפון חייב להיות לפחות 9 ספרות")
+    .max(10, "טלפון יכול להיות עד 10 ספרות"),
 
   email: z.string()
     .nonempty("יש להזין אימייל")
@@ -77,8 +82,7 @@ const Register = () => {
     try {
       const userData = {
         ...data,
-        // המרת מחרוזת ריקה ל-undefined עבור phone2
-        phone2: data.phone2 && data.phone2.trim() !== '' ? data.phone2 : undefined,
+        phone2: data.phone2,
         specialNeeds: data.specialNeeds && data.specialNeeds.trim() !== '' ? data.specialNeeds : undefined,
         allergies: data.allergies && data.allergies.trim() !== '' ? data.allergies : undefined,
         address: {
@@ -86,6 +90,8 @@ const Register = () => {
           street: data.street,
           building: data.building,
         },
+        educationInstitution: data.educationInstitution,
+        dateOfBirth: data.dateOfBirth,
       };
       
       await registerChild(userData).unwrap();
@@ -100,12 +106,23 @@ const Register = () => {
 
     } catch (error) {
       console.log('Registration error:', error);
+      console.log('Error data:', error?.data);
+      console.log('Error message:', error?.data?.message);
+      console.log('Full error object:', JSON.stringify(error, null, 2));
       
       // בדיקה מפורטת של שגיאות
       const errorMessage = error?.data?.message || error?.message || '';
+      const errorString = JSON.stringify(error);
       
+      // בדיקה אם השגיאה קשורה לתאריך לידה עתידי
+      if (errorMessage.includes("תאריך לידה לא יכול להיות עתידי") || 
+          errorMessage.includes("dateOfBirth") ||
+          errorString.includes("תאריך לידה לא יכול להיות עתידי") ||
+          errorString.includes("dateOfBirth")) {
+        setServerError("❌ תאריך הלידה לא יכול להיות עתידי. אנא בחר תאריך תקין.");
+      }
       // בדיקה אם השגיאה קשורה לערך כפול
-      if (errorMessage.includes("duplicate") || 
+      else if (errorMessage.includes("duplicate") || 
           errorMessage.includes("unique") ||
           errorMessage.includes("E11000") ||
           errorMessage.includes("already exists")) {
@@ -146,8 +163,18 @@ const Register = () => {
           <Tab label="הרשמה" />
         </Tabs>
 
-        <Typography variant="h5" className="register-title">
-          הרשמה
+        <Typography variant="h5" className="register-title" sx={{ mb: 2 }}>
+          יש למלא את פרטי הילד
+        </Typography>
+
+        <Typography variant="body2" className="register-subtitle" sx={{ 
+          textAlign: 'center', 
+          color: 'rgba(255, 255, 255, 0.9)',
+          mb: 1,
+          fontSize: '0.95rem',
+          lineHeight: 1.6
+        }}>
+          מומלץ לפרט אלרגיות והגדרה רפואית
         </Typography>
 
         {serverError && (
@@ -162,7 +189,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="מספר זהות" 
+                label="מספר זהות *" 
                 {...register("childId")} 
                 error={!!errors.childId} 
                 helperText={errors.childId?.message} 
@@ -182,7 +209,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="שם הורה" 
+                label="שם הורה *" 
                 {...register("parentName")} 
                 error={!!errors.parentName} 
                 helperText={errors.parentName?.message} 
@@ -202,7 +229,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="שם פרטי"
+                label="שם פרטי *"
                 {...register("Fname")} 
                 error={!!errors.Fname} 
                 helperText={errors.Fname?.message} 
@@ -222,7 +249,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="שם משפחה" 
+                label="שם משפחה *" 
                 {...register("Lname")} 
                 error={!!errors.Lname} 
                 helperText={errors.Lname?.message} 
@@ -242,10 +269,11 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="גיל" 
-                {...register("age")} 
-                error={!!errors.age} 
-                helperText={errors.age?.message} 
+                label="תאריך לידה *" 
+                type="date"
+                {...register("dateOfBirth")} 
+                error={!!errors.dateOfBirth} 
+                helperText={errors.dateOfBirth?.message} 
                 fullWidth
                 className="register-textfield"
                 InputLabelProps={{
@@ -262,7 +290,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="אימייל" 
+                label="אימייל *" 
                 {...register("email")} 
                 error={!!errors.email} 
                 helperText={errors.email?.message} 
@@ -282,7 +310,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="עיר" 
+                label="עיר *" 
                 {...register("city")} 
                 error={!!errors.city} 
                 helperText={errors.city?.message} 
@@ -302,7 +330,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="רחוב" 
+                label="רחוב *" 
                 {...register("street")} 
                 error={!!errors.street} 
                 helperText={errors.street?.message} 
@@ -322,7 +350,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="מספר בית" 
+                label="מספר בית *" 
                 {...register("building")} 
                 error={!!errors.building} 
                 helperText={errors.building?.message} 
@@ -342,7 +370,27 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="טלפון" 
+                label="מוסד לימודי *" 
+                {...register("educationInstitution")} 
+                error={!!errors.educationInstitution} 
+                helperText={errors.educationInstitution?.message} 
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    right: 0,
+                    left: 'auto',
+                    transformOrigin: 'top right',
+                  }
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField 
+                variant="standard"
+                label="טלפון אבא *" 
                 {...register("phone1")} 
                 error={!!errors.phone1} 
                 helperText={errors.phone1?.message} 
@@ -362,7 +410,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="טלפון נוסף (אופציונלי)" 
+                label="טלפון אמא *" 
                 {...register("phone2")} 
                 error={!!errors.phone2} 
                 helperText={errors.phone2?.message} 
@@ -382,7 +430,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="פירוט הגדרה של הילד (אופציונלי)" 
+                label="פירוט הגדרה של הילד" 
                 {...register("specialNeeds")} 
                 error={!!errors.specialNeeds} 
                 helperText={errors.specialNeeds?.message} 
@@ -404,7 +452,7 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField 
                 variant="standard"
-                label="פירוט אלרגיות (אופציונלי)" 
+                label="פירוט אלרגיות" 
                 {...register("allergies")} 
                 error={!!errors.allergies} 
                 helperText={errors.allergies?.message} 

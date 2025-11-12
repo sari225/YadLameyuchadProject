@@ -31,11 +31,15 @@ Lname:{
     maxLength:20,
     trim:true
 },
-age:{
-    type:Number,
-    required:true,
-    min:0,
-    max:99
+dateOfBirth: {
+    type: Date,
+    required: true,
+    validate: {
+        validator: function(value) {
+            return value <= new Date();
+        },
+        message: 'תאריך לידה לא יכול להיות עתידי'
+    }
 },
 address:{
     city:{
@@ -60,6 +64,12 @@ address:{
     },
 
 },
+educationInstitution: {
+    type: String,
+    required: true,
+    maxLength: 100,
+    trim: true
+},
 phone1:{
     type:String,
     required:true,
@@ -70,6 +80,7 @@ phone1:{
 },
 phone2:{
     type:String,
+    required:true,
     minLength:9,
     maxLength:10,
     match:/^[0-9]+$/

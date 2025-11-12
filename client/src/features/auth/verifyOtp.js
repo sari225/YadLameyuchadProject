@@ -56,7 +56,21 @@ const VerifyOtp = () => {
       
       setSuccess(true);
     } catch (err) {
-      setError(err.data?.message || 'אימות נכשל. אנא בדוק את הקוד ונסה שוב.');
+      console.log('Verify OTP error:', err);
+      const errorMessage = err?.data?.message || err?.message || '';
+      
+      // בדיקה אם תוקף הקוד פג
+      if (errorMessage.includes('expired') || errorMessage.includes('has expired')) {
+        setError('❌ תוקף הקוד פג. אנא לחץ על "שלח שוב" כדי לקבל קוד חדש.');
+      } 
+      // בדיקה אם הקוד לא תקין
+      else if (errorMessage.includes('Invalid') || errorMessage.includes('Invalid OTP')) {
+        setError('❌ הקוד שהוזן אינו תקין. אנא בדוק את הקוד ונסה שוב.');
+      }
+      // שגיאה כללית
+      else {
+        setError('❌ אימות נכשל. אנא בדוק את הקוד ונסה שוב.');
+      }
     }
   };
 
@@ -170,6 +184,11 @@ const VerifyOtp = () => {
             fullWidth
             disabled={isVerifying}
             className="verify-otp-button verify-otp-submit-button"
+            sx={{
+              color: 'white !important',
+              fontWeight: 600,
+              fontSize: '1.1rem',
+            }}
           >
             {isVerifying ? (
               <CircularProgress size={24} style={{ color: 'white' }} />

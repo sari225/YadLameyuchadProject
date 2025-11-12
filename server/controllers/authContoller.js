@@ -50,7 +50,7 @@ const registerChild = async (req, res) => {
     // יצירת OTP ידני ושליחתו במייל
     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6 ספרות
     newChild.otp = otp;
-    newChild.otpExpires = Date.now() + 10 * 60 * 1000; // 10 דקות
+    newChild.otpExpires = Date.now() + 1 * 60 * 1000; // 10 דקות
     await newChild.save();
 
     await sendMail(
@@ -93,8 +93,16 @@ const verifyOTP = async (req, res) => {
     const child = await Child.findOne({ email });
 
     if (!child) return res.status(404).json({ message: "Child not found" });
-    if (child.otp !== otp || Date.now() > child.otpExpires)
-      return res.status(400).json({ message: "Invalid or expired OTP" });
+    
+    // בדיקה אם תוקף הקוד פג
+    if (Date.now() > child.otpExpires) {
+      return res.status(400).json({ message: "OTP has expired" });
+    }
+    
+    // בדיקה אם הקוד לא תקין
+    if (child.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP code" });
+    }
 
     child.isVerified = true;
     child.otp = undefined;
@@ -144,7 +152,7 @@ const login = async (req, res) => {
 
     // יצירת טוקן JWT
     const token = jwt.sign(
-      { id: child._id,childId:child.childId, email: child.email,role:child.role },
+      { id: child._id,childId:child.childId,name: child.name, email: child.email,role:child.role },
       process.env.ACCESS_TOKEN_SECRET,
       
     );
@@ -179,7 +187,7 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
     const child = await Child.findOne({ email });
 
-    if (!child) return res.status(404).json({ message: "Email not found" });
+    if (!child||!child.isApproved) return res.status(404).json({ message: "Email not found" });
 
     // מייצרים סיסמה זמנית
     const tempPassword =generatePassword()

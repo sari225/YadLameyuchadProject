@@ -122,6 +122,40 @@
   margin-top: 4px;
 }
 
+/* Forgot Password Styles */
+.forgot-password-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+}
+
+.forgot-password-link {
+  background: none !important;
+  border: none !important;
+  padding: 4px 0 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 14px !important;
+  text-decoration: underline !important;
+  text-transform: none !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  min-width: auto !important;
+  transition: all 0.2s ease !important;
+}
+
+.forgot-password-link:hover {
+  color: white !important;
+  text-decoration: underline !important;
+  background: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.forgot-password-link:disabled {
+  color: rgba(255, 255, 255, 0.5) !important;
+  cursor: not-allowed !important;
+}
+
 /* Button Styles */
 .login-button {
   margin-top: 32px;

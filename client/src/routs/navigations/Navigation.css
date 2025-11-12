@@ -1,0 +1,245 @@
+/* תפריט צד - עיצוב כללי */
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+/* הקונטיינר זז כשהתפריט סגור */
+.sidebar-container:has(.sidebar.closed) {
+    transform: translateX(280px);
+}
+
+.sidebar {
+    width: 280px;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* כפתור פתיחה/סגירה */
+.toggle-btn {
+    position: absolute;
+    left: -45px;
+    top: 20px;
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px 0 0 8px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+}
+
+.toggle-btn:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: scale(1.05);
+}
+
+/* כותרת התפריט */
+.sidebar-header {
+    padding: 25px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-logo {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 10px;
+    display: block;
+    border-radius: 50%;
+    background: white;
+    padding: 8px;
+}
+
+.sidebar-title {
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    font-family: 'Rubik', sans-serif;
+}
+
+/* מידע משתמש */
+.user-info {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    text-align: center;
+    font-family: 'Rubik', sans-serif;
+}
+
+.user-info-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.user-info-email {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* רשימת קישורים */
+.nav-list {
+    flex: 1;
+    padding: 15px 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 25px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    font-size: 16px;
+    font-family: 'Rubik', sans-serif;
+    flex-direction: row-reverse;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: white;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    padding-right: 30px;
+}
+
+.nav-item:hover::before {
+    transform: scaleY(1);
+}
+
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+}
+
+.nav-item.active::before {
+    transform: scaleY(1);
+}
+
+.nav-icon {
+    font-size: 20px;
+    width: 25px;
+    text-align: center;
+}
+
+.nav-text {
+    flex: 1;
+    text-align: right;
+}
+
+/* מחיצה */
+.nav-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 10px 20px;
+}
+
+/* כפתור התנתקות */
+.logout-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 25px;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 100%;
+    text-align: right;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: auto;
+    font-family: 'Rubik', sans-serif;
+    flex-direction: row-reverse;
+}
+
+.logout-item:hover {
+    background: rgba(255, 0, 0, 0.3);
+}
+
+/* התאמה למסך קטן */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 250px;
+    }
+    
+    .sidebar.closed {
+        transform: translateX(250px);
+    }
+    
+    .toggle-btn {
+        left: -40px;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .nav-item {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+}
+
+/* גלילה חלקה */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* אנימציה בטעינה */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.sidebar {
+    animation: slideIn 0.4s ease-out;
+}

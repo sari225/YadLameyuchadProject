@@ -1,17 +1,57 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import HomePage from "../pages/HomePage";
-import Login from "../features/auth/login"
+import Login from "../features/auth/login";
 import Register from "../features/auth/register";
 import VerifyOtp from "../features/auth/verifyOtp";
+import ProtectedRoute from "./ProtectedRoute";
+import UserLayouts from "./layouts/UserLayouts";
+import PersonalArea from "../features/user/PersonalArea/PersonalArea";
+
+
+import AdminLayout from "./layouts/AdminLayouts";
+import ManagementPanel from "../features/admin/ManagementPanel/ManagementPanel";
+
 const AppRouts = () => {
   return (
     <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
+      {/* ראוטים ציבוריים */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/verify-otp" element={<VerifyOtp />} />
+
+      {/* ראוטים מוגנים למשתמשים עם הרשאת "child" */}
+      <Route element={<ProtectedRoute allowedRoles={["child"]} />}>
+        <Route path="/user" element={<UserLayouts />}>
+          <Route index element={<Navigate to="/user/personalArea" replace />} />
+          <Route path="personalArea" element={<PersonalArea />} />
+         
+          <Route path="daycamps" element={<div>דף קיטנות - בבנייה</div>} />
+          <Route path="clubs" element={<div>דף מועדוניות - בבנייה</div>} />
+          <Route path="documents" element={<div>דף טפסים - בבנייה</div>} />
+        </Route>
+      </Route>
+
+      {/* ראוטים מוגנים למנהל */}
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="/admin/managementPanel" replace />} />
+          <Route path="managementPanel" element={<ManagementPanel />} />
+          <Route path="childrenManagement" element={<div>ניהול ילדים</div>} />
+          <Route path="volunteersManagement" element={<div>ניהול מתנדבים</div>} />
+          <Route path="clubsManagement" element={<div>ניהול מועדוניות</div>} />
+          <Route path="daycampsManagement" element={<div>ניהול קייטנות</div>} />
+          <Route path="documentsManagement" element={<div>ניהול טפסים</div>} />
+          <Route path="contactMessages" element={<div>ניהול הודעות</div>} />
+          <Route path="updatesManagement" element={<div>ניהול עדכונים</div>} />
+         
+        </Route>
+      </Route>
+
+      {/* ראוט 404 */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
-}  
+};
 
 export default AppRouts;

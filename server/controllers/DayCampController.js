@@ -4,9 +4,10 @@ const fs = require('fs')
 const createDayCamp = async (req, res) => {
   try {
     if (req.file) {
+      const normalized = req.file.path.replace(/\\/g, '/');
       req.body.file = {
         filename: req.file.originalname,
-        path: req.file.path.replace(/\\/g, '/'),
+        path: normalized.replace(/.*?public\//, ''),
       }
     }
 
@@ -55,11 +56,14 @@ const updateDayCamp = async (req, res) => {
     if (req.file) {
       // remove old file if present
       if (dayCamp.file && dayCamp.file.path) {
-        try { fs.unlinkSync(dayCamp.file.path) } catch (e) {}
+        const prev = dayCamp.file.path.replace(/\\/g, '/');
+        const oldFilePath = prev.includes('/public/') ? prev : 'public/' + prev;
+        try { fs.unlinkSync(oldFilePath) } catch (e) {}
       }
+      const normalized = req.file.path.replace(/\\/g, '/');
       dayCamp.file = {
         filename: req.file.originalname,
-        path: req.file.path.replace(/\\/g, '/'),
+        path: normalized.replace(/.*?public\//, ''),
         mimeType: req.file.mimetype,
         size: req.file.size,
         uploadedAt: new Date()
@@ -81,7 +85,9 @@ const deleteDayCamp = async (req, res) => {
     }
     // remove file from disk if exists
     if (dayCamp.file && dayCamp.file.path) {
-      try { fs.unlinkSync(dayCamp.file.path) } catch (e) {}
+      const p = dayCamp.file.path.replace(/\\/g, '/');
+      const filePath = p.includes('/public/') ? p : 'public/' + p;
+      try { fs.unlinkSync(filePath) } catch (e) {}
     }
     res.json({ message: "Day camp deleted successfully" });
   } catch (error) {

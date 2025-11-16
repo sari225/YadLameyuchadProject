@@ -386,7 +386,7 @@ const UpdateManagement = () => {
                   type="file"
                   hidden
                   onChange={handleFileChange}
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.svg,.mp4,.mpeg,.mov,.avi,.webm"
                 />
               </Button>
               {selectedFile && (

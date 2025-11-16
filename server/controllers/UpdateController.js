@@ -48,9 +48,12 @@ const sendEmailsForUpdate = async (updating) => {
 const createUpdating = async (req, res) => {
   try {
     if (req.file) {
+      // Normalize to relative path under public/ (handles absolute Windows paths)
+      const normalized = req.file.path.replace(/\\/g, "/");
+      const filePath = normalized.replace(/.*?public\//, "");
       req.body.file = {
         filename: req.file.originalname,
-        path: req.file.path.replace(/\\/g, "/"),
+        path: filePath,
       };
     }
 
@@ -101,12 +104,23 @@ const updateUpdating = async (req, res) => {
     if (req.file) {
       // מחיקת הקובץ הקודם אם קיים
       if (updating.file && updating.file.path) {
-        try { fs.unlinkSync(updating.file.path); } catch (e) {}
+        const oldFilePath = updating.file.path.startsWith('public/') 
+          ? updating.file.path 
+          : `public/${updating.file.path}`;
+        try { 
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+          }
+        } catch (e) {
+          console.error('Error deleting old file:', e);
+        }
       }
+      // Normalize to relative path under public/
+      const normalized = req.file.path.replace(/\\/g, "/");
+      const filePath = normalized.replace(/.*?public\//, "");
       updating.file = {
         filename: req.file.originalname,
-        path: req.file.path.replace(/\\/g, "/"),
-
+        path: filePath,
       };
     }
 
@@ -125,7 +139,9 @@ const deleteUpdating = async (req, res) => {
 
     // מחיקת הקובץ מהשרת אם קיים
     if (updating.file && updating.file.path) {
-      try { fs.unlinkSync(updating.file.path); } catch (e) {}
+      const p = updating.file.path.replace(/\\/g, '/');
+      const filePath = p.includes('/public/') ? p : `public/${p}`;
+      try { fs.unlinkSync(filePath); } catch (e) {}
     }
 
     res.status(200).json({ message: "Updating deleted successfully" });

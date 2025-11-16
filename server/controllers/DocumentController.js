@@ -10,7 +10,8 @@ const createDocument = async (req, res) => {
 
     const name = req.file.originalname;
 
-    const fileUrl = req.file.path.replace(/\\/g, '/');
+    const normalized = req.file.path.replace(/\\/g, '/');
+    const fileUrl = normalized.replace(/.*?public\//, "");
     const newDocument = await Document.create({ name, url: fileUrl });
 
     res.status(201).json({
@@ -65,8 +66,10 @@ const deleteDocument = async (req, res) => {
       return res.status(404).json({ message: "Document not found" });
     }
     // מחיקת הקובץ מהשרת אם קיים
-    if (deleted.file && deleted.file.path) {
-      try { fs.unlinkSync(deleted.file.path) } catch (e) {}
+    if (deleted && deleted.url) {
+      const p = deleted.url.replace(/\\/g, '/');
+      const filePath = p.includes('/public/') ? p : 'public/' + p;
+      try { fs.unlinkSync(filePath) } catch (e) {}
     }
 
     res.status(200).json({ message: "Document deleted successfully" });

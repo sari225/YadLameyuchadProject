@@ -4,12 +4,26 @@ const { sendMail } = require("../utils/sendMail");
 const {generatePassword}=require("../utils/generatePassword")
 const createChild = async (req, res) => {
   try {
-    const  child  = req.body;
+    const child = req.body;
 
-    const password = generatePassword()
-   const hashedPassword = await bcrypt.hash(password, 10);
-    
-     await sendMail(child.email, "Your Initial Password", `Your password is: ${password}`);
+    const password = generatePassword();
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // בדיקה אם המייל כבר קיים
+    const existingEmail = await Child.findOne({ email: child.email });
+    if (existingEmail) {
+      return res.status(400).json({
+        message: "Email already exists. Please use a different email address."
+      });
+    }
+
+    // בדיקה אם מספר הזהות כבר קיים
+    const existingChildId = await Child.findOne({ childId: child.childId });
+    if (existingChildId) {
+      return res.status(400).json({
+        message: "childId already exists. This ID is already registered in the system."
+      });
+    }
+    // ...המשך קוד רגיל ללא מחיקות מיותרות...
     const newChild = await Child.create({
       ...child,
       isApproved:true,
@@ -19,6 +33,8 @@ const createChild = async (req, res) => {
     });
 
     res.status(201).json({message:"new child created successfully"});
+    await sendMail(child.email, "Your Initial Password", `Your password is: ${password}`);
+
   } catch (error) {
     res.status(500).json({ message: "Error creating child", error: error.message });
   }

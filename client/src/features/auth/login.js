@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLoginMutation, useForgotPasswordMutation, useGoogleLoginMutation } from "./authApi";
+import { useLoginMutation, useForgotPasswordMutation, useGoogleLoginMutation } from "../../api/authApi";
 import { setToken } from "./authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";

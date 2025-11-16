@@ -1,14 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeToken } from "../../features/auth/authSlice";
-import { useState } from "react";
 import "./Navigation.css";
 
-const AdminNavigation = () => {
+const AdminNavigation = ({ isOpen, setIsOpen }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
-    const [isOpen, setIsOpen] = useState(true);
 
     const handleLogout = () => {
         dispatch(removeToken());

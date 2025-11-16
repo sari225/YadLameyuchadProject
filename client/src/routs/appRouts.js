@@ -10,6 +10,7 @@ import PersonalArea from "../features/user/PersonalArea/PersonalArea";
 
 import AdminLayout from "./layouts/AdminLayouts";
 import ManagementPanel from "../features/admin/ManagementPanel/ManagementPanel";
+import ChildManagement from "../features/admin/ChildManagement/ChildManagement";
 
 const AppRouts = () => {
   return (
@@ -37,7 +38,7 @@ const AppRouts = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="/admin/managementPanel" replace />} />
           <Route path="managementPanel" element={<ManagementPanel />} />
-          <Route path="childrenManagement" element={<div>ניהול ילדים</div>} />
+          <Route path="childrenManagement" element={<ChildManagement />} />
           <Route path="volunteersManagement" element={<div>ניהול מתנדבים</div>} />
           <Route path="clubsManagement" element={<div>ניהול מועדוניות</div>} />
           <Route path="daycampsManagement" element={<div>ניהול קייטנות</div>} />

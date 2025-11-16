@@ -188,21 +188,50 @@ else{
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
+    
+    // חיפוש במשתמשים ילדים
     const child = await Child.findOne({ email });
+    
+    // חיפוש במנהלים
+    const admin = await Admin.findOne({ email });
 
-    if (!child||!child.isApproved) return res.status(404).json({ message: "Email not found" });
+    // אם נמצא ילד
+    if (child) {
+      if (!child.isApproved) {
+        return res.status(404).json({ message: "Email not found or not approved" });
+      }
 
-    // מייצרים סיסמה זמנית
-    const tempPassword =generatePassword()
-    // מצפינים את הסיסמה
-    const hashedPassword = await bcrypt.hash(tempPassword, 10);
-    child.password = hashedPassword;
-    await child.save();
+      // מייצרים סיסמה זמנית
+      const tempPassword = generatePassword();
+      // מצפינים את הסיסמה
+      const hashedPassword = await bcrypt.hash(tempPassword, 10);
+      child.password = hashedPassword;
+      await child.save();
 
-    // שולחים למייל
-    await sendMail(email, "Password Reset", `Your temporary password is: ${tempPassword}`);
+      // שולחים למייל
+      await sendMail(email, "Password Reset", `Your temporary password is: ${tempPassword}`);
 
-    res.json({ message: "Temporary password sent to your email" });
+      return res.json({ message: "Temporary password sent to your email" });
+    }
+    
+    // אם נמצא מנהל
+    if (admin) {
+      // מייצרים סיסמה זמנית
+      const tempPassword = generatePassword();
+      // מצפינים את הסיסמה
+      const hashedPassword = await bcrypt.hash(tempPassword, 10);
+      admin.password = hashedPassword;
+      await admin.save();
+
+      // שולחים למייל
+      await sendMail(email, "Password Reset", `Your temporary password is: ${tempPassword}`);
+
+      return res.json({ message: "Temporary password sent to your email" });
+    }
+
+    // אם לא נמצא משתמש
+    return res.status(404).json({ message: "Email not found" });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

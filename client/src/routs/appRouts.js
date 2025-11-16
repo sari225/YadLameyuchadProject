@@ -12,6 +12,7 @@ import Profile from "../features/user/Profile/Profile";
 import AdminLayout from "./layouts/AdminLayouts";
 import ManagementPanel from "../features/admin/ManagementPanel/ManagementPanel";
 import ChildManagement from "../features/admin/ChildManagement/ChildManagement";
+import UpdateManagement from "../features/admin/UpdateManagement/UpdateManagement";
 
 const AppRouts = () => {
   return (
@@ -46,7 +47,7 @@ const AppRouts = () => {
           <Route path="daycampsManagement" element={<div>ניהול קייטנות</div>} />
           <Route path="documentsManagement" element={<div>ניהול טפסים</div>} />
           <Route path="contactMessages" element={<div>ניהול הודעות</div>} />
-          <Route path="updatesManagement" element={<div>ניהול עדכונים</div>} />
+          <Route path="updatesManagement" element={<UpdateManagement />} />
          
         </Route>
       </Route>

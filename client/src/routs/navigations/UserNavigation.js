@@ -1,14 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeToken } from "../../features/auth/authSlice";
-import { useState } from "react";
 import "./Navigation.css";
 
-const UserNavigation = () => {
+const UserNavigation = ({ isOpen, setIsOpen }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
-    const [isOpen, setIsOpen] = useState(true);
 
     const handleLogout = () => {
         dispatch(removeToken());
@@ -52,8 +50,13 @@ const UserNavigation = () => {
                     {/* תפריט ניווט */}
                     <nav className="nav-list">
                         <NavLink to="/user/personalArea" className="nav-item">
-                            <i className="far fa-user nav-icon"></i>
+                            <i className="far fa-id-card nav-icon"></i>
                             <span className="nav-text">אזור אישי</span>
+                        </NavLink>
+
+                        <NavLink to="/user/profile" className="nav-item">
+                            <i className="far fa-user nav-icon"></i>
+                            <span className="nav-text">פרופיל</span>
                         </NavLink>
 
                         <NavLink to="/user/daycamps" className="nav-item">

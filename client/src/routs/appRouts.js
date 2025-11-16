@@ -6,6 +6,7 @@ import VerifyOtp from "../features/auth/verifyOtp";
 import ProtectedRoute from "./ProtectedRoute";
 import UserLayouts from "./layouts/UserLayouts";
 import PersonalArea from "../features/user/PersonalArea/PersonalArea";
+import Profile from "../features/user/Profile/Profile";
 
 
 import AdminLayout from "./layouts/AdminLayouts";
@@ -26,6 +27,7 @@ const AppRouts = () => {
         <Route path="/user" element={<UserLayouts />}>
           <Route index element={<Navigate to="/user/personalArea" replace />} />
           <Route path="personalArea" element={<PersonalArea />} />
+          <Route path="profile" element={<Profile />} />
          
           <Route path="daycamps" element={<div>דף קיטנות - בבנייה</div>} />
           <Route path="clubs" element={<div>דף מועדוניות - בבנייה</div>} />

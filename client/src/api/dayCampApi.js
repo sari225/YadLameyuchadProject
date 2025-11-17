@@ -54,6 +54,7 @@ export const dayCampApi = apiSlice.injectEndpoints({
 export const {
   useCreateDayCampMutation,
   useGetDayCampsQuery,
+  useGetActiveDayCampsQuery,
   useGetDayCampByIdQuery,
   useUpdateDayCampMutation,
   useDeleteDayCampMutation,

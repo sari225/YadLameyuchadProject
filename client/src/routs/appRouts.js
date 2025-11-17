@@ -9,6 +9,7 @@ import PersonalArea from "../features/user/PersonalArea/PersonalArea";
 import Profile from "../features/user/Profile/Profile";
 import Documents from "../features/user/Documents/Documents";
 import AllUpdates from "../features/user/Updates/AllUpdates";
+import UserCampsList from "../features/user/Camps/UserCampsList";
 
 
 import AdminLayout from "./layouts/AdminLayouts";
@@ -35,7 +36,7 @@ const AppRouts = () => {
           <Route path="personalArea" element={<PersonalArea />} />
           <Route path="profile" element={<Profile />} />
           <Route path="all-updates" element={<AllUpdates />} />
-          <Route path="daycamps" element={<div>דף קיטנות - בבנייה</div>} />
+          <Route path="daycamps" element={<UserCampsList />} />
           <Route path="clubs" element={<div>דף מועדוניות - בבנייה</div>} />
           <Route path="documents" element={<Documents />} />
         </Route>

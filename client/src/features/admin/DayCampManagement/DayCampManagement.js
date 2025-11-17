@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -61,6 +61,11 @@ const DayCampManagement = () => {
     location: "",
     registerStatus: true,
   });
+
+  // רענן נתונים כשהקומפוננט נטען
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   // Open dialog for create or edit
   const handleOpenDialog = (dayCamp = null) => {
@@ -160,7 +165,7 @@ const DayCampManagement = () => {
         await createDayCamp(dataToSend).unwrap();
         setSuccessMessage("הקייטנה נוצרה בהצלחה");
       }
-      refetch();
+      await refetch();
       setTimeout(() => {
         handleCloseDialog();
       }, 1500);
@@ -420,7 +425,7 @@ const DayCampManagement = () => {
                   type="file"
                   hidden
                   onChange={handleFileChange}
-                  accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.svg,.doc,.docx"
+                  accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.svg,.mp4,.mpeg,.mov,.avi,.webm"
                 />
               </Button>
               {(selectedFile || (editingDayCamp?.file?.filename && !removeFile)) && (

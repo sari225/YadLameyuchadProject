@@ -155,7 +155,7 @@ const login = async (req, res) => {
 
     // יצירת טוקן JWT
     const token = jwt.sign(
-      { id: child._id,childId:child.childId,name: child.name, email: child.email,role:child.role },
+      { id: child._id,childId: child.childId, name: child.Fname, email: child.email,role: child.role },
       process.env.ACCESS_TOKEN_SECRET,
       
     );
@@ -281,12 +281,12 @@ const googleLogin = async (req, res) => {
     let token;
     if (role === 'admin') {
       token = jwt.sign(
-        { id: user._id, name: user.name, email: user.email, role: user.role },
+        { id: user._id, email: user.email, role: user.role },
         process.env.ACCESS_TOKEN_SECRET
       );
     } else {
       token = jwt.sign(
-        { id: user._id, childId: user.childId, name: user.name, email: user.email, role: user.role },
+        { id: user._id, childId: user.childId, name: user.Fname, email: user.email, role: user.role },
         process.env.ACCESS_TOKEN_SECRET
       );
     }

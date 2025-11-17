@@ -154,8 +154,8 @@ const Row = ({ child, childClubs, onDeleted, isPending }) => {
 			<DialogContent>
 				<DialogContentText sx={{ textAlign: 'right' }}>
 					{isPending
-						? `?האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של${child.Fname} ${child.Lname}`
-						: `?האם אתה בטוח שברצונך למחוק את הילד${child.Fname} ${child.Lname}`
+						? `?האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של ${child.Fname} ${child.Lname}`
+						: `?האם אתה בטוח שברצונך למחוק את הילד ${child.Fname} ${child.Lname}`
 					}
 				</DialogContentText>
 			</DialogContent>
@@ -212,62 +212,69 @@ const ChildManagement = () => {
 		return out;
 	};
 
-	// סינון ילדים מאושרים לפי חיפוש
+	// סינון ילדים מאושרים לפי חיפוש ומיון לפי שם פרטי
 	const filteredApproved = useMemo(() => {
-		if (!searchQuery) return approvedChildren;
+		let filtered = approvedChildren;
 		
-		const query = searchQuery.toLowerCase();
-		
-		return approvedChildren.filter(child => {
-			switch(searchField) {
-				case "name":
-					return (child.Fname + " " + child.Lname).toLowerCase().includes(query);
-				case "educationInstitution":
-					return (child.educationInstitution || "").toLowerCase().includes(query);
-				case "age":
-					if (!child.dateOfBirth) return false;
-					const age = calcAge(child.dateOfBirth);
-					return age !== null && age.toString() === query;
-				case "dateOfBirth":
-					return (child.dateOfBirth || "").includes(query);
-				case "clubs":
-					const childClubs = getChildClubs(child._id);
-					return childClubs.some(club => club.name.toLowerCase().includes(query));
-				default: {
-					// חיפוש חופשי על כל השדות
-					const contains = (v) => (v ?? "").toString().toLowerCase().includes(query);
-					const fullName = `${child.Fname || ""} ${child.Lname || ""}`;
-					const age = calcAge(child.dateOfBirth);
-					const dobIso = child.dateOfBirth || "";
-					const dobLocal = child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : "";
-					const clubs = getChildClubs(child._id);
-					const clubsJoined = clubs.map(c => c.name).join(", ");
-					const allergiesJoined = Array.isArray(child.allergies) ? child.allergies.join(", ") : (child.allergies || "");
-					const emailConsentLabel = child.emailConsent ? "כן" : "לא";
+		if (searchQuery) {
+			const query = searchQuery.toLowerCase();
+			
+			filtered = approvedChildren.filter(child => {
+				switch(searchField) {
+					case "name":
+						return (child.Fname + " " + child.Lname).toLowerCase().includes(query);
+					case "educationInstitution":
+						return (child.educationInstitution || "").toLowerCase().includes(query);
+					case "age":
+						if (!child.dateOfBirth) return false;
+						const age = calcAge(child.dateOfBirth);
+						return age !== null && age.toString() === query;
+					case "dateOfBirth":
+						return (child.dateOfBirth || "").includes(query);
+					case "clubs":
+						const childClubs = getChildClubs(child._id);
+						return childClubs.some(club => club.name.toLowerCase().includes(query));
+					default: {
+						// חיפוש חופשי על כל השדות
+						const contains = (v) => (v ?? "").toString().toLowerCase().includes(query);
+						const fullName = `${child.Fname || ""} ${child.Lname || ""}`;
+						const age = calcAge(child.dateOfBirth);
+						const dobIso = child.dateOfBirth || "";
+						const dobLocal = child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : "";
+						const clubs = getChildClubs(child._id);
+						const clubsJoined = clubs.map(c => c.name).join(", ");
+						const allergiesJoined = Array.isArray(child.allergies) ? child.allergies.join(", ") : (child.allergies || "");
+						const emailConsentLabel = child.emailConsent ? "כן" : "לא";
 
-					const matches = [
-						contains(fullName),
-						contains(child.childId),
-						contains(child.parentName),
-						contains(child.educationInstitution),
-						contains(child.phone1),
-						contains(child.phone2),
-						contains(child.email),
-						contains(child.address?.city),
-						contains(child.address?.street),
-						contains(child.address?.building),
-						contains(child.definition),
-						contains(allergiesJoined),
-						contains(dobIso),
-						contains(dobLocal),
-						contains(clubsJoined),
-						contains(emailConsentLabel),
-						age !== null ? age.toString() === query : false,
-					];
+						const matches = [
+							contains(fullName),
+							contains(child.childId),
+							contains(child.parentName),
+							contains(child.educationInstitution),
+							contains(child.phone1),
+							contains(child.phone2),
+							contains(child.email),
+							contains(child.address?.city),
+							contains(child.address?.street),
+							contains(child.address?.building),
+							contains(child.definition),
+							contains(allergiesJoined),
+							contains(dobIso),
+							contains(dobLocal),
+							contains(clubsJoined),
+							contains(emailConsentLabel),
+							age !== null ? age.toString() === query : false,
+						];
 
-					return matches.some(Boolean);
+						return matches.some(Boolean);
+					}
 				}
-			}
+			});
+		}
+		
+		// מיון לפי שם פרטי (א' ב')
+		return filtered.sort((a, b) => {
+			return (a.Fname || "").localeCompare(b.Fname || "", 'he');
 		});
 	}, [approvedChildren, searchQuery, searchField, clubsDict]);
 

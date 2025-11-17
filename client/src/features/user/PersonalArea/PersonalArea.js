@@ -19,8 +19,8 @@ const PersonalArea = () => {
   }, [token]);
 
   const userId = decoded?.id;
-  const { data: childData } = useGetChildByIdQuery(userId, { skip: !userId });
-  const userName = childData?.Fname || "משתמש";
+
+  const userName = decoded?.name || "משתמש";
   const { data: updates = [], isLoading, isError } = useGetUpdatingsQuery();
 
   const normalizePath = (p) => {

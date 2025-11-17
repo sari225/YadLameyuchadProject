@@ -64,6 +64,11 @@ const DayCampDetails = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [registerStatus, setRegisterStatus] = useState(true);
 
+  // רענן נתונים כשהקומפוננט נטען
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   useEffect(() => {
     if (dayCamp) {
       setRegisterStatus(dayCamp.registerStatus ?? true);

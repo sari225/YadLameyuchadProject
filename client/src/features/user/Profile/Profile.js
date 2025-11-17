@@ -13,7 +13,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { Edit as EditIcon, Lock as LockIcon } from "@mui/icons-material";
+import { Edit as EditIcon, Lock as LockIcon, Email as EmailIcon } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -175,6 +175,7 @@ const Profile = () => {
   const [pwdOpen, setPwdOpen] = useState(false);
   const [serverMsg, setServerMsg] = useState("");
   const [serverErr, setServerErr] = useState("");
+  const [isTogglingEmail, setIsTogglingEmail] = useState(false);
 
   const {
     register,
@@ -285,6 +286,29 @@ const Profile = () => {
     }
   };
 
+  const handleToggleEmailConsent = async () => {
+    if (!id || !child) return;
+    setIsTogglingEmail(true);
+    setServerMsg("");
+    setServerErr("");
+    try {
+      await updateChild({
+        id,
+        childData: { emailConsent: !child.emailConsent },
+      }).unwrap();
+      setServerMsg(
+        child.emailConsent
+          ? "בוטלה הסכמה לקבלת דיוור במייל"
+          : "ניתנה הסכמה לקבלת דיוור במייל"
+      );
+      refetch();
+    } catch (e) {
+      setServerErr("שגיאה בעדכון הגדרות דיוור");
+    } finally {
+      setIsTogglingEmail(false);
+    }
+  };
+
   if (!id) {
     return <Alert severity="error">לא נמצאה זהות משתמש</Alert>;
   }
@@ -319,14 +343,14 @@ const Profile = () => {
                 startIcon={<EditIcon />}
                 onClick={() => setEditMode(true)}
                 sx={{
-                  borderColor: "#03a9f4",
-                  color: "#03a9f4",
+                  borderColor: "#d486b8",
+                  color: "#d486b8",
                   fontSize: "15px",
                   borderRadius: "8px",
                   textTransform: "none",
                   "&:hover": {
-                    backgroundColor: "rgba(3, 169, 244, 0.04)",
-                    borderColor: "#0288d1",
+                    backgroundColor: "rgba(212, 134, 184, 0.04)",
+                    borderColor: "#a57bad",
                   },
                 }}
               >
@@ -337,18 +361,43 @@ const Profile = () => {
                 startIcon={<LockIcon />}
                 onClick={() => setPwdOpen(true)}
                 sx={{
-                  borderColor: "#ff9800",
-                  color: "#ff9800",
+                  borderColor: "#a57bad",
+                  color: "#a57bad",
                   fontSize: "15px",
                   borderRadius: "8px",
                   textTransform: "none",
                   "&:hover": {
-                    backgroundColor: "rgba(255, 152, 0, 0.04)",
-                    borderColor: "#f57c00",
+                    backgroundColor: "rgba(165, 123, 173, 0.04)",
+                    borderColor: "#a57bad",
                   },
                 }}
               >
                 שינוי סיסמה
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<EmailIcon />}
+                onClick={handleToggleEmailConsent}
+                disabled={isTogglingEmail}
+                sx={{
+                  borderColor: child?.emailConsent ? "#4caf50" : "#9e9e9e",
+                  color: child?.emailConsent ? "#4caf50" : "#9e9e9e",
+                  fontSize: "15px",
+                  borderRadius: "8px",
+                  textTransform: "none",
+                  "&:hover": {
+                    backgroundColor: child?.emailConsent ? "rgba(76, 175, 80, 0.04)" : "rgba(158, 158, 158, 0.04)",
+                    borderColor: child?.emailConsent ? "#388e3c" : "#757575",
+                  },
+                }}
+              >
+                {isTogglingEmail ? (
+                  <CircularProgress size={20} />
+                ) : child?.emailConsent ? (
+                  "ביטול דיוור"
+                ) : (
+                  "קבלת דיוור"
+                )}
               </Button>
             </>
           )}
@@ -478,7 +527,7 @@ const Profile = () => {
                   textAlign: "right",
                 }}
               >
-                טלפון ראשי
+                טלפון אבא
               </Typography>
               <TextField
                 variant="outlined"
@@ -517,7 +566,7 @@ const Profile = () => {
                   textAlign: "right",
                 }}
               >
-                טלפון משני
+                טלפון אמא
               </Typography>
               <TextField
                 variant="outlined"
@@ -545,14 +594,6 @@ const Profile = () => {
               />
             </Box>
           </Box>
-
-          <Typography
-            variant="h6"
-            sx={{ mt: 4, mb: 3, fontWeight: "600", color: "#333", fontSize: "18px" }}
-          >
-            שם פרטי של הילד/ה
-          </Typography>
-
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
             {/* שם פרטי */}
             <Box>
@@ -604,7 +645,7 @@ const Profile = () => {
                   textAlign: "right",
                 }}
               >
-                שם משפחה של הילד/ה
+                שם משפחה 
               </Typography>
               <TextField
                 variant="outlined"
@@ -837,7 +878,7 @@ const Profile = () => {
                   textAlign: "right",
                 }}
               >
-                מוסד לימודי
+                מוסד לימודים
               </Typography>
               <TextField
                 variant="outlined"
@@ -911,7 +952,7 @@ const Profile = () => {
                   textAlign: "right",
                 }}
               >
-                אלרגיות (מופרד בפסיקים)
+                אלרגיות 
               </Typography>
               <TextField
                 variant="outlined"

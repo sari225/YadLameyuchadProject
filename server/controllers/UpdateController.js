@@ -101,7 +101,23 @@ const updateUpdating = async (req, res) => {
 
     if (req.body.title) updating.title = req.body.title;
     if (req.body.content) updating.content = req.body.content;
-    if (req.file) {
+    
+    // אם המשתמש ביקש להסיר את הקובץ
+    if (req.body.removeFile === "true") {
+      if (updating.file && updating.file.path) {
+        const oldFilePath = updating.file.path.startsWith('public/') 
+          ? updating.file.path 
+          : `public/${updating.file.path}`;
+        try { 
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+          }
+        } catch (e) {
+          console.error('Error deleting old file:', e);
+        }
+      }
+      updating.file = undefined;
+    } else if (req.file) {
       // מחיקת הקובץ הקודם אם קיים
       if (updating.file && updating.file.path) {
         const oldFilePath = updating.file.path.startsWith('public/') 

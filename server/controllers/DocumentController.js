@@ -8,7 +8,7 @@ const createDocument = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const name = req.file.originalname;
+    const name = req.body.name || req.file.originalname;
 
     const normalized = req.file.path.replace(/\\/g, '/');
     const fileUrl = normalized.replace(/.*?public\//, "");
@@ -16,6 +16,7 @@ const createDocument = async (req, res) => {
 
     res.status(201).json({
       message: "Document created successfully",
+      document: newDocument,
     });
   } catch (error) {
     // במקרה של שגיאה גם כאן נרצה למחוק את הקובץ שהועלה

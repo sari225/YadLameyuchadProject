@@ -7,12 +7,15 @@ import ProtectedRoute from "./ProtectedRoute";
 import UserLayouts from "./layouts/UserLayouts";
 import PersonalArea from "../features/user/PersonalArea/PersonalArea";
 import Profile from "../features/user/Profile/Profile";
+import Documents from "../features/user/Documents/Documents";
+import AllUpdates from "../features/user/Updates/AllUpdates";
 
 
 import AdminLayout from "./layouts/AdminLayouts";
 import ManagementPanel from "../features/admin/ManagementPanel/ManagementPanel";
 import ChildManagement from "../features/admin/ChildManagement/ChildManagement";
 import UpdateManagement from "../features/admin/UpdateManagement/UpdateManagement";
+import DocumentManagement from "../features/admin/DocumentsManagement/DocumentsManagement";
 
 const AppRouts = () => {
   return (
@@ -29,10 +32,10 @@ const AppRouts = () => {
           <Route index element={<Navigate to="/user/personalArea" replace />} />
           <Route path="personalArea" element={<PersonalArea />} />
           <Route path="profile" element={<Profile />} />
-         
+          <Route path="all-updates" element={<AllUpdates />} />
           <Route path="daycamps" element={<div>דף קיטנות - בבנייה</div>} />
           <Route path="clubs" element={<div>דף מועדוניות - בבנייה</div>} />
-          <Route path="documents" element={<div>דף טפסים - בבנייה</div>} />
+          <Route path="documents" element={<Documents />} />
         </Route>
       </Route>
 
@@ -45,7 +48,7 @@ const AppRouts = () => {
           <Route path="volunteersManagement" element={<div>ניהול מתנדבים</div>} />
           <Route path="clubsManagement" element={<div>ניהול מועדוניות</div>} />
           <Route path="daycampsManagement" element={<div>ניהול קייטנות</div>} />
-          <Route path="documentsManagement" element={<div>ניהול טפסים</div>} />
+          <Route path="documentsManagement" element={<DocumentManagement />} />
           <Route path="contactMessages" element={<div>ניהול הודעות</div>} />
           <Route path="updatesManagement" element={<UpdateManagement />} />
          

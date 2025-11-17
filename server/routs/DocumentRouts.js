@@ -12,7 +12,7 @@ const uploadFile = createUploadMiddleware('documents');
 router.use(verifyJWT)
 
 // יצירת מסמך עם קובץ
-router.post('/', verifyAdmin, uploadFile.single('file'), documentController.createDocument)
+router.post('/', verifyAdmin, uploadFile.single('document'), documentController.createDocument)
 // שליפת כל המסמכים
 router.get('/', documentController.getAllDocuments)
 // שליפת מסמך לפי מזהה

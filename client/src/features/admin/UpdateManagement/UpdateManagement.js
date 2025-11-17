@@ -42,9 +42,7 @@ import { z } from "zod";
 const updateSchema = z.object({
   title: z.string().min(2, "כותרת חייבת להכיל לפחות 2 תווים"),
   content: z.string().min(5, "תוכן חייב להכיל לפחות 5 תווים"),
-  updateLocation: z.enum(["site", "site_and_email"], {
-    errorMap: () => ({ message: "יש לבחור מיקום עדכון" }),
-  }),
+  updateLocation: z.enum(["site", "site_and_email"]).default("site"),
 });
 
 const UpdateManagement = () => {
@@ -58,6 +56,7 @@ const UpdateManagement = () => {
   const [updateToDelete, setUpdateToDelete] = useState(null);
   const [editingUpdate, setEditingUpdate] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [removeFile, setRemoveFile] = useState(false);
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -79,6 +78,7 @@ const UpdateManagement = () => {
   const handleOpenDialog = (update = null) => {
     setEditingUpdate(update);
     setSelectedFile(null);
+    setRemoveFile(false);
     setServerError("");
     setSuccessMessage("");
     if (update) {
@@ -102,6 +102,7 @@ const UpdateManagement = () => {
     setOpenDialog(false);
     setEditingUpdate(null);
     setSelectedFile(null);
+    setRemoveFile(false);
     setServerError("");
     setSuccessMessage("");
     reset();
@@ -124,6 +125,9 @@ const UpdateManagement = () => {
     formData.append("updateLocation", data.updateLocation);
     if (selectedFile) {
       formData.append("file", selectedFile);
+    }
+    if (removeFile && editingUpdate) {
+      formData.append("removeFile", "true");
     }
 
     try {
@@ -372,23 +376,43 @@ const UpdateManagement = () => {
             </TextField>
 
             <Box sx={{ mb: 2 }}>
-              <Button
-                variant="outlined"
-                component="label"
-                startIcon={<AttachFileIcon />}
-              >
-                {selectedFile
-                  ? `קובץ נבחר: ${selectedFile.name}`
-                  : editingUpdate?.file?.filename
-                  ? `קובץ נוכחי: ${editingUpdate.file.filename}`
-                  : "בחר קובץ (אופציונלי)"}
-                <input
-                  type="file"
-                  hidden
-                  onChange={handleFileChange}
-                  accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.svg,.mp4,.mpeg,.mov,.avi,.webm"
-                />
-              </Button>
+              <Box sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: "wrap" }}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  startIcon={<AttachFileIcon />}
+                >
+                  {selectedFile
+                    ? `קובץ נבחר: ${selectedFile.name}`
+                    : (editingUpdate?.file?.filename && !removeFile)
+                    ? `קובץ נוכחי: ${editingUpdate.file.filename}`
+                    : "בחר קובץ (אופציונלי)"}
+                  <input
+                    type="file"
+                    hidden
+                    onChange={handleFileChange}
+                    accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.svg,.mp4,.mpeg,.mov,.avi,.webm"
+                  />
+                </Button>
+                {(selectedFile || (editingUpdate?.file?.filename && !removeFile)) && (
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    size="small"
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setRemoveFile(true);
+                      // Reset the file input
+                      const fileInput = document.querySelector('input[type="file"]');
+                      if (fileInput) {
+                        fileInput.value = '';
+                      }
+                    }}
+                  >
+                    הסר קובץ
+                  </Button>
+                )}
+              </Box>
               {selectedFile && (
                 <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
                   גודל קובץ: {(selectedFile.size / 1024).toFixed(2)} KB

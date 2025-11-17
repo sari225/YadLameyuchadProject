@@ -16,6 +16,8 @@ import ManagementPanel from "../features/admin/ManagementPanel/ManagementPanel";
 import ChildManagement from "../features/admin/ChildManagement/ChildManagement";
 import UpdateManagement from "../features/admin/UpdateManagement/UpdateManagement";
 import DocumentManagement from "../features/admin/DocumentsManagement/DocumentsManagement";
+import DayCampManagement from "../features/admin/DayCampManagement/DayCampManagement";
+import DayCampDetails from "../features/admin/DayCampManagement/DayCampDetails";
 
 const AppRouts = () => {
   return (
@@ -47,7 +49,8 @@ const AppRouts = () => {
           <Route path="childrenManagement" element={<ChildManagement />} />
           <Route path="volunteersManagement" element={<div>ניהול מתנדבים</div>} />
           <Route path="clubsManagement" element={<div>ניהול מועדוניות</div>} />
-          <Route path="daycampsManagement" element={<div>ניהול קייטנות</div>} />
+          <Route path="daycampsManagement" element={<DayCampManagement />} />
+          <Route path="daycampsManagement/:id" element={<DayCampDetails />} />
           <Route path="documentsManagement" element={<DocumentManagement />} />
           <Route path="contactMessages" element={<div>ניהול הודעות</div>} />
           <Route path="updatesManagement" element={<UpdateManagement />} />

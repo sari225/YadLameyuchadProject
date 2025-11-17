@@ -57,13 +57,12 @@
 }
 
 .sidebar-logo {
-    width: 60px;
-    height: 60px;
+    width: 100%;
+    max-width: 150px;
+    height: auto;
     margin: 0 auto 10px;
     display: block;
-    border-radius: 50%;
-    background: white;
-    padding: 8px;
+    object-fit: contain;
 }
 
 .sidebar-title {

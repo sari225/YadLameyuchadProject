@@ -1,4 +1,5 @@
 const DayCamp=require("../models/DayCamp")
+const Child = require("../models/Child")
 const fs = require('fs')
 
 const createDayCamp = async (req, res) => {
@@ -20,7 +21,7 @@ const createDayCamp = async (req, res) => {
 
 const getDayCamps = async (req, res) => {
   try {
-    const dayCamps = await DayCamp.find();
+    const dayCamps = await DayCamp.find().populate('registeredChildren', 'Fname Lname childId allergies');
     res.json(dayCamps);
   } catch (error) {  
     res.status(500).json({ message: "Error fetching day camps", error: error.message });
@@ -29,7 +30,7 @@ const getDayCamps = async (req, res) => {
 
 const getDayCampById = async (req, res) => {
   try {
-    const dayCamp = await DayCamp.findById(req.params.id);
+    const dayCamp = await DayCamp.findById(req.params.id).populate('registeredChildren', 'Fname Lname childId allergies dateOfBirth phone1 phone2 email parentName');
     if (!dayCamp) {
       return res.status(404).json({ message: "Day camp not found" });
     }
@@ -47,13 +48,20 @@ const updateDayCamp = async (req, res) => {
     }
 
     if (req.body.name) dayCamp.name = req.body.name;
-    if (req.body.clubManagers) dayCamp.clubManagers = req.body.clubManagers;
-    if (req.body.activityDay) dayCamp.activityDay = req.body.activityDay;
-    if (req.body.startTime) dayCamp.startTime = req.body.startTime;
-    if (req.body.endTime) dayCamp.endTime = req.body.endTime;
+    if (req.body.startDate) dayCamp.startDate = req.body.startDate;
+    if (req.body.endDate) dayCamp.endDate = req.body.endDate;
     if (req.body.location) dayCamp.location = req.body.location;
+    if (req.body.registerStatus !== undefined) dayCamp.registerStatus = req.body.registerStatus;
 
-    if (req.file) {
+    // Handle file removal
+    if (req.body.removeFile === "true") {
+      if (dayCamp.file && dayCamp.file.path) {
+        const prev = dayCamp.file.path.replace(/\\/g, '/');
+        const oldFilePath = prev.includes('/public/') ? prev : 'public/' + prev;
+        try { fs.unlinkSync(oldFilePath) } catch (e) {}
+      }
+      dayCamp.file = undefined;
+    } else if (req.file) {
       // remove old file if present
       if (dayCamp.file && dayCamp.file.path) {
         const prev = dayCamp.file.path.replace(/\\/g, '/');
@@ -64,9 +72,6 @@ const updateDayCamp = async (req, res) => {
       dayCamp.file = {
         filename: req.file.originalname,
         path: normalized.replace(/.*?public\//, ''),
-        mimeType: req.file.mimetype,
-        size: req.file.size,
-        uploadedAt: new Date()
       }
     }
 

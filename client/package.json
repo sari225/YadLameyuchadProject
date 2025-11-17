@@ -19,6 +19,8 @@
     "@testing-library/user-event": "^13.5.0",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.19",
+    "docx": "^9.5.1",
+    "file-saver": "^2.0.5",
     "jwt-decode": "^4.0.0",
     "react": "^19.1.0",
     "react-datepicker": "^8.9.0",
@@ -30,6 +32,7 @@
     "stylis": "^4.3.6",
     "stylis-plugin-rtl": "^2.1.1",
     "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5",
     "zod": "^4.1.12"
   },
   "scripts": {

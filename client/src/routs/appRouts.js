@@ -19,6 +19,7 @@ import UpdateManagement from "../features/admin/UpdateManagement/UpdateManagemen
 import DocumentManagement from "../features/admin/DocumentsManagement/DocumentsManagement";
 import DayCampManagement from "../features/admin/DayCampManagement/DayCampManagement";
 import DayCampDetails from "../features/admin/DayCampManagement/DayCampDetails";
+import VolunteerManagement from "../features/admin/VolunteerManagement/VolunteerManagement";
 
 const AppRouts = () => {
   return (
@@ -48,7 +49,7 @@ const AppRouts = () => {
           <Route index element={<Navigate to="/admin/managementPanel" replace />} />
           <Route path="managementPanel" element={<ManagementPanel />} />
           <Route path="childrenManagement" element={<ChildManagement />} />
-          <Route path="volunteersManagement" element={<div>ניהול מתנדבים</div>} />
+          <Route path="volunteersManagement" element={<VolunteerManagement />} />
           <Route path="clubsManagement" element={<div>ניהול מועדוניות</div>} />
           <Route path="daycampsManagement" element={<DayCampManagement />} />
           <Route path="daycampsManagement/:id" element={<DayCampDetails />} />

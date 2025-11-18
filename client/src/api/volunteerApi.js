@@ -35,9 +35,10 @@ export const volunteerApi = apiSlice.injectEndpoints({
       }),
     }),
     addClubToVolunteer: builder.mutation({
-      query: (volunteerId) => ({
+      query: ({ volunteerId, clubName, child }) => ({
         url: `/volunteer/addClubToVolunteer/${volunteerId}`,
         method: "PUT",
+        body: { clubName, child },
       }),
     }),
     updateClubInVolunteer: builder.mutation({

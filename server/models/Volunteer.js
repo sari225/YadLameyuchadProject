@@ -42,20 +42,28 @@ const VolunteerSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
+    minLength:9,
+    maxLength:10,
     match:/^[0-9]+$/ 
   },
   address: {
     city: {
       type: String,
       required: true,
+      maxLength:20,
+      trim:true
     },
     street: {
       type: String,
       required: true,
+        maxLength:20,
+        trim:true
     },
     building: {
       type: Number,
       required: true,
+    min: 1,
+    max: 500
     },
   },
   email: {
@@ -66,6 +74,12 @@ const VolunteerSchema = new mongoose.Schema({
   dateBorn: {
     type: Date,
     required: true,
+        validate: {
+        validator: function(value) {
+            return value <= new Date();
+        },
+        message: 'תאריך לידה לא יכול להיות עתידי'
+    }
   },
 });
 

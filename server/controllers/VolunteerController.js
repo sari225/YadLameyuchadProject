@@ -35,7 +35,7 @@ const updateVolunteer = async (req, res) => {
     const volunteer = await Volunteer.findById(req.params.id);
     if (!volunteer) return res.status(404).json({ message: "Volunteer not found" });
 
-    const allowed = ["fname", "lname", "school", "phone", "address", "email", "dateBorn"];
+    const allowed = ["id", "fname", "lname", "school", "phone", "address", "email", "dateBorn"];
     allowed.forEach((field) => {
       if (typeof req.body[field] !== "undefined") {
         // אם מדובר בשדה אימייל ונשלחה מחרוזת ריקה — ננקה את הערך

@@ -1,0 +1,92 @@
+/* קובץ עיצוב לניהול מועדוניות */
+
+.club-management-container {
+	padding: 20px;
+}
+
+.club-card {
+	transition: all 0.3s ease;
+	cursor: pointer;
+}
+
+.club-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.club-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.club-stats {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.club-stat-chip {
+	padding: 5px 10px;
+	border-radius: 20px;
+	font-weight: 500;
+}
+
+.club-details-section {
+	margin-bottom: 20px;
+}
+
+.club-member-list {
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.club-member-item {
+	padding: 10px;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.club-member-item:last-child {
+	border-bottom: none;
+}
+
+.club-add-member-form {
+	background-color: #f8f9fa;
+	padding: 15px;
+	border-radius: 8px;
+	margin-bottom: 15px;
+}
+
+/* אנימציות */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fade-in {
+	animation: fadeIn 0.3s ease-in;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.club-management-container {
+		padding: 10px;
+	}
+	
+	.club-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 15px;
+	}
+	
+	.club-stats {
+		width: 100%;
+	}
+}

@@ -42,6 +42,8 @@ const createClubRequest = async (req, res) => {
 const getAllClubRequests = async (req, res) => {
   try {
     const requests = await ClubRequest.find()
+      .populate('childId', 'Fname Lname childId phone1')
+      .populate('clubId', 'name activityDay location');
     res.status(200).json(requests);
   } catch (error) {
     res.status(500).json({ message: "Error fetching requests" });

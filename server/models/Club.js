@@ -18,6 +18,10 @@ waitingChildren:[{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Child"
 }],
+volunteers:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Volunteer"
+}],
 clubManagers:[{
     
 name:{

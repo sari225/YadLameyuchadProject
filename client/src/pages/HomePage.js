@@ -64,7 +64,10 @@ export default function HomePage() {
 
         <section ref={contactRef} className="section">
           <h2>יצירת קשר</h2>
-          <p>כאן אפשר להוסיף טופס או פרטי יצירת קשר.</p>
+          <p>יש לך שאלה, בקשה או פנייה? נשמח לשמוע ממך!</p>
+          <Link to="/contact" className="contact-link-button">
+            פנה אלינו
+          </Link>
         </section>
       </main>
     </div>

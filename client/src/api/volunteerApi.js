@@ -8,12 +8,14 @@ export const volunteerApi = apiSlice.injectEndpoints({
         method: "POST",
         body: volunteerData,
       }),
+      invalidatesTags: ['Volunteer'],
     }),
     getVolunteers: builder.query({
       query: () => ({
         url: "/volunteer",
         method: "GET",
       }),
+      providesTags: ['Volunteer'],
     }),
     getVolunteerById: builder.query({
       query: (id) => ({
@@ -27,12 +29,14 @@ export const volunteerApi = apiSlice.injectEndpoints({
         method: "PUT",
         body: volunteerData,
       }),
+      invalidatesTags: ['Volunteer'],
     }),
     deleteVolunteer: builder.mutation({
       query: (id) => ({
         url: `/volunteer/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ['Volunteer', 'Club'],
     }),
     addClubToVolunteer: builder.mutation({
       query: ({ volunteerId, clubName, child }) => ({
@@ -40,6 +44,7 @@ export const volunteerApi = apiSlice.injectEndpoints({
         method: "PUT",
         body: { clubName, child },
       }),
+      invalidatesTags: ['Volunteer', 'Club'],
     }),
     updateClubInVolunteer: builder.mutation({
       query: ({ volunteerId, clubId, clubData }) => ({
@@ -47,12 +52,14 @@ export const volunteerApi = apiSlice.injectEndpoints({
         method: "PUT",
         body: clubData,
       }),
+      invalidatesTags: ['Volunteer'],
     }),
     removeClubFromVolunteer: builder.mutation({
       query: ({ volunteerId, clubId }) => ({
         url: `/volunteer/${volunteerId}/removeClub/${clubId}`,
         method: "DELETE",
       }),
+      invalidatesTags: ['Volunteer', 'Club'],
     }),
   }),
 });

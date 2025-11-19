@@ -13,7 +13,10 @@ const createClub = async (req, res) => {
 
 const getClubs = async (req, res) => {
   try {
-    const clubs = await Club.find();
+    const clubs = await Club.find()
+      .populate('registeredChildren', 'Fname Lname childId phone1 dateOfBirth')
+      .populate('waitingChildren', 'Fname Lname childId phone1')
+      .populate('volunteers', 'fname lname phone email');
     res.json(clubs);
   } catch (error) {
     res.status(500).json({ message: "Error fetching clubs", error: error.message });
@@ -22,7 +25,10 @@ const getClubs = async (req, res) => {
 
 const getClubById = async (req, res) => {
   try {
-    const club = await Club.findById(req.params.id);
+    const club = await Club.findById(req.params.id)
+      .populate('registeredChildren', 'Fname Lname childId phone1 dateOfBirth')
+      .populate('waitingChildren', 'Fname Lname childId phone1')
+      .populate('volunteers', 'fname lname phone email');
     if (!club) {
       return res.status(404).json({ message: "Club not found" });
     }
@@ -63,7 +69,37 @@ const deleteClub = async (req, res) => {
   }
 };
 
-// הוספת ילד למועדון
+// בקשת הצטרפות למועדון - הוספה ל-waitingChildren
+const requestJoinClub = async (req, res) => {
+  try {
+    const { childId, clubId } = req.body;
+
+    const club = await Club.findById(clubId);
+    if (!club) {
+      return res.status(404).json({ message: "Club not found" });
+    }
+
+    // בדיקה אם כבר רשום
+    if (club.registeredChildren.includes(childId)) {
+      return res.status(400).json({ message: "Child is already registered to this club" });
+    }
+
+    // בדיקה אם כבר ממתין
+    if (club.waitingChildren.includes(childId)) {
+      return res.status(400).json({ message: "Request already exists" });
+    }
+
+    // הוספה לרשימת ממתינים
+    club.waitingChildren.push(childId);
+    await club.save();
+
+    res.status(201).json({ message: "Join request created successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating request", error: error.message });
+  }
+};
+
+// הוספת ילד למועדון (אישור בקשה)
 const addChildToClub = async (req, res) => {
   try {  
     const { childId ,clubId} = req.body; 
@@ -86,6 +122,16 @@ const addChildToClub = async (req, res) => {
 
     club.registeredChildren.push(childId);
     await club.save();
+
+    // עדכון מערך clubs בילד
+    const Child = require("../models/Child");
+    const child = await Child.findById(childId);
+    if (child) {
+      if (!child.clubs.includes(clubId)) {
+        child.clubs.push(clubId);
+        await child.save();
+      }
+    }
 
     res.json({ message: "Child added successfully" });
   } catch (error) {
@@ -140,6 +186,13 @@ const removeChildFromClub = async (req, res) => {
     console.log(club.registeredChildren)
     await club.save();
 
+    // הסרת המועדונית ממערך clubs בילד
+    const Child = require("../models/Child");
+    const child = await Child.findById(childId);
+    if (child) {
+      child.clubs = child.clubs.filter(c => c.toString() !== id.toString());
+      await child.save();
+    }
 
     res.json({ message: "Child removed successfully"
 
@@ -149,6 +202,72 @@ const removeChildFromClub = async (req, res) => {
   }
 };
 
+// הוספת מתנדבת למועדון
+const addVolunteerToClub = async (req, res) => {
+  try {
+    const { volunteerId, clubId } = req.body;
 
+    const club = await Club.findById(clubId);
+    if (!club) {
+      return res.status(404).json({ message: "Club not found" });
+    }
 
-module.exports = { createClub, getClubs, getClubById, updateClub, deleteClub,addChildToClub ,Refuse,removeChildFromClub};
+    if (club.volunteers.includes(volunteerId)) {
+      return res.status(400).json({ message: "Volunteer is already in this club" });
+    }
+
+    // הוספת המתנדבת למועדונית
+    club.volunteers.push(volunteerId);
+    await club.save();
+
+    // עדכון מערך clubs במתנדבת
+    const Volunteer = require("../models/Volunteer");
+    const volunteer = await Volunteer.findById(volunteerId);
+    if (volunteer) {
+      // בדיקה אם המועדונית כבר קיימת
+      const clubExists = volunteer.clubs.some(c => c.clubName === club.name);
+      if (!clubExists) {
+        volunteer.clubs.push({ clubName: club.name, child: null });
+        await volunteer.save();
+      }
+    }
+
+    res.json({ message: "Volunteer added successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding volunteer to club", error: error.message });
+  }
+};
+
+// הסרת מתנדבת ממועדון
+const removeVolunteerFromClub = async (req, res) => {
+  try {
+    const { volunteerId, clubId } = req.body;
+
+    const club = await Club.findById(clubId);
+    if (!club) {
+      return res.status(404).json({ message: "Club not found" });
+    }
+
+    if (!club.volunteers.includes(volunteerId)) {
+      return res.status(400).json({ message: "Volunteer is not in this club" });
+    }
+
+    // הסרת המתנדבת מהמועדונית
+    club.volunteers = club.volunteers.filter(v => v.toString() !== volunteerId.toString());
+    await club.save();
+
+    // הסרת המועדונית ממערך clubs במתנדבת
+    const Volunteer = require("../models/Volunteer");
+    const volunteer = await Volunteer.findById(volunteerId);
+    if (volunteer) {
+      volunteer.clubs = volunteer.clubs.filter(c => c.clubName !== club.name);
+      await volunteer.save();
+    }
+
+    res.json({ message: "Volunteer removed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing volunteer from club", error: error.message });
+  }
+};
+
+module.exports = { createClub, getClubs, getClubById, updateClub, deleteClub, requestJoinClub, addChildToClub ,Refuse,removeChildFromClub, addVolunteerToClub, removeVolunteerFromClub};

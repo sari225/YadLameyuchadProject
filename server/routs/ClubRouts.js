@@ -9,9 +9,12 @@ router.post("/",verifyAdmin,clubController.createClub)
 router.get("/",clubController.getClubs)
 router.get("/:id",clubController.getClubById)
 router.delete("/:id",verifyAdmin,clubController.deleteClub)
+router.post("/requestJoin",clubController.requestJoinClub)
 router.put("/addChildToClub",verifyAdmin,clubController.addChildToClub)
 router.put("/Refuse",verifyAdmin,clubController.Refuse)
 router.put("/removeChildFromClub/:id",verifyAdmin,clubController.removeChildFromClub)
+router.put("/addVolunteerToClub",verifyAdmin,clubController.addVolunteerToClub)
+router.put("/removeVolunteerFromClub",verifyAdmin,clubController.removeVolunteerFromClub)
 router.put("/:id",verifyAdmin,clubController.updateClub)
 
 module.exports=router

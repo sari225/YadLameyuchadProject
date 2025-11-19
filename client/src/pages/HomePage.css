@@ -152,3 +152,27 @@
   min-height: 100vh;
   padding: 4rem 2rem;
 }
+
+.contact-link-button {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 1rem 3rem;
+  background: linear-gradient(135deg, #78D2F5 0%, #5CABE0 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(120, 210, 245, 0.3);
+  transition: all 0.3s ease;
+}
+
+.contact-link-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(120, 210, 245, 0.4);
+  background: linear-gradient(135deg, #5CABE0 0%, #78D2F5 100%);
+}
+
+.contact-link-button:active {
+  transform: translateY(-1px);
+}

@@ -1,89 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import {
 	Box,
 	Typography,
 	Grid,
-	Chip,
 	Stack,
-	Button,
-	TextField,
-	Select,
-	MenuItem,
-	FormControl,
-	InputLabel,
-	IconButton,
-	Alert,
-	CircularProgress,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import {
-	useAddClubToVolunteerMutation,
-	useRemoveClubFromVolunteerMutation,
-} from "../../../api/volunteerApi";
-import { useGetChildrenQuery } from "../../../api/childApi";
-import { useGetClubsQuery } from "../../../api/clubApi";
 
-const VolunteerDetails = ({ volunteer, onUpdated }) => {
-	const [addClub, { isLoading: isAdding }] = useAddClubToVolunteerMutation();
-	const [removeClub, { isLoading: isRemoving }] = useRemoveClubFromVolunteerMutation();
-	const { data: children = [] } = useGetChildrenQuery();
-	const { data: clubs = [] } = useGetClubsQuery();
-
-	const [showAddClub, setShowAddClub] = useState(false);
-	const [newClub, setNewClub] = useState({ clubName: "", child: "" });
-	const [error, setError] = useState("");
-
+const VolunteerDetails = ({ volunteer }) => {
 	if (!volunteer) return null;
-
-	const handleAddClub = async () => {
-		if (!newClub.clubName.trim() || !newClub.child) {
-			setError("יש למלא את כל השדות");
-			return;
-		}
-
-		try {
-			setError("");
-			await addClub({
-				volunteerId: volunteer._id,
-				clubName: newClub.clubName,
-				child: newClub.child,
-			}).unwrap();
-
-			setNewClub({ clubName: "", child: "" });
-			setShowAddClub(false);
-			if (onUpdated) onUpdated();
-		} catch (err) {
-			console.error("Failed to add club:", err);
-			setError(err?.data?.message || "שגיאה בהוספת מועדונית");
-		}
-	};
-
-	const handleRemoveClub = async (clubId) => {
-		try {
-			await removeClub({
-				volunteerId: volunteer._id,
-				clubId: clubId,
-			}).unwrap();
-
-			if (onUpdated) onUpdated();
-		} catch (err) {
-			console.error("Failed to remove club:", err);
-			setError(err?.data?.message || "שגיאה בהסרת מועדונית");
-		}
-	};
-
-	// רשימת ילדים מאושרים בלבד
-	const approvedChildren = children.filter((c) => c.isApproved === true);
 
 	return (
 		<Box sx={{ margin: 2.5, p: 3, bgcolor: "#f5f5f5", borderRadius: 1, textAlign: "right" }}>
-			{error && (
-				<Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>
-					{error}
-				</Alert>
-			)}
-
 			<Grid container spacing={5}>
 				{/* פרטים אישיים */}
 				<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
@@ -153,37 +80,29 @@ const VolunteerDetails = ({ volunteer, onUpdated }) => {
 						<Stack spacing={1}>
 							{volunteer.clubs.map((club, idx) => {
 								const childName = club.child
-									? `${club.child.Fname || ""} ${club.child.Lname || ""}`
-									: "ילד לא זמין";
+									? `${club.child.Fname || ""} ${club.child.Lname || ""}`.trim()
+									: "ללא ילד";
+								const childId = club.child ? ` (${club.child.childId || "ללא ת.ז"})` : "";
+								
 								return (
 									<Box
 										key={club._id || idx}
 										sx={{
-											display: "flex",
-											alignItems: "center",
-											justifyContent: "space-between",
 											bgcolor: "white",
-											p: 1,
+											p: 2,
 											borderRadius: 1,
+											border: "1px solid #e0e0e0",
+											boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
 										}}
 									>
 										<Box>
-											<Typography variant="body2" sx={{ fontWeight: "bold" }}>
-												{club.clubName}
+											<Typography variant="body2" sx={{ fontWeight: "bold", color: "#1976d2", mb: 0.5 }}>
+												📍 {club.clubName}
 											</Typography>
 											<Typography variant="caption" color="text.secondary">
-												ילד: {childName}
+												👶 שומרת על: {childName}{childId}
 											</Typography>
 										</Box>
-										<IconButton
-											size="small"
-											color="error"
-											onClick={() => handleRemoveClub(club._id)}
-											disabled={isRemoving}
-											aria-label="remove club"
-										>
-											<DeleteIcon fontSize="small" />
-										</IconButton>
 									</Box>
 								);
 							})}
@@ -194,78 +113,11 @@ const VolunteerDetails = ({ volunteer, onUpdated }) => {
 						</Typography>
 					)}
 
-					{/* כפתור להוספת מועדונית */}
-					<Box sx={{ mt: 2 }}>
-						{!showAddClub ? (
-							<Button
-								variant="outlined"
-								size="small"
-								startIcon={<AddIcon />}
-								onClick={() => setShowAddClub(true)}
-								fullWidth
-							>
-								הוסף מועדונית
-							</Button>
-						) : (
-							<Box sx={{ p: 2, bgcolor: "white", borderRadius: 1, border: "1px dashed #ccc" }}>
-								<Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
-									הוספת מועדונית חדשה
-								</Typography>
-
-								<FormControl fullWidth size="small" sx={{ mb: 1 }}>
-									<InputLabel>בחר מועדונית</InputLabel>
-									<Select
-										value={newClub.clubName}
-										label="בחר מועדונית"
-										onChange={(e) => setNewClub({ ...newClub, clubName: e.target.value })}
-									>
-										{clubs.map((club) => (
-											<MenuItem key={club._id} value={club.name}>
-												{club.name}
-											</MenuItem>
-										))}
-									</Select>
-								</FormControl>
-
-								<FormControl fullWidth size="small" sx={{ mb: 1 }}>
-									<InputLabel>בחר ילד</InputLabel>
-									<Select
-										value={newClub.child}
-										label="בחר ילד"
-										onChange={(e) => setNewClub({ ...newClub, child: e.target.value })}
-									>
-										{approvedChildren.map((child) => (
-											<MenuItem key={child._id} value={child._id}>
-												{child.Fname} {child.Lname} ({child.childId})
-											</MenuItem>
-										))}
-									</Select>
-								</FormControl>
-
-								<Stack direction="row" spacing={1}>
-									<Button
-										variant="contained"
-										size="small"
-										onClick={handleAddClub}
-										disabled={isAdding}
-									>
-										{isAdding ? <CircularProgress size={18} /> : "הוסף"}
-									</Button>
-									<Button
-										variant="outlined"
-										size="small"
-										onClick={() => {
-											setShowAddClub(false);
-											setNewClub({ clubName: "", child: "" });
-											setError("");
-										}}
-										disabled={isAdding}
-									>
-										ביטול
-									</Button>
-								</Stack>
-							</Box>
-						)}
+					{/* הודעה אינפורמטיבית */}
+					<Box sx={{ mt: 2, p: 2, bgcolor: "#e3f2fd", borderRadius: 1 }}>
+						<Typography variant="caption" color="primary" sx={{ fontWeight: "bold" }}>
+							💡 לניהול מועדוניות ועדכון ילדים, יש לעבור לדף "ניהול מועדוניות"
+						</Typography>
 					</Box>
 				</Grid>
 			</Grid>

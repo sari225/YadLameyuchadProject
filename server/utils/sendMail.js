@@ -15,7 +15,7 @@ const sendMail = async (to, subject, text, attachments ) => {
       from: process.env.EMAIL_USER,
       to,
       subject,
-      text,
+      html: text, // שימוש ב-html במקום text כדי לתמוך ב-HTML
       attachments
     });
   } catch (err) {

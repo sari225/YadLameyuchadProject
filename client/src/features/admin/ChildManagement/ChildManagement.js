@@ -201,15 +201,11 @@ const ChildManagement = () => {
 	}, [clubs]);
 
 	// פונקציה להחזרת מועדוניות של ילד
-	const getChildClubs = (childId) => {
-		const out = [];
-		Object.values(clubsDict).forEach((club) => {
-			if (club.children && Array.isArray(club.children)) {
-				const hasChild = club.children.some((id) => String(id) === String(childId));
-				if (hasChild) out.push({ name: club.name });
-			}
-		});
-		return out;
+	const getChildClubs = (child) => {
+		if (!child || !child.clubs || child.clubs.length === 0) return [];
+		return child.clubs
+			.map(clubId => clubsDict[clubId])
+			.filter(Boolean);
 	};
 
 	// סינון ילדים מאושרים לפי חיפוש ומיון לפי שם פרטי
@@ -232,7 +228,7 @@ const ChildManagement = () => {
 					case "dateOfBirth":
 						return (child.dateOfBirth || "").includes(query);
 					case "clubs":
-						const childClubs = getChildClubs(child._id);
+						const childClubs = getChildClubs(child);
 						return childClubs.some(club => club.name.toLowerCase().includes(query));
 					default: {
 						// חיפוש חופשי על כל השדות
@@ -241,7 +237,7 @@ const ChildManagement = () => {
 						const age = calcAge(child.dateOfBirth);
 						const dobIso = child.dateOfBirth || "";
 						const dobLocal = child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : "";
-						const clubs = getChildClubs(child._id);
+						const clubs = getChildClubs(child);
 						const clubsJoined = clubs.map(c => c.name).join(", ");
 						const allergiesJoined = Array.isArray(child.allergies) ? child.allergies.join(", ") : (child.allergies || "");
 						const emailConsentLabel = child.emailConsent ? "כן" : "לא";
@@ -415,7 +411,7 @@ const ChildManagement = () => {
 								{showPending ? (
 									pendingChildren.length > 0 ? (
 									pendingChildren.map((child) => (
-										<Row key={child._id} child={child} childClubs={getChildClubs(child._id)} onDeleted={refetch} isPending={true} />
+										<Row key={child._id} child={child} childClubs={getChildClubs(child)} onDeleted={refetch} isPending={true} />
 									))
 									) : (
 										<TableRow>
@@ -425,7 +421,7 @@ const ChildManagement = () => {
 								) : (
 									filteredApproved.length > 0 ? (
 									filteredApproved.map((child) => (
-										<Row key={child._id} child={child} childClubs={getChildClubs(child._id)} onDeleted={refetch} isPending={false} />
+										<Row key={child._id} child={child} childClubs={getChildClubs(child)} onDeleted={refetch} isPending={false} />
 									))
 									) : (
 										<TableRow>

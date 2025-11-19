@@ -123,7 +123,11 @@ allergies: {
 emailConsent: {
     type: Boolean,
     default: false
-}
+},
+clubs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Club"
+}]
 
 } , { timestamps: true }
 

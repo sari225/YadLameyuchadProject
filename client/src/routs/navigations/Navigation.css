@@ -8,9 +8,11 @@
     transition: transform 0.3s ease;
 }
 
-/* הקונטיינר זז כשהתפריט סגור */
-.sidebar-container:has(.sidebar.closed) {
-    transform: translateX(280px);
+/* הקונטיינר זז כשהתפריט סגור - רק בדסקטופ */
+@media (min-width: 769px) {
+    .sidebar-container:has(.sidebar.closed) {
+        transform: translateX(280px);
+    }
 }
 
 .sidebar {
@@ -188,19 +190,59 @@
 
 /* התאמה למסך קטן */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 250px;
+    /* במובייל - התוכן לא זז */
+    .main-content {
+        margin-right: 0 !important;
     }
     
+    /* במובייל - התפריט overlay מעל התוכן */
+    .sidebar-container {
+        z-index: 2000 !important;
+        transform: none !important; /* מבטל transform במובייל */
+    }
+    
+    .sidebar {
+        width: 250px;
+        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+    }
+    
+    /* כשהתפריט סגור - רק ה-sidebar זז */
     .sidebar.closed {
         transform: translateX(250px);
     }
     
+    /* הכפתור זז עם התפריט */
     .toggle-btn {
         left: -40px;
         width: 40px;
         height: 40px;
         font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+    
+    .toggle-btn.closed {
+        transform: translateX(250px);
+    }
+    
+    /* רקע חשוך כשהתפריט פתוח */
+    .sidebar-container::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: -1;
+    }
+    
+    .sidebar-container:not(:has(.sidebar.closed))::after {
+        opacity: 1;
+        visibility: visible;
     }
     
     .nav-item {

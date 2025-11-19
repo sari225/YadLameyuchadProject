@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
+
+* {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
 /* Container Styles */
 .register-container {
   height: 100vh;
@@ -102,11 +108,52 @@
   justify-content: center;
 }
 
+/* Mobile-first approach - Force full width on all screen sizes */
+@media (max-width: 768px) {
+  .mobile-full-width {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .mobile-field {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+    flex-grow: 1 !important;
+    margin: 0 !important;
+    padding: 8px 0 !important;
+  }
+  
+  .MuiGrid-container {
+    width: 100% !important;
+  }
+  
+  .MuiGrid-container > .MuiGrid-item {
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+    width: 100% !important;
+    flex-grow: 1 !important;
+  }
+  
+  .MuiGrid-item {
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+    width: 100% !important;
+    flex-grow: 1 !important;
+  }
+}
+
 /* TextField Styles */
+.register-textfield {
+  width: 100% !important;
+}
+
 .register-textfield .MuiInputBase-input {
   color: white;
   background-color: transparent;
   text-align: right;
+  width: 100% !important;
 }
 
 .register-textfield .MuiInputLabel-root {
@@ -210,7 +257,30 @@
     box-sizing: border-box !important;
   }
 
-  /* Force Grid items to full width on mobile */
+  /* Force Grid items to full width on mobile - STRONG OVERRIDE */
+  .MuiGrid-container > .MuiGrid-item {
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+    width: 100% !important;
+  }
+  
+  .MuiGrid-item {
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Force TextField to full width on mobile */
+  .register-textfield {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .register-textfield .MuiInputBase-root {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
   .register-grid-container .MuiGrid-item {
     max-width: 100% !important;
     flex-basis: 100% !important;

@@ -76,6 +76,38 @@ const Register = () => {
     resolver: zodResolver(registerSchema),
   });
 
+  // עיצוב אחיד לכל הפקדים
+  const textFieldStyle = {
+    '& .MuiInputBase-input': {
+      color: '#000',
+      fontFamily: "'M PLUS Rounded 1c', sans-serif"
+    },
+    '& .MuiInput-underline:before': {
+      borderBottomColor: '#000'
+    },
+    '& .MuiInput-underline:hover:before': {
+      borderBottomColor: '#000'
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#000'
+    },
+    '& .MuiFormHelperText-root': {
+      fontFamily: "'M PLUS Rounded 1c', sans-serif",
+      color: '#000'
+    }
+  };
+
+  const labelStyle = {
+    right: 0,
+    left: 'auto',
+    transformOrigin: 'top right',
+    color: '#000 !important',
+    fontFamily: "'M PLUS Rounded 1c', sans-serif",
+    '&.Mui-focused': {
+      color: '#000 !important'
+    }
+  };
+
   const onSubmit = async (data) => {
     setServerError("");
 
@@ -157,26 +189,34 @@ const Register = () => {
           onChange={handleToggle}
           centered
           className="register-tabs"
-          sx={{ mb: 4 }}
+          sx={{ 
+            mb: 4,
+            '& .MuiTab-root': {
+              color: '#000 !important',
+              fontFamily: "'M PLUS Rounded 1c', sans-serif",
+              fontWeight: 'bold'
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: '#000 !important',
+              fontFamily: "'M PLUS Rounded 1c', sans-serif",
+              fontWeight: 'bold'
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#000'
+            }
+          }}
         >
           <Tab label="התחברות" />
           <Tab label="הרשמה" />
         </Tabs>
 
-        <Typography variant="h5" className="register-title" sx={{ mb: 2 }}>
+        <Typography variant="h5" className="register-title" sx={{ 
+          mb: 2,
+          color: '#000',
+          fontFamily: "'M PLUS Rounded 1c', sans-serif"
+        }}>
           יש למלא את פרטי הילד
         </Typography>
-
-        <Typography variant="body2" className="register-subtitle" sx={{ 
-          textAlign: 'center', 
-          color: 'rgba(255, 255, 255, 0.9)',
-          mb: 1,
-          fontSize: '0.95rem',
-          lineHeight: 1.6
-        }}>
-          מומלץ לפרט אלרגיות והגדרה רפואית
-        </Typography>
-
         {serverError && (
           <Alert severity="error" className="register-alert">
             {serverError}
@@ -184,29 +224,25 @@ const Register = () => {
         )}
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3} className="register-grid-container">
-            
-            <Grid item xs={12} md={6}>
-              <TextField 
-                variant="standard"
-                label="מספר זהות *" 
-                {...register("childId")} 
-                error={!!errors.childId} 
-                helperText={errors.childId?.message} 
-                fullWidth
-                className="register-textfield"
-                InputLabelProps={{
-                  shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
+          
+          {/* פרטים אישיים */}
+          <Typography variant="h5" sx={{ 
+            color: '#87CEEB', 
+            fontWeight: 'bold', 
+            textAlign: 'right',
+            borderBottom: '3px solid #87CEEB',
+            paddingBottom: '12px',
+            marginBottom: '24px',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+            fontFamily: "'M PLUS Rounded 1c', sans-serif"
+          }}>
+            פרטים אישיים
+          </Typography>
+          
+          <Grid container spacing={3} sx={{ mb: 5 }} className="mobile-full-width">
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="שם הורה *" 
@@ -217,16 +253,13 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
+                  sx: labelStyle
                 }}
+                sx={textFieldStyle}
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="שם פרטי *"
@@ -237,16 +270,13 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
+                  sx: labelStyle
                 }}
+                sx={textFieldStyle}
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="שם משפחה *" 
@@ -257,16 +287,30 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
+                  sx: labelStyle
                 }}
+                sx={textFieldStyle}
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} className="mobile-field">
+              <TextField 
+                variant="standard"
+                label="מספר זהות *" 
+                {...register("childId")} 
+                error={!!errors.childId} 
+                helperText={errors.childId?.message} 
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: labelStyle
+                }}
+                sx={textFieldStyle}
+              />
+            </Grid>
+
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="תאריך לידה *" 
@@ -278,96 +322,18 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
+                  sx: labelStyle
+                }}
+                InputProps={{
+                  inputProps: {
+                    max: new Date().toISOString().split('T')[0]
                   }
                 }}
+                sx={textFieldStyle}
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <TextField 
-                variant="standard"
-                label="אימייל *" 
-                {...register("email")} 
-                error={!!errors.email} 
-                helperText={errors.email?.message} 
-                fullWidth
-                className="register-textfield"
-                InputLabelProps={{
-                  shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField 
-                variant="standard"
-                label="עיר *" 
-                {...register("city")} 
-                error={!!errors.city} 
-                helperText={errors.city?.message} 
-                fullWidth
-                className="register-textfield"
-                InputLabelProps={{
-                  shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField 
-                variant="standard"
-                label="רחוב *" 
-                {...register("street")} 
-                error={!!errors.street} 
-                helperText={errors.street?.message} 
-                fullWidth
-                className="register-textfield"
-                InputLabelProps={{
-                  shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField 
-                variant="standard"
-                label="מספר בית *" 
-                {...register("building")} 
-                error={!!errors.building} 
-                helperText={errors.building?.message} 
-                fullWidth
-                className="register-textfield"
-                InputLabelProps={{
-                  shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="מוסד לימודי *" 
@@ -378,16 +344,48 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
+                  sx: labelStyle
                 }}
+                sx={textFieldStyle}
+              />
+            </Grid>
+          </Grid>
+
+          {/* פרטי תקשורת */}
+          <Typography variant="h5" sx={{ 
+            color: '#87CEEB', 
+            fontWeight: 'bold', 
+            textAlign: 'right',
+            borderBottom: '3px solid #87CEEB',
+            paddingBottom: '12px',
+            marginBottom: '24px',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+            fontFamily: "'M PLUS Rounded 1c', sans-serif"
+          }}>
+            פרטי תקשורת
+          </Typography>
+          
+          <Grid container spacing={3} sx={{ mb: 5 }} className="mobile-full-width">
+            <Grid item xs={12} className="mobile-field">
+              <TextField 
+                variant="standard"
+                label="אימייל *" 
+                {...register("email")} 
+                error={!!errors.email} 
+                helperText={errors.email?.message} 
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: labelStyle
+                }}
+                sx={textFieldStyle}
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="טלפון אבא *" 
@@ -398,16 +396,13 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
+                  sx: labelStyle
                 }}
+                sx={textFieldStyle}
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="טלפון אמא *" 
@@ -418,16 +413,100 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
+                  sx: labelStyle
                 }}
+                sx={textFieldStyle}
+              />
+            </Grid>
+          </Grid>
+
+          {/* כתובת */}
+          <Typography variant="h5" sx={{ 
+            color: '#87CEEB', 
+            fontWeight: 'bold', 
+            textAlign: 'right',
+            borderBottom: '3px solid #87CEEB',
+            paddingBottom: '12px',
+            marginBottom: '24px',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+            fontFamily: "'M PLUS Rounded 1c', sans-serif"
+          }}>
+            כתובת
+          </Typography>
+          
+          <Grid container spacing={3} sx={{ mb: 5 }} className="mobile-full-width">
+            <Grid item xs={12} className="mobile-field">
+              <TextField 
+                variant="standard"
+                label="עיר *" 
+                {...register("city")} 
+                error={!!errors.city} 
+                helperText={errors.city?.message} 
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: labelStyle
+                }}
+                sx={textFieldStyle}
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} className="mobile-field">
+              <TextField 
+                variant="standard"
+                label="רחוב *" 
+                {...register("street")} 
+                error={!!errors.street} 
+                helperText={errors.street?.message} 
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: labelStyle
+                }}
+                sx={textFieldStyle}
+              />
+            </Grid>
+
+            <Grid item xs={12} className="mobile-field">
+              <TextField 
+                variant="standard"
+                label="מספר בית *" 
+                {...register("building")} 
+                error={!!errors.building} 
+                helperText={errors.building?.message} 
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: labelStyle
+                }}
+                sx={textFieldStyle}
+              />
+            </Grid>
+          </Grid>
+
+          {/* מידע רפואי */}
+          <Typography variant="h5" sx={{ 
+            color: '#87CEEB', 
+            fontWeight: 'bold', 
+            textAlign: 'right',
+            borderBottom: '3px solid #87CEEB',
+            paddingBottom: '12px',
+            marginBottom: '24px',
+            textTransform: 'uppercase',
+            letterSpacing: '1px',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+            fontFamily: "'M PLUS Rounded 1c', sans-serif"
+          }}>
+            מידע רפואי
+          </Typography>
+          
+          <Grid container spacing={3} sx={{ mb: 5 }} className="mobile-full-width">
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="פירוט הגדרה של הילד" 
@@ -440,16 +519,13 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
+                  sx: labelStyle
                 }}
+                sx={textFieldStyle}
               />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} className="mobile-field">
               <TextField 
                 variant="standard"
                 label="פירוט אלרגיות" 
@@ -462,41 +538,72 @@ const Register = () => {
                 className="register-textfield"
                 InputLabelProps={{
                   shrink: true,
-                  sx: {
-                    right: 0,
-                    left: 'auto',
-                    transformOrigin: 'top right',
-                  }
+                  sx: labelStyle
                 }}
+                sx={textFieldStyle}
               />
             </Grid>
-
-            <Grid item xs={12} className="register-checkbox-container">
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    {...register("emailConsent")}
-                    className="register-checkbox"
-                  />
-                }
-                label="אני מאשר/ת קבלת דיוור אלקטרוני"
-                className="register-checkbox-label"
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Button 
-                type="submit" 
-                variant="contained" 
-                fullWidth 
-                disabled={isLoading}
-                className="register-button"
-              >
-                {isLoading ? <CircularProgress size={24} /> : "הרשם"}
-              </Button>
-            </Grid>
-
           </Grid>
+
+          {/* כפתורי הגשה */}
+          <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <FormControlLabel
+              control={
+                <Checkbox 
+                  {...register("emailConsent")}
+                  className="register-checkbox"
+                  sx={{
+                    color: '#000',
+                    '&.Mui-checked': {
+                      color: '#87CEEB'
+                    }
+                  }}
+                />
+              }
+              label="אני מאשר/ת קבלת דיוור אלקטרוני"
+              className="register-checkbox-label"
+              sx={{ 
+                alignSelf: 'flex-start',
+                direction: 'rtl',
+                marginLeft: 0,
+                color: '#000',
+                fontFamily: "'M PLUS Rounded 1c', sans-serif",
+                '& .MuiFormControlLabel-label': {
+                  color: '#000',
+                  fontFamily: "'M PLUS Rounded 1c', sans-serif"
+                }
+              }}
+            />
+
+            <Button 
+              type="submit" 
+              variant="contained" 
+              fullWidth 
+              disabled={isLoading}
+              className="register-button"
+              sx={{ 
+                mt: 2,
+                backgroundColor: '#c887c9',
+                '&:hover': {
+                  backgroundColor: '#b575b7',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 6px 20px rgba(200, 135, 201, 0.4)'
+                },
+                '&:disabled': {
+                  backgroundColor: '#CCCCCC'
+                },
+                fontFamily: "'M PLUS Rounded 1c', sans-serif",
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                boxShadow: '0 4px 15px rgba(200, 135, 201, 0.3)',
+                transition: 'all 0.3s ease',
+                color: '#000'
+              }}
+            >
+              {isLoading ? <CircularProgress size={24} color="inherit" /> : "הרשם"}
+            </Button>
+          </Box>
+
         </Box>
       </Box>
     </Box>

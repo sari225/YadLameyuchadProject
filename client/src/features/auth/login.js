@@ -124,7 +124,20 @@ const Login = () => {
           onChange={handleToggle}
           centered
           className="login-tabs"
-          sx={{ mb: 3 }}
+          sx={{ 
+            mb: 3,
+            '& .MuiTab-root': {
+              color: '#000 !important',
+              fontFamily: "'M PLUS Rounded 1c', sans-serif",
+              fontWeight: 'bold'
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: '#000 !important'
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#000'
+            }
+          }}
         >
           <Tab label="התחברות" />
           <Tab label="הרשמה" />
@@ -157,6 +170,30 @@ const Login = () => {
                 right: 0,
                 left: 'auto',
                 transformOrigin: 'top right',
+                color: '#000 !important',
+                fontFamily: "'M PLUS Rounded 1c', sans-serif",
+                '&.Mui-focused': {
+                  color: '#000 !important'
+                }
+              }
+            }}
+            sx={{
+              '& .MuiInputBase-input': {
+                color: '#000',
+                fontFamily: "'M PLUS Rounded 1c', sans-serif"
+              },
+              '& .MuiInput-underline:before': {
+                borderBottomColor: '#000'
+              },
+              '& .MuiInput-underline:hover:before': {
+                borderBottomColor: '#000'
+              },
+              '& .MuiInput-underline:after': {
+                borderBottomColor: '#000'
+              },
+              '& .MuiFormHelperText-root': {
+                fontFamily: "'M PLUS Rounded 1c', sans-serif",
+                color: '#000'
               }
             }}
           />
@@ -176,6 +213,30 @@ const Login = () => {
                 right: 0,
                 left: 'auto',
                 transformOrigin: 'top right',
+                color: '#000 !important',
+                fontFamily: "'M PLUS Rounded 1c', sans-serif",
+                '&.Mui-focused': {
+                  color: '#000 !important'
+                }
+              }
+            }}
+            sx={{
+              '& .MuiInputBase-input': {
+                color: '#000',
+                fontFamily: "'M PLUS Rounded 1c', sans-serif"
+              },
+              '& .MuiInput-underline:before': {
+                borderBottomColor: '#000'
+              },
+              '& .MuiInput-underline:hover:before': {
+                borderBottomColor: '#000'
+              },
+              '& .MuiInput-underline:after': {
+                borderBottomColor: '#000'
+              },
+              '& .MuiFormHelperText-root': {
+                fontFamily: "'M PLUS Rounded 1c', sans-serif",
+                color: '#000'
               }
             }}
           />
@@ -186,6 +247,18 @@ const Login = () => {
               onClick={handleForgotPassword}
               disabled={isForgotLoading}
               className="forgot-password-link"
+              sx={{
+                color: '#000 !important',
+                fontFamily: "'M PLUS Rounded 1c', sans-serif",
+                fontWeight: 'bold',
+                '&:hover': {
+                  color: '#000 !important',
+                  textDecoration: 'underline'
+                },
+                '&:disabled': {
+                  color: '#666 !important'
+                }
+              }}
             >
               {isForgotLoading ? "שולח..." : "שכחתי סיסמה"}
             </Button>

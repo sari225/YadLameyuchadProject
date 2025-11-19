@@ -180,3 +180,195 @@
   background: rgba(255, 255, 255, 0.3);
   color: rgba(255, 255, 255, 0.5);
 }
+
+/* ==================== RESPONSIVE STYLES ==================== */
+/* Mobile Responsive - Max Width 768px */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden;
+  }
+
+  .login-form-box {
+    width: calc(100% - 40px) !important;
+    max-width: 360px !important;
+    padding: 28px 20px !important;
+    margin: 0 auto !important;
+  }
+
+  .login-tabs {
+    margin-bottom: 16px !important;
+  }
+
+  .login-tabs .MuiTab-root {
+    font-size: 14px !important;
+    min-width: 100px !important;
+    padding: 8px 12px !important;
+    min-height: 40px !important;
+  }
+
+  .login-tabs .MuiTabs-indicator {
+    height: 2px !important;
+  }
+
+  .login-title {
+    font-size: 20px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .login-form {
+    gap: 16px !important;
+  }
+
+  .login-textfield {
+    margin-bottom: 8px !important;
+  }
+
+  .login-textfield .MuiInputBase-input {
+    font-size: 16px !important;
+    padding: 8px 0 !important;
+  }
+
+  .login-textfield .MuiInputLabel-root {
+    font-size: 14px !important;
+  }
+
+  .login-textfield .MuiFormHelperText-root {
+    font-size: 12px !important;
+    margin-top: 2px !important;
+  }
+
+  .forgot-password-container {
+    margin-top: -4px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .forgot-password-link {
+    font-size: 13px !important;
+    padding: 2px 0 !important;
+  }
+
+  .login-button {
+    margin-top: 20px !important;
+    margin-bottom: 12px !important;
+    padding: 10px 0 !important;
+    font-size: 15px !important;
+    border-radius: 6px !important;
+  }
+
+  .login-alert {
+    margin-bottom: 16px !important;
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+  }
+
+  .login-alert .MuiAlert-icon {
+    font-size: 18px !important;
+  }
+
+  .login-alert .MuiAlert-message {
+    padding: 0 !important;
+  }
+
+  .login-form .MuiDivider-root {
+    margin: 16px 0 !important;
+    font-size: 13px !important;
+  }
+
+  .login-button .MuiCircularProgress-root {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+/* Small Mobile Devices - Max Width 480px */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 0 !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .login-form-box {
+    width: calc(100% - 48px) !important;
+    max-width: 100% !important;
+    padding: 24px 16px !important;
+    border-radius: 8px !important;
+    margin: 0 auto !important;
+  }
+
+  .login-tabs .MuiTab-root {
+    font-size: 13px !important;
+    min-width: 80px !important;
+    padding: 6px 8px !important;
+  }
+
+  .login-textfield .MuiInputBase-input {
+    font-size: 15px !important;
+  }
+
+  .login-textfield .MuiInputLabel-root {
+    font-size: 13px !important;
+  }
+
+  .login-button {
+    font-size: 14px !important;
+    padding: 9px 0 !important;
+  }
+
+  .forgot-password-link {
+    font-size: 12px !important;
+  }
+}
+
+/* Extra Small Devices - Max Width 380px */
+@media (max-width: 380px) {
+  .login-form-box {
+    width: calc(100% - 40px) !important;
+    padding: 20px 14px !important;
+  }
+}
+
+/* Very Small Devices - Max Width 320px */
+@media (max-width: 320px) {
+  .login-form-box {
+    width: calc(100% - 32px) !important;
+    padding: 18px 12px !important;
+  }
+}
+
+/* Landscape Mode for Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .login-container {
+    overflow-y: auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px 0 !important;
+  }
+
+  .login-form-box {
+    margin: 20px auto !important;
+    padding: 16px !important;
+  }
+
+  .login-tabs {
+    margin-bottom: 12px !important;
+  }
+
+  .login-form {
+    gap: 12px !important;
+  }
+
+  .login-button {
+    margin-top: 16px !important;
+    padding: 8px 0 !important;
+  }
+}

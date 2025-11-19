@@ -166,21 +166,22 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 								/>
 							</Grid>
 
-							{/* יום פעילות */}
-							<Grid item xs={12} sm={6}>
-								<FormControl fullWidth error={!!errors.activityDay}>
-									<InputLabel>יום פעילות *</InputLabel>
-									<Controller
-										name="activityDay"
-										control={control}
-										render={({ field }) => (
-											<Select {...field} label="יום פעילות *">
+						{/* יום פעילות */}
+						<Grid item xs={12} sm={6}>
+							<FormControl fullWidth error={!!errors.activityDay}>
+								<InputLabel>יום פעילות *</InputLabel>
+								<Controller
+									name="activityDay"
+									control={control}
+									render={({ field }) => (
+										<Select {...field} label="יום פעילות *" sx={{ minWidth: 200 }}>
 												<MenuItem value="ראשון">ראשון</MenuItem>
 												<MenuItem value="שני">שני</MenuItem>
 												<MenuItem value="שלישי">שלישי</MenuItem>
 												<MenuItem value="רביעי">רביעי</MenuItem>
 												<MenuItem value="חמישי">חמישי</MenuItem>
 												<MenuItem value="שישי">שישי</MenuItem>
+												<MenuItem value="שבת">שבת</MenuItem>
 											</Select>
 										)}
 									/>
@@ -216,41 +217,40 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 									helperText={errors.endTime?.message}
 									InputLabelProps={{ shrink: true }}
 								/>
-							</Grid>
+						</Grid>
 
-							{/* מיקום */}
-							<Grid item xs={12}>
-								<TextField
-									fullWidth
-									label="מיקום *"
-									{...register("location")}
-									error={!!errors.location}
-									helperText={errors.location?.message}
-								/>
-							</Grid>
+						{/* מיקום */}
+						<Grid item xs={12}>
+							<TextField
+								fullWidth
+								label="מיקום *"
+							{...register("location")}
+							error={!!errors.location}
+							helperText={errors.location?.message}
+						/>
+					</Grid>
 
-							{/* מנהלי מועדונית */}
-							<Grid item xs={12}>
-								<Divider sx={{ my: 2 }} />
-								<Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-									<Typography variant="h6">מנהלי המועדונית *</Typography>
-									<Button
-										variant="outlined"
-										startIcon={<AddIcon />}
-										onClick={() => append({ name: "", phone: "", email: "" })}
-										size="small"
-									>
-										הוסף מנהל
-									</Button>
-								</Box>
-								{errors.clubManagers && typeof errors.clubManagers.message === "string" && (
-									<Alert severity="error" sx={{ mb: 2 }}>
-										{errors.clubManagers.message}
-									</Alert>
-								)}
-							</Grid>
+					{/* מנהלי מועדונית */}
+					<Grid item xs={12}>
+						<Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 2 }}>
+							<Typography variant="h6">מנהלי המועדונית *</Typography>
+							<Button
+								variant="outlined"
+								startIcon={<AddIcon />}
+								onClick={() => append({ name: "", phone: "", email: "" })}
+								size="small"
+							>
+								הוסף מנהל
+							</Button>
+					</Box>
+					{errors.clubManagers && typeof errors.clubManagers.message === "string" && (
+						<Alert severity="error" sx={{ mb: 2 }}>
+							{errors.clubManagers.message}
+						</Alert>
+					)}
+				</Grid>
 
-							{fields.map((field, index) => (
+				{fields.map((field, index) => (
 								<Grid item xs={12} key={field.id}>
 									<Paper elevation={2} sx={{ p: 2, position: "relative" }}>
 										<Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>

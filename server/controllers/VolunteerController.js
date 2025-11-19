@@ -14,7 +14,7 @@ const createVolunteer = async (req, res) => {
 
 const getVolunteers = async (req, res) => {
 	try {
-		const volunteers = await Volunteer.find().populate('clubs.child')
+		const volunteers = await Volunteer.find().populate('clubs.child').populate('clubs.club')
 		res.json(volunteers)
 	} catch (error) {
 		res.status(500).json({ message: 'Error fetching volunteers', error: error.message })
@@ -23,7 +23,7 @@ const getVolunteers = async (req, res) => {
 
 const getVolunteerById = async (req, res) => {
 	try {
-		const volunteer = await Volunteer.findById(req.params.id).populate('clubs.child')
+		const volunteer = await Volunteer.findById(req.params.id).populate('clubs.child').populate('clubs.club')
 		if (!volunteer) return res.status(404).json({ message: 'Volunteer not found' })
 		res.json(volunteer)
 	} catch (error) {
@@ -67,7 +67,7 @@ const deleteVolunteer = async (req, res) => {
 const addClubToVolunteer = async (req, res) => {
   try {
     const { volunteerId } = req.params;
-    const { clubName, child} = req.body;
+    const { clubId, child} = req.body;
 
     // שליפת המתנדבת
     const volunteer = await Volunteer.findById(volunteerId);
@@ -75,14 +75,14 @@ const addClubToVolunteer = async (req, res) => {
       return res.status(404).json({ message: "Volunteer not found" });
     }
 
-    // שליפת המועדונית לפי שם
-    const club = await Club.findOne({ name: clubName });
+    // שליפת המועדונית
+    const club = await Club.findById(clubId);
     if (!club) {
       return res.status(404).json({ message: "Club not found" });
     }
 
     // הוספת המועדון והילד למתנדבת
-    volunteer.clubs.push({ clubName, child});
+    volunteer.clubs.push({ club: clubId, child});
     await volunteer.save();
 
     // הוספת המתנדבת למועדונית (אם עדיין לא קיימת)
@@ -99,7 +99,7 @@ const addClubToVolunteer = async (req, res) => {
 const updateClubInVolunteer = async (req, res) => {
   try {
     const { volunteerId, clubId } = req.params;
-    const { clubName, child } = req.body;
+    const { child } = req.body;
 
     const volunteer = await Volunteer.findById(volunteerId);
     if (!volunteer) return res.status(404).json({ message: "Volunteer not found" });
@@ -107,31 +107,13 @@ const updateClubInVolunteer = async (req, res) => {
     const clubInVolunteer = volunteer.clubs.id(clubId);
     if (!clubInVolunteer) return res.status(404).json({ message: "Club not found" });
 
-    // אם משנים שם מועדונית - צריך לעדכן גם במועדוניות עצמן
-    if (clubName && clubName !== clubInVolunteer.clubName) {
-      // הסרה מהמועדונית הישנה
-      const oldClub = await Club.findOne({ name: clubInVolunteer.clubName });
-      if (oldClub) {
-        oldClub.volunteers = oldClub.volunteers.filter(v => v.toString() !== volunteerId);
-        await oldClub.save();
-      }
-
-      // הוספה למועדונית החדשה
-      const newClub = await Club.findOne({ name: clubName });
-      if (newClub && !newClub.volunteers.includes(volunteerId)) {
-        newClub.volunteers.push(volunteerId);
-        await newClub.save();
-      }
-
-      clubInVolunteer.clubName = clubName;
-    }
-
+    // עדכון הילד
     if (child !== undefined) clubInVolunteer.child = child;
 
     await volunteer.save();
-    res.json({ message: "Club updated successfully" });
+    res.json({ message: "Child updated successfully in volunteer" });
   } catch (error) {
-    res.status(500).json({ message: "Error updating club", error: error.message });
+    res.status(500).json({ message: "Error updating child", error: error.message });
   }
 };
 
@@ -144,8 +126,8 @@ const removeClubFromVolunteer = async (req, res) => {
 
     // מציאת המועדונית שנמחקת
     const clubToRemove = volunteer.clubs.id(clubId);
-    if (clubToRemove) {
-      const club = await Club.findOne({ name: clubToRemove.clubName });
+    if (clubToRemove && clubToRemove.club) {
+      const club = await Club.findById(clubToRemove.club);
       if (club) {
         // הסרת המתנדבת מהמועדונית
         club.volunteers = club.volunteers.filter(v => v.toString() !== volunteerId);

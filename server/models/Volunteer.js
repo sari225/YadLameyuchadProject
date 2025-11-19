@@ -24,8 +24,10 @@ const VolunteerSchema = new mongoose.Schema({
   },
   clubs: [
     {
-      clubName: {
-        type: String
+      club: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Club",
+        required: true
       },
       child: {
         type: mongoose.Schema.Types.ObjectId,

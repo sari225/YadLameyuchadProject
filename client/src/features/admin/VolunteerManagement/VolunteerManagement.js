@@ -196,28 +196,74 @@ const VolunteerManagement = () => {
 		);
 	}
 
-		return (
-			<Box sx={{ padding: 3, direction: 'rtl' }}>
-				<Paper elevation={3} sx={{ padding: 3, marginBottom: 2 }}>
-					<Typography variant="h4" fontWeight="bold" sx={{ textAlign: 'center', mb: 3 }}>
+	return (
+		<Box sx={{ padding: 3, direction: 'rtl' }}>
+			{/* כותרת עם רקע כחול */}
+			<Paper 
+				elevation={3} 
+				sx={{ 
+					mb: 2,
+					background: 'linear-gradient(135deg, #0288d1 0%, #03a9f4 100%)',
+					boxShadow: '0 4px 20px rgba(2, 136, 209, 0.3)',
+				}}
+			>
+				<Box sx={{ 
+					display: 'flex', 
+					alignItems: 'center', 
+					justifyContent: 'center',
+					position: 'relative',
+					p: 3,
+				}}>
+					<Typography 
+						variant="h4" 
+						sx={{ 
+							fontWeight: 700,
+							color: 'white',
+							textAlign: 'center',
+							letterSpacing: '0.5px',
+						}}
+					>
 						ניהול מתנדבות
 					</Typography>
+					<Button
+						variant="contained"
+						startIcon={<AddIcon />}
+						onClick={() => setAddDialogOpen(true)}
+						sx={{
+							position: 'absolute',
+							left: 24,
+							backgroundColor: 'white',
+							color: '#0288d1',
+							fontWeight: 'bold',
+							'&:hover': {
+								backgroundColor: 'rgba(255,255,255,0.9)',
+								transform: 'translateY(-2px)',
+								boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+							},
+							transition: 'all 0.2s',
+						}}
+					>
+						הוסף מתנדבת
+					</Button>
+				</Box>
+			</Paper>
 
-					{/* פילטרים וחיפוש */}
-					<Stack direction="row" spacing={2} mb={2}>
-						<FormControl sx={{ minWidth: 150 }}>
-							<InputLabel>חיפוש לפי</InputLabel>
-							<Select
-								value={searchField}
-								label="חיפוש לפי"
-								onChange={(e) => setSearchField(e.target.value)}
-							>
-								<MenuItem value="">הכל</MenuItem>
-								<MenuItem value="name">שם</MenuItem>
-								<MenuItem value="id">ת.ז</MenuItem>
-								<MenuItem value="phone">טלפון</MenuItem>
-								<MenuItem value="school">בית ספר</MenuItem>
-							</Select>
+			{/* פילטרים וחיפוש */}
+			<Paper sx={{ p: 2, mb: 2 }}>
+				<Stack direction="row" spacing={2}>
+					<FormControl sx={{ minWidth: 150 }}>
+						<InputLabel>חיפוש לפי</InputLabel>
+						<Select
+							value={searchField}
+							label="חיפוש לפי"
+							onChange={(e) => setSearchField(e.target.value)}
+						>
+							<MenuItem value="">הכל</MenuItem>
+							<MenuItem value="name">שם</MenuItem>
+							<MenuItem value="id">ת.ז</MenuItem>
+							<MenuItem value="phone">טלפון</MenuItem>
+							<MenuItem value="school">בית ספר</MenuItem>
+						</Select>
 						</FormControl>
 
 						<TextField
@@ -234,22 +280,14 @@ const VolunteerManagement = () => {
 								),
 							}}
 						/>
+				</Stack>
+			</Paper>
 
-						<Button
-							variant="contained"
-							color="primary"
-							startIcon={<AddIcon />}
-							onClick={() => setAddDialogOpen(true)}
-							sx={{ minWidth: 200 }}
-						>
-							הוספת מתנדבת חדשה
-						</Button>
-					</Stack>
+			<Typography variant="body1" color="textSecondary" mb={1}>
+				מתנדבות רשומות: {filteredVolunteers.length}
+			</Typography>
 
-					<Typography variant="body1" color="textSecondary" mb={1}>
-						מתנדבות רשומות: {filteredVolunteers.length}
-					</Typography>
-				</Paper>			<TableContainer component={Paper}>
+			<TableContainer component={Paper}>
 				<Table sx={{ direction: 'rtl' }}>
 					<TableHead>
 						<TableRow sx={{ bgcolor: '#1976d2' }}>

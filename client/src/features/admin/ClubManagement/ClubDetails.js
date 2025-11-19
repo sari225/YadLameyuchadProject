@@ -63,7 +63,7 @@ const ClubDetails = ({ onUpdate }) => {
 		skip: !selectedClub?._id,
 	});
 	const { data: allChildren = [] } = useGetChildrenQuery();
-	const { data: allVolunteers = [] } = useGetVolunteersQuery();
+	const { data: allVolunteers = [], refetch: refetchVolunteers } = useGetVolunteersQuery();
 
 	const [addChildToClub] = useAddChildToClubMutation();
 	const [addClubToVolunteer] = useAddClubToVolunteerMutation();
@@ -135,7 +135,7 @@ const ClubDetails = ({ onUpdate }) => {
 		const fullVolunteer = allVolunteers.find(v => v._id === volunteer._id) || volunteer;
 		
 		// מצא את הילד הנוכחי של המתנדבת במועדונית הזו
-		const clubEntry = fullVolunteer.clubs?.find(c => c.clubName === selectedClub.name);
+		const clubEntry = fullVolunteer.clubs?.find(c => c.club?._id === selectedClub._id || c.club === selectedClub._id);
 		const currentChild = clubEntry?.child?._id || clubEntry?.child || null;
 		setEditVolunteerChild({ open: true, volunteer: fullVolunteer, currentChild, clubEntry });
 	};
@@ -150,15 +150,16 @@ const ClubDetails = ({ onUpdate }) => {
 				return;
 			}
 
-			await updateClubInVolunteer({
-				volunteerId: volunteer._id,
-				clubId: clubEntry._id,
-				clubData: { child: newChildId || null }
-			}).unwrap();
+		await updateClubInVolunteer({
+			volunteerId: volunteer._id,
+			clubId: clubEntry._id,
+			clubData: { child: newChildId || null }
+		}).unwrap();
 
-			setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null });
-			refetch();
-			if (onUpdate) onUpdate();
+		setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null });
+		await refetch();
+		await refetchVolunteers();
+		if (onUpdate) onUpdate();
 		} catch (error) {
 			console.error("Failed to update child for volunteer:", error);
 			setErrorDialog({ open: true, message: error.data?.message || "שגיאה בעדכון ילד" });
@@ -178,7 +179,7 @@ const ClubDetails = ({ onUpdate }) => {
 				// הפונקציה הזו כבר מוסיפה את המתנדבת גם למועדונית
 				await addClubToVolunteer({
 					volunteerId: selectedVolunteerId,
-					clubName: selectedClub.name,
+					clubId: selectedClub._id,
 					child: selectedChildForVolunteer,
 				}).unwrap();
 			} else {
@@ -280,7 +281,8 @@ const ClubDetails = ({ onUpdate }) => {
 	allVolunteers.forEach(volunteer => {
 		// בודקים אם למתנדבת יש את המועדונית הנוכחית
 		volunteer.clubs?.forEach(club => {
-			if (club.clubName === selectedClub?.name && club.child) {
+			const clubId = club.club?._id || club.club;
+			if (clubId === selectedClub?._id && club.child) {
 				// אם זה אובייקט, נקח את ה-_id שלו, אחרת זה כבר string של ID
 				const childId = typeof club.child === 'object' ? club.child._id : club.child;
 				if (childId) {

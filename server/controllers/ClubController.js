@@ -44,6 +44,7 @@ const updateClub = async (req, res) => {
     if (!club) {
       return res.status(404).json({ message: "Club not found" });
     }
+    
     if (req.body.name) club.name = req.body.name;
     if (req.body.activityDay) club.activityDay = req.body.activityDay;
     if (req.body.startTime) club.startTime = req.body.startTime;
@@ -51,6 +52,9 @@ const updateClub = async (req, res) => {
     if (req.body.location) club.location = req.body.location;
     if (req.body.clubManagers) club.clubManagers = req.body.clubManagers;
     await club.save();
+    
+    // המתנדבות מחזיקות ObjectId של המועדונית, אז השינויים יופיעו אוטומטית דרך populate
+    
     res.json({ message: "Club updated successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error updating club", error: error.message });
@@ -59,10 +63,19 @@ const updateClub = async (req, res) => {
 
 const deleteClub = async (req, res) => {
   try {
-    const club = await Club.findByIdAndDelete(req.params.id);
+    const club = await Club.findById(req.params.id);
     if (!club) {
       return res.status(404).json({ message: "Club not found" });
     }
+    
+    // הסרת המועדונית מכל המתנדבות
+    const Volunteer = require("../models/Volunteer");
+    await Volunteer.updateMany(
+      { "clubs.club": req.params.id },
+      { $pull: { clubs: { club: req.params.id } } }
+    );
+    
+    await Club.findByIdAndDelete(req.params.id);
     res.json({ message: "Club deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting club", error: error.message });
@@ -225,9 +238,9 @@ const addVolunteerToClub = async (req, res) => {
     const volunteer = await Volunteer.findById(volunteerId);
     if (volunteer) {
       // בדיקה אם המועדונית כבר קיימת
-      const clubExists = volunteer.clubs.some(c => c.clubName === club.name);
+      const clubExists = volunteer.clubs.some(c => c.club && c.club.toString() === clubId);
       if (!clubExists) {
-        volunteer.clubs.push({ clubName: club.name, child: null });
+        volunteer.clubs.push({ club: clubId, child: null });
         await volunteer.save();
       }
     }
@@ -260,7 +273,7 @@ const removeVolunteerFromClub = async (req, res) => {
     const Volunteer = require("../models/Volunteer");
     const volunteer = await Volunteer.findById(volunteerId);
     if (volunteer) {
-      volunteer.clubs = volunteer.clubs.filter(c => c.clubName !== club.name);
+      volunteer.clubs = volunteer.clubs.filter(c => c.club && c.club.toString() !== clubId);
       await volunteer.save();
     }
 

@@ -95,14 +95,14 @@ const VolunteerDetails = ({ volunteer }) => {
 											boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
 										}}
 									>
-										<Box>
-											<Typography variant="body2" sx={{ fontWeight: "bold", color: "#1976d2", mb: 0.5 }}>
-												📍 {club.clubName}
-											</Typography>
-											<Typography variant="caption" color="text.secondary">
-												👶 שומרת על: {childName}{childId}
-											</Typography>
-										</Box>
+									<Box>
+										<Typography variant="body2" sx={{ fontWeight: "bold", color: "#1976d2", mb: 0.5 }}>
+											📍 {club.club?.name}
+										</Typography>
+										<Typography variant="caption" color="text.secondary">
+											👶 שומרת על: {childName}{childId}
+										</Typography>
+									</Box>
 									</Box>
 								);
 							})}

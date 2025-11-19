@@ -48,7 +48,7 @@ const ClubDetailsPage = () => {
 	const navigate = useNavigate();
 	const { data: clubData, isLoading, refetch } = useGetClubByIdQuery(id);
 	const { data: allChildren = [] } = useGetChildrenQuery();
-	const { data: allVolunteers = [] } = useGetVolunteersQuery();
+	const { data: allVolunteers = [], refetch: refetchVolunteers } = useGetVolunteersQuery();
 
 	const [addChildToClub] = useAddChildToClubMutation();
 	const [addVolunteerToClub] = useAddVolunteerToClubMutation();
@@ -128,7 +128,7 @@ const ClubDetailsPage = () => {
 			if (selectedChildForVolunteer) {
 				await addClubToVolunteer({
 					volunteerId: selectedVolunteer._id,
-					clubName: clubData.name,
+					clubId: id,
 					child: selectedChildForVolunteer._id,
 				}).unwrap();
 			} else {
@@ -151,7 +151,7 @@ const ClubDetailsPage = () => {
 
 	const handleEditVolunteerChild = (volunteer) => {
 		const fullVolunteer = allVolunteers.find(v => v._id === volunteer._id) || volunteer;
-		const clubEntry = fullVolunteer.clubs?.find(c => c.clubName === clubData.name);
+		const clubEntry = fullVolunteer.clubs?.find(c => c.club?._id === id || c.club === id);
 		const currentChild = clubEntry?.child?._id || clubEntry?.child || null;
 		setEditVolunteerChild({ open: true, volunteer: fullVolunteer, currentChild, clubEntry });
 	};
@@ -165,16 +165,17 @@ const ClubDetailsPage = () => {
 				return;
 			}
 
-			await updateClubInVolunteer({
-				volunteerId: volunteer._id,
-				clubId: clubEntry._id,
-				clubData: { child: newChildId || null }
-			}).unwrap();
+		await updateClubInVolunteer({
+			volunteerId: volunteer._id,
+			clubId: clubEntry._id,
+			clubData: { child: newChildId || null }
+		}).unwrap();
 
-			setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null });
-			setSuccessMessage("הילד עודכן בהצלחה");
-			refetch();
-			setTimeout(() => setSuccessMessage(""), 3000);
+		setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null });
+		setSuccessMessage("הילד עודכן בהצלחה");
+		await refetch();
+		await refetchVolunteers();
+		setTimeout(() => setSuccessMessage(""), 3000);
 		} catch (error) {
 			setServerError(error.data?.message || "שגיאה בעדכון ילד");
 			setTimeout(() => setServerError(""), 3000);
@@ -255,7 +256,8 @@ const ClubDetailsPage = () => {
 	const childrenWithVolunteers = new Set();
 	allVolunteers.forEach(volunteer => {
 		volunteer.clubs?.forEach(club => {
-			if (club.clubName === clubData?.name && club.child) {
+			const clubId = club.club?._id || club.club;
+			if (clubId === id && club.child) {
 				const childId = typeof club.child === 'object' ? club.child._id : club.child;
 				if (childId) {
 					childrenWithVolunteers.add(childId.toString());
@@ -545,15 +547,15 @@ const ClubDetailsPage = () => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{clubData.volunteers?.length > 0 ? (
-									clubData.volunteers.map((volunteer) => {
-										const fullVolunteer = allVolunteers.find(v => v._id === volunteer._id) || volunteer;
-										const clubEntry = fullVolunteer.clubs?.find(c => c.clubName === clubData.name);
-										const childName = clubEntry?.child 
-											? `${clubEntry.child.Fname || ''} ${clubEntry.child.Lname || ''}`.trim()
-											: 'ללא ילד';
-										
-										return (
+							{clubData.volunteers?.length > 0 ? (
+								clubData.volunteers.map((volunteer) => {
+									const fullVolunteer = allVolunteers.find(v => v._id === volunteer._id) || volunteer;
+									const clubEntry = fullVolunteer.clubs?.find(c => c.club?._id === id || c.club === id);
+									const childName = clubEntry?.child 
+										? `${clubEntry.child.Fname || ''} ${clubEntry.child.Lname || ''}`.trim()
+										: 'ללא ילד';
+									
+									return (
 											<TableRow key={volunteer._id} hover>
 												<TableCell sx={{ textAlign: "center" }}>{volunteer.fname}</TableCell>
 												<TableCell sx={{ textAlign: "center" }}>{volunteer.lname}</TableCell>
@@ -701,17 +703,22 @@ const ClubDetailsPage = () => {
 						<Autocomplete
 							fullWidth
 							sx={{ minWidth: '500px', width: '100%' }}
-							options={[
-								...availableChildrenForVolunteer,
-								...(editVolunteerChild.currentChild && 
-									!availableChildrenForVolunteer.some(c => c._id === editVolunteerChild.currentChild) && 
-									clubData?.registeredChildren?.find(c => c._id === editVolunteerChild.currentChild)
+						options={[
+							...availableChildrenForVolunteer,
+							...(editVolunteerChild.currentChild && 
+								!availableChildrenForVolunteer.some(c => c._id === editVolunteerChild.currentChild) && 
+								clubData?.registeredChildren?.find(c => c._id === editVolunteerChild.currentChild)
 									? [clubData.registeredChildren.find(c => c._id === editVolunteerChild.currentChild)]
 									: [])
-							]}
-							getOptionLabel={(option) => option ? `${option.Fname} ${option.Lname} (${option.childId})${option._id === editVolunteerChild.currentChild ? ' - נוכחי' : ''}` : ''}
-							value={clubData?.registeredChildren?.find(c => c._id === editVolunteerChild.currentChild) || null}
-							onChange={(event, newValue) => setEditVolunteerChild(prev => ({ ...prev, currentChild: newValue?._id || null }))}
+						]}
+						getOptionLabel={(option) => {
+							if (!option) return '';
+							const originalChild = editVolunteerChild.clubEntry?.child?._id || editVolunteerChild.clubEntry?.child;
+							const isCurrentChild = originalChild && option._id === originalChild;
+							return `${option.Fname} ${option.Lname} (${option.childId})${isCurrentChild ? ' - נוכחי' : ''}`;
+						}}
+						value={clubData?.registeredChildren?.find(c => c._id === editVolunteerChild.currentChild) || null}
+						onChange={(event, newValue) => setEditVolunteerChild(prev => ({ ...prev, currentChild: newValue?._id || null }))}
 							renderInput={(params) => (
 								<TextField
 									{...params}

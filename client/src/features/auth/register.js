@@ -186,7 +186,7 @@ const Register = () => {
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3} className="register-grid-container">
             
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="מספר זהות *" 
@@ -206,7 +206,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="שם הורה *" 
@@ -226,7 +226,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="שם פרטי *"
@@ -246,7 +246,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="שם משפחה *" 
@@ -266,7 +266,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="תאריך לידה *" 
@@ -287,7 +287,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="אימייל *" 
@@ -307,7 +307,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="עיר *" 
@@ -327,7 +327,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="רחוב *" 
@@ -347,7 +347,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="מספר בית *" 
@@ -367,7 +367,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="מוסד לימודי *" 
@@ -387,7 +387,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="טלפון אבא *" 
@@ -407,7 +407,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="טלפון אמא *" 
@@ -427,7 +427,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="פירוט הגדרה של הילד" 
@@ -449,7 +449,7 @@ const Register = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={6}>
               <TextField 
                 variant="standard"
                 label="פירוט אלרגיות" 

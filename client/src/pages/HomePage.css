@@ -610,25 +610,25 @@ body, html {
 }
 
 .contact-info {
-  flex: 1;
+  flex: 0.6;
   text-align: right;
 }
 
 .contact-title {
-  font-size: 48px;
+  font-size: 42px;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #333;
 }
 
 .contact-description {
-  font-size: 18px;
-  line-height: 1.6;
-  max-width: 500px;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 400px;
   margin-right: 0;
   color: #333;
   text-align: right;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .contact-btn {
@@ -649,23 +649,30 @@ body, html {
 }
 
 .contact-actions {
-  flex: 0 0 auto;
+  flex: 0.5;
   text-align: right;
-  margin-right: 60px;
-  margin-top: 50px;
+  margin-right: 20px;
+  margin-top: 30px;
 }
 
 .contact-details {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  font-size: 18px;
+  gap: 0px;
+  font-size: 20px;
+  text-align: right;
+  direction: rtl;
 }
 
 .contact-item {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   text-align: right;
   direction: rtl;
+  gap: 0px;
+  margin-bottom: 0px;
+  line-height: 1.1;
 }
 
 .waze-item {
@@ -677,16 +684,22 @@ body, html {
 
 .contact-label {
   font-weight: 700;
-  margin-left: 8px;
   color: #333;
-  min-width: 80px;
-  font-size: 18px;
+  font-size: 16px;
+  text-align: right;
+  direction: rtl;
+  margin-bottom: 0px;
+  line-height: 1.1;
 }
 
 .contact-value {
   color: #333;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
+  text-align: right;
+  direction: rtl;
+  margin-bottom: 0px;
+  line-height: 1.1;
 }
 
 .waze-link {
@@ -694,7 +707,12 @@ body, html {
   text-decoration: underline;
   font-weight: 500;
   transition: color 0.3s ease;
-  margin-right: 10px;
+  margin-top: 0px;
+  display: block;
+  text-align: right;
+  direction: rtl;
+  font-size: 14px;
+  line-height: 1.1;
 }
 
 .waze-link:hover {
@@ -1027,39 +1045,46 @@ body, html {
   
   .contact-details {
     flex-direction: column;
-    gap: 5px;
+    gap: 0px;
     font-size: 12px;
     align-items: center;
     width: 100%;
     margin-top: 5px;
+    text-align: center;
+    line-height: 1;
   }
   
   .contact-item {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
+    gap: 0px;
+    line-height: 1;
   }
   
   .contact-label {
     font-size: 11px;
     font-weight: 600;
-    margin-left: 0;
-    min-width: auto;
-    display: block;
-    margin-bottom: 1px;
+    text-align: center;
+    margin-bottom: 0px;
+    line-height: 1;
   }
   
   .contact-value {
     font-size: 11px;
     font-weight: 400;
-    display: block;
+    text-align: center;
+    margin-bottom: 0px;
+    line-height: 1;
   }
   
   .waze-link {
-    margin-right: 0;
+    margin-right: 0px;
     display: block;
-    margin-top: 2px;
+    margin-top: 0;
     font-size: 11px;
     text-align: center;
   }

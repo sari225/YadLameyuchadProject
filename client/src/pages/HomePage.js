@@ -7,6 +7,13 @@ export default function HomePage() {
   const counter3 = useRef(null);
   const counter4 = useRef(null);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   useEffect(() => {
     const animateCounter = (el, target) => {
       let current = 0;
@@ -75,7 +82,7 @@ export default function HomePage() {
 
       {/* HEADER */}
       <header className="header">
-        <div className="header-logo">
+        <div className="header-logo" onClick={scrollToTop} style={{ cursor: 'pointer' }}>
           <img src="/HOME/LL.png" className="header-logo-img" alt="לוגו LL" />
           <img src="/HOME/LO.png" className="header-logo-img" alt="לוגו LO" />
         </div>
@@ -253,12 +260,12 @@ export default function HomePage() {
                 <span className="contact-value">0527650747</span>
               </div>
               <div className="contact-item">
-                <span className="contact-label"></span>
+                <span className="contact-label">טלפון נוסף:</span>
                 <span className="contact-value">02-5803543</span>
               </div>
               <div className="contact-item">
                 <span className="contact-label">כתובת:</span>
-                <span className="contact-value">פחד עצחק 35 ביתר עילית</span>
+                <span className="contact-value">פחד יצחק 35 ביתר עילית</span>
                 <a href="https://maps.google.com/maps?q=פחד+יצחק+35+ביתר+עילית" className="waze-link" target="_blank" rel="noopener noreferrer">
                   ניווט במפות
                 </a>

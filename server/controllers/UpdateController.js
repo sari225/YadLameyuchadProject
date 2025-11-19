@@ -30,9 +30,9 @@ const sendEmailsForUpdate = async (updating) => {
         if (updating.updateLocation === "site_and_email" && updating.file && updating.file.path) {
           attachment = {
             filename: updating.file.filename,
-            path: updating.file.path
+            path: `public/${updating.file.path}`
           };
-          text += `\n\nמצורף קובץ: ${updating.file.filename}`;
+          
         }
         
         return sendMail(c.email, subject, text, attachment);

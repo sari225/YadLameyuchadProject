@@ -1,23 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Container,
-  Typography,
-  TextField,
-  Button,
-  MenuItem,
-  Paper,
-  Grid,
-  Alert,
-  Snackbar,
-} from "@mui/material";
-
-import PhoneIcon from "@mui/icons-material/Phone";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import EmailIcon from "@mui/icons-material/Email";
-
 import { useCreateMessageMutation } from "../api/messageApi";
+import "./ContactPage.css";
 
 export default function ContactPage() {
   const navigate = useNavigate();
@@ -31,13 +15,25 @@ export default function ContactPage() {
   });
 
   const [errors, setErrors] = useState({});
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("success");
 
   const topics = ["שאלה", "תלונה", "בקשה"];
+
+  // מונע גלילה רק בדף יצירת הקשר
+  useEffect(() => {
+    // שמירת המצב הקודם
+    const originalOverflow = document.body.style.overflow;
+    
+    // הגדרת אי-גלילה לדף יצירת קשר
+    document.body.style.overflow = 'hidden';
+    
+    // ניקוי בעת יציאה מהרכיב
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -80,11 +76,9 @@ export default function ContactPage() {
     try {
       await createMessage(formData).unwrap();
 
-      setSnackbar({
-        open: true,
-        message: "ההודעה נשלחה בהצלחה! נחזור אליך בהקדם.",
-        severity: "success",
-      });
+      setMessage("ההודעה נשלחה בהצלחה! מחזיר אותך לעמוד הבית...");
+      setMessageType("success");
+      setShowMessage(true);
 
       setFormData({
         senderName: "",
@@ -93,210 +87,144 @@ export default function ContactPage() {
         content: "",
       });
 
-      setTimeout(() => navigate("/"), 2000);
+      // חזרה אוטומטית לעמוד הבית אחרי 2 שניות
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error) {
-      setSnackbar({
-        open: true,
-        message: error?.data?.message || "שגיאה בשליחת ההודעה",
-        severity: "error",
-      });
+      setMessage(error?.data?.message || "שגיאה בשליחת ההודעה");
+      setMessageType("error");
+      setShowMessage(true);
+      
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 5000);
     }
   };
 
-  const handleCloseSnackbar = () =>
-    setSnackbar((prev) => ({ ...prev, open: false }));
-
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        bgcolor: "#f5f5f5",
-        py: 4,
-        direction: "rtl",
-      }}
-    >
-      <Container maxWidth="xl">
-        <Typography
-          variant="h3"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: "bold", color: "#1976d2", mb: 4 }}
-        >
-          יצירת קשר
-        </Typography>
+    <div className="contact-page">
+      {/* Background Image */}
+      <div className="background-image">
+        <img src="/HOME/A.png" alt="רקע" />
+      </div>
 
-        {/* ⭐ גריד יציב */}
-        <Grid
-          container
-          spacing={4}
-          alignItems="flex-start"
-          sx={{ minHeight: "680px" }}
-        >
-          {/* טופס יצירת קשר */}
-          <Grid item xs={12} sm={6} md={8} lg={8} xl={8}>
-            <Paper elevation={3} sx={{ p: 4, direction: "rtl", height: "100%" }}>
-              <Typography variant="h5" sx={{ fontWeight: "bold", mb: 3 }}>
-                שלח לנו הודעה
-              </Typography>
+      {/* Back Button */}
+      <button className="back-button" onClick={() => navigate("/")}>
+        <span className="arrow">→</span>
+      </button>
 
-              <form onSubmit={handleSubmit}>
-                <TextField
-                  fullWidth
-                  label="שם מלא *"
-                  name="senderName"
-                  value={formData.senderName}
-                  onChange={handleChange}
-                  error={!!errors.senderName}
-                  helperText={errors.senderName}
-                  sx={{ mb: 3 }}
-                />
+      {/* Main Content */}
+      <div className="contact-container">
+        {/* Contact Form */}
+        <div className="contact-form-section">
+          <h1 className="page-title">יצירת קשר</h1>
+          
+          {showMessage && (
+            <div className={`message ${messageType}`}>
+              {message}
+            </div>
+          )}
 
-                <TextField
-                  fullWidth
-                  label="כתובת מייל *"
-                  name="senderEmail"
-                  type="email"
-                  value={formData.senderEmail}
-                  onChange={handleChange}
-                  error={!!errors.senderEmail}
-                  helperText={errors.senderEmail}
-                  sx={{ mb: 3 }}
-                />
+          <form onSubmit={handleSubmit} className="contact-form">
+            <div className="form-group">
+              <input
+                type="text"
+                name="senderName"
+                placeholder="שם מלא *"
+                value={formData.senderName}
+                onChange={handleChange}
+                className={errors.senderName ? 'error' : ''}
+              />
+              {errors.senderName && <span className="error-text">{errors.senderName}</span>}
+            </div>
 
-                <TextField
-                  fullWidth
-                  select
-                  label="נושא *"
-                  name="topic"
-                  value={formData.topic}
-                  onChange={handleChange}
-                  error={!!errors.topic}
-                  helperText={errors.topic}
-                  SelectProps={{
-                    MenuProps: {
-                      disableScrollLock: true,
-                      PaperProps: {
-                        sx: { direction: "ltr" }, // מונע קפיצה ב-RTL
-                      },
-                    },
-                  }}
-                  sx={{ mb: 3 }}
-                >
-                  {topics.map((topic) => (
-                    <MenuItem key={topic} value={topic}>
-                      {topic}
-                    </MenuItem>
-                  ))}
-                </TextField>
+            <div className="form-group">
+              <input
+                type="email"
+                name="senderEmail"
+                placeholder="כתובת מייל *"
+                value={formData.senderEmail}
+                onChange={handleChange}
+                className={errors.senderEmail ? 'error' : ''}
+              />
+              {errors.senderEmail && <span className="error-text">{errors.senderEmail}</span>}
+            </div>
 
-                <TextField
-                  fullWidth
-                  label="תוכן הפנייה *"
-                  name="content"
-                  multiline
-                  rows={6}
-                  value={formData.content}
-                  onChange={handleChange}
-                  error={!!errors.content}
-                  helperText={errors.content}
-                  sx={{ mb: 3 }}
-                />
-
-                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                  <Button
-                    variant="outlined"
-                    onClick={() => navigate("/")}
-                    disabled={isLoading}
-                  >
-                    ביטול
-                  </Button>
-                  <Button variant="contained" type="submit" disabled={isLoading}>
-                    {isLoading ? "שולח..." : "שלח הודעה"}
-                  </Button>
-                </Box>
-              </form>
-            </Paper>
-          </Grid>
-
-          {/* פרטי התקשרות */}
-          <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
-            <Paper
-              elevation={3}
-              sx={{
-                p: 3,
-                bgcolor: "#1976d2",
-                color: "white",
-                position: "sticky",
-                top: 20,
-                height: "100%",
-              }}
-            >
-              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                פרטי התקשרות
-              </Typography>
-
-              <Box sx={{ mt: 3 }}>
-                <Box sx={{ display: "flex", mb: 2 }}>
-                  <LocationOnIcon sx={{ mr: 2, fontSize: 28 }} />
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ opacity: 0.9 }}>
-                      כתובת
-                    </Typography>
-                    <Typography>רח' האדמו"ר מבעלזא 15, ביתר עילית</Typography>
-                  </Box>
-                </Box>
-
-                <Box sx={{ display: "flex", mb: 2 }}>
-                  <PhoneIcon sx={{ mr: 2, fontSize: 28 }} />
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ opacity: 0.9 }}>
-                      טלפון
-                    </Typography>
-                    <Typography>02-5809999</Typography>
-                  </Box>
-                </Box>
-
-                <Box sx={{ display: "flex" }}>
-                  <EmailIcon sx={{ mr: 2, fontSize: 28 }} />
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ opacity: 0.9 }}>
-                      אימייל
-                    </Typography>
-                    <Typography>info@yadlameyuchad.org</Typography>
-                  </Box>
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  mt: 4,
-                  pt: 3,
-                  borderTop: "1px solid rgba(255,255,255,0.3)",
-                }}
+            <div className="form-group">
+              <select
+                name="topic"
+                value={formData.topic}
+                onChange={handleChange}
+                className={errors.topic ? 'error' : ''}
               >
-                <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  שעות פעילות
-                </Typography>
-                <Typography sx={{ mt: 1 }}>
-                  ימים א'-ה': 9:00–17:00
-                </Typography>
-              </Box>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
+                <option value="">בחר נושא *</option>
+                {topics.map((topic) => (
+                  <option key={topic} value={topic}>{topic}</option>
+                ))}
+              </select>
+              {errors.topic && <span className="error-text">{errors.topic}</span>}
+            </div>
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert severity={snackbar.severity} sx={{ width: "100%" }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Box>
+            <div className="form-group">
+              <textarea
+                name="content"
+                placeholder="תוכן הפנייה *"
+                value={formData.content}
+                onChange={handleChange}
+                rows="5"
+                className={errors.content ? 'error' : ''}
+              ></textarea>
+              {errors.content && <span className="error-text">{errors.content}</span>}
+            </div>
+
+            <button
+              type="submit"
+              className="submit-btn"
+              disabled={isLoading}
+            >
+              {isLoading ? "שולח..." : "שלח הודעה"}
+            </button>
+          </form>
+        </div>
+
+        {/* Contact Info */}
+        <div className="contact-info-section">
+          <h2>פרטי התקשרות</h2>
+          
+          <div className="contact-details">
+            <div className="contact-item">
+              <div className="contact-label">כתובת:</div>
+              <div className="contact-value">פחד יצחק 35 ביתר עילית</div>
+              <a href="https://maps.google.com/maps?q=פחד+יצחק+35+ביתר+עילית" 
+                 className="map-link" target="_blank" rel="noopener noreferrer">
+                הצג במפות גוגל
+              </a>
+            </div>
+
+            <div className="contact-item">
+              <div className="contact-label">טלפון:</div>
+              <div className="contact-value">0527650747</div>
+            </div>
+
+            <div className="contact-item">
+              <div className="contact-label">טלפון נוסף:</div>
+              <div className="contact-value">02-5803543</div>
+            </div>
+
+            <div className="contact-item">
+              <div className="contact-label">מייל:</div>
+              <div className="contact-value">yadlameyuchad@gmail.com</div>
+            </div>
+
+            <div className="contact-item working-hours">
+              <div className="contact-label">שעות פעילות:</div>
+              <div className="contact-value">ימים א'-ה': 9:00–17:00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
  

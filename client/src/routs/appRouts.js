@@ -11,6 +11,7 @@ import Profile from "../features/user/Profile/Profile";
 import Documents from "../features/user/Documents/Documents";
 import AllUpdates from "../features/user/Updates/AllUpdates";
 import UserCampsList from "../features/user/Camps/UserCampsList";
+import UserClubsList from "../features/user/Clubs/UserClubsList";
 
 
 import AdminLayout from "./layouts/AdminLayouts";
@@ -43,7 +44,7 @@ const AppRouts = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="all-updates" element={<AllUpdates />} />
           <Route path="daycamps" element={<UserCampsList />} />
-          <Route path="clubs" element={<div>דף מועדוניות - בבנייה</div>} />
+          <Route path="clubs" element={<UserClubsList />} />
           <Route path="documents" element={<Documents />} />
         </Route>
       </Route>

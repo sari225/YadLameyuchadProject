@@ -45,7 +45,7 @@ export const childManagementApi = apiSlice.injectEndpoints({
 				url: `/child/${id}`,
 				method:"DELETE"
 			}),
-			invalidatesTags: ['Child', 'Club'],
+			invalidatesTags: ['Child', 'Club', 'Volunteer'],
 		})
 	})
 })

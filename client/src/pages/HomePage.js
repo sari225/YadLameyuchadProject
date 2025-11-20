@@ -83,8 +83,8 @@ export default function HomePage() {
       {/* HEADER */}
       <header className="header">
         <div className="header-logo" onClick={scrollToTop} style={{ cursor: 'pointer' }}>
-          <img src="/HOME/LL.png" className="header-logo-img" alt="לוגו LL" />
-          <img src="/HOME/LO.png" className="header-logo-img" alt="לוגו LO" />
+          <img src="/images/home/LL.png" className="header-logo-img" alt="לוגו LL" />
+          <img src="/images/home/LO.png" className="header-logo-img" alt="לוגו LO" />
         </div>
         <nav className="nav-center">
           <a href="#hero" className="nav-btn">אודות</a>
@@ -100,9 +100,9 @@ export default function HomePage() {
 
       {/* HERO SECTION */}
       <section className="hero" id="hero">
-        <img src="/HOME/D.png" className="bg-full" alt="" />
+        <img src="/images/home/D.png" className="bg-full" alt="" />
         <div className="hero-content">
-          <img src="/HOME/LOGO.png" className="logo-img" alt="לוגו יד למיוחד" />
+          <img src="/images/home/LOGO.png" className="logo-img" alt="לוגו יד למיוחד" />
           <div className="hero-text">
             <p>מרכז יד למיוחד, שע"י אגודת עזרה למרפא, פועל בביתר עילית החל משנת 2006, בנשיאותו של הרב פירר שליט"א.</p>
             <p>המרכז מציע סיוע רב־תחומי ומגוון רחב של שירותים התנדבותיים עבור אוכלוסיות צמי"ד בביתר עילית והסביבה.</p>
@@ -113,7 +113,7 @@ export default function HomePage() {
 
       {/* QUOTE SECTION */}
       <section className="quote">
-        <img src="/HOME/B.png" className="quote-bg" alt="" />
+        <img src="/images/home/B.png" className="quote-bg" alt="" />
         <div className="quote-content">
           <p className="quote-text">
             "יד למיוחד הוא ארגון המביא אור וחום לחיי ילדים מיוחדים ומשפחותיהם. 
@@ -126,7 +126,7 @@ export default function HomePage() {
 
       {/* COUNTERS */}
       <section className="stats" id="about">
-        <img src="/HOME/D.png" className="bg-full" alt="" />
+        <img src="/images/home/D.png" className="bg-full" alt="" />
 
         <div className="stats-grid">
           <div className="stat-item">
@@ -167,7 +167,7 @@ export default function HomePage() {
           <div className="activities-grid">
             <div className="activity-card">
               <div className="activity-image-container">
-                <img src="/HOME/MO.JPG" alt="מועדוניות" className="activity-image" />
+                <img src="/images/home/MO.JPG" alt="מועדוניות" className="activity-image" />
                 <div className="activity-title-overlay">
                   <h3>מועדוניות</h3>
                 </div>
@@ -180,7 +180,7 @@ export default function HomePage() {
             </div>
             <div className="activity-card">
               <div className="activity-image-container">
-                <img src="/HOME/K.JPG" alt="קיטנות" className="activity-image" />
+                <img src="/images/home/K.JPG" alt="קיטנות" className="activity-image" />
                 <div className="activity-title-overlay">
                   <h3>קיטנות</h3>
                 </div>
@@ -194,7 +194,7 @@ export default function HomePage() {
             </div>
             <div className="activity-card">
               <div className="activity-image-container">
-                <img src="/HOME/T.JPG" alt="טיולים וימי כיף" className="activity-image" />
+                <img src="/images/home/T.JPG" alt="טיולים וימי כיף" className="activity-image" />
                 <div className="activity-title-overlay">
                   <h3>טיולים וימי כיף</h3>
                 </div>
@@ -207,7 +207,7 @@ export default function HomePage() {
             </div>
             <div className="activity-card">
               <div className="activity-image-container">
-                <img src="/HOME/MI.JPG" alt="מתנדבות" className="activity-image" />
+                <img src="/images/home/MI.JPG" alt="מתנדבות" className="activity-image" />
                 <div className="activity-title-overlay">
                   <h3>מתנדבות</h3>
                 </div>
@@ -220,7 +220,7 @@ export default function HomePage() {
             </div>
             <div className="activity-card">
               <div className="activity-image-container">
-                <img src="/HOME/SH.jpg" alt="משפחות מארחות" className="activity-image" />
+                <img src="/images/home/SH.jpg" alt="משפחות מארחות" className="activity-image" />
                 <div className="activity-title-overlay">
                   <h3>משפחות מארחות</h3>
                 </div>

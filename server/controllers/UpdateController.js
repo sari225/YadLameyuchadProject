@@ -2,6 +2,8 @@ const Updating = require("../models/Updating");
 const fs = require("fs");
 const Child = require("../models/Child");
 const { sendMail } = require("../utils/sendMail");
+const updateNotificationEmailTemplate = require('../templates/emails/updateNotificationEmail');
+const updateFullEmailTemplate = require('../templates/emails/updateFullEmail');
 
 // helper to send emails for an updating
 const sendEmailsForUpdate = async (updating) => {
@@ -11,7 +13,7 @@ const sendEmailsForUpdate = async (updating) => {
       ? { emailConsent: true }  // רק מי שאישר דיוור
       : {};  // כולם - אם זה site_and_email
     
-    const children = await Child.find(query).select("email").lean();
+    const children = await Child.find(query).select("email Fname").lean();
     if (!children || children.length === 0) return;
 
     const promises = children
@@ -19,23 +21,27 @@ const sendEmailsForUpdate = async (updating) => {
       .map((c) => {
         if (updating.updateLocation === "site") {
           // short notification for site updates
-          return sendMail(c.email, "עדכון חדש באתר", "יש לך עדכון חדש באתר");
+          const emailContent = updateNotificationEmailTemplate(c.Fname);
+          return sendMail(c.email, "עדכון חדש באתר", emailContent);
         }
         // for site_and_email send the full update to everyone
         const subject = updating.title ? updating.title : "עדכון חדש";
-        let text = updating.content ? updating.content : "יש עדכון חדש";
         
         // אם יש קובץ מצורף ומדובר בעדכון למייל ולאתר, מצרפים את הקובץ למייל
-        let attachment = null;
+        let attachments = null;
+        let hasFile = false;
+        let filename = '';
         if (updating.updateLocation === "site_and_email" && updating.file && updating.file.path) {
-          attachment = {
+          hasFile = true;
+          filename = updating.file.filename;
+          attachments = [{
             filename: updating.file.filename,
             path: `public/${updating.file.path}`
-          };
-          
+          }];
         }
         
-        return sendMail(c.email, subject, text, attachment);
+        const emailContent = updateFullEmailTemplate(c.Fname, updating.title, updating.content, hasFile, filename);
+        return sendMail(c.email, subject, emailContent, attachments);
       });
 
     await Promise.allSettled(promises);

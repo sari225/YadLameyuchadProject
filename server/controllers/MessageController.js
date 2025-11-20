@@ -1,5 +1,6 @@
 const Message = require("../models/Message");
 const { sendMail } = require("../utils/sendMail");
+const messageReplyEmailTemplate = require('../templates/emails/messageReplyEmail');
 // יצירת הודעה חדשה
 const createMessage = async (req, res) => {
   try {
@@ -100,27 +101,7 @@ const replyToMessage = async (req, res) => {
     }
 
     const subject = `תשובה לפנייתך - ${originalMessage.topic}`;
-    const body = `
-      <div dir="rtl" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto;">
-        <div style="background: linear-gradient(135deg, #78D2F5 0%, #5CABE0 100%); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h2 style="color: white; margin: 0;">יד למיוחד</h2>
-        </div>
-        <div style="background-color: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none;">
-          <h3 style="color: #333;">שלום ${originalMessage.senderName},</h3>
-          <p style="color: #555; line-height: 1.6;">תודה שפנית אלינו בנושא: <strong style="color: #1976d2;">${originalMessage.topic}</strong></p>
-          <p style="color: #555; line-height: 1.6;">להלן תשובתנו:</p>
-          <div style="background-color: #f9f9f9; padding: 20px; border-right: 4px solid #78D2F5; border-radius: 5px; margin: 20px 0;">
-            <p style="color: #333; line-height: 1.8; margin: 0; white-space: pre-wrap;">${replyContent}</p>
-          </div>
-          <p style="color: #555; line-height: 1.6;">נשמח לעמוד לרשותך בכל שאלה נוספת.</p>
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-            <p style="color: #555; margin: 5px 0;"><strong>בברכה,</strong></p>
-            <p style="color: #555; margin: 5px 0;">צוות יד למיוחד</p>
-            <p style="color: #999; font-size: 12px; margin-top: 15px;">רח' האדמו"ר מבעלזא 15, ביתר עילית | טלפון: 02-5809999</p>
-          </div>
-        </div>
-      </div>
-    `;
+    const body = messageReplyEmailTemplate(originalMessage.senderName, originalMessage.topic, replyContent);
 
     await sendMail(recipientEmail, subject, body);
 

@@ -63,27 +63,22 @@ const AdminNavigation = ({ isOpen, setIsOpen }) => {
                             <i className="far fa-heart nav-icon"></i>
                             <span className="nav-text">ניהול מתנדבות</span>
                         </NavLink>
-
+                      <NavLink to="/admin/clubsManagement" className="nav-item">
+                            <i className="far fa-star nav-icon"></i>
+                            <span className="nav-text">ניהול מועדוניות</span>
+                        </NavLink>
+                         <NavLink to="/admin/daycampsManagement" className="nav-item">
+                            <i className="far fa-calendar-alt nav-icon"></i>
+                            <span className="nav-text">ניהול קייטנות</span>
+                        </NavLink>
+                         <NavLink to="/admin/updatesManagement" className="nav-item">
+                            <i className="far fa-newspaper nav-icon"></i>
+                            <span className="nav-text">ניהול עדכונים</span>
+                        </NavLink>
                         <NavLink to="/admin/documentsManagement" className="nav-item">
                             <i className="far fa-file-alt nav-icon"></i>
                             <span className="nav-text">ניהול טפסים</span>
                         </NavLink>
-
-                        <NavLink to="/admin/daycampsManagement" className="nav-item">
-                            <i className="far fa-calendar-alt nav-icon"></i>
-                            <span className="nav-text">ניהול קייטנות</span>
-                        </NavLink>
-
-                        <NavLink to="/admin/clubsManagement" className="nav-item">
-                            <i className="far fa-star nav-icon"></i>
-                            <span className="nav-text">ניהול מועדוניות</span>
-                        </NavLink>
-
-                        <NavLink to="/admin/updatesManagement" className="nav-item">
-                            <i className="far fa-newspaper nav-icon"></i>
-                            <span className="nav-text">ניהול עדכונים</span>
-                        </NavLink>
-
                         <NavLink to="/admin/contactMessages" className="nav-item">
                             <i className="far fa-envelope nav-icon"></i>
                             <span className="nav-text">הודעות יצירת קשר</span>

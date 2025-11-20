@@ -53,25 +53,21 @@ const UserNavigation = ({ isOpen, setIsOpen }) => {
                             <i className="far fa-id-card nav-icon"></i>
                             <span className="nav-text">אזור אישי</span>
                         </NavLink>
-
-                        <NavLink to="/user/profile" className="nav-item">
-                            <i className="far fa-user nav-icon"></i>
-                            <span className="nav-text">פרופיל</span>
+                         <NavLink to="/user/clubs" className="nav-item">
+                            <i className="far fa-star nav-icon"></i>
+                            <span className="nav-text">מועדוניות</span>
                         </NavLink>
-
                         <NavLink to="/user/daycamps" className="nav-item">
                             <i className="far fa-calendar-alt nav-icon"></i>
                             <span className="nav-text">קיטנות</span>
                         </NavLink>
-
-                        <NavLink to="/user/clubs" className="nav-item">
-                            <i className="far fa-star nav-icon"></i>
-                            <span className="nav-text">מועדוניות</span>
-                        </NavLink>
-
                         <NavLink to="/user/documents" className="nav-item">
                             <i className="far fa-file-alt nav-icon"></i>
                             <span className="nav-text">טפסים</span>
+                        </NavLink>
+                        <NavLink to="/user/profile" className="nav-item">
+                            <i className="far fa-user nav-icon"></i>
+                            <span className="nav-text">פרופיל</span>
                         </NavLink>
 
                         <div className="nav-divider"></div>

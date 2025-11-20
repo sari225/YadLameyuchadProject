@@ -227,10 +227,10 @@ const Register = () => {
           
           {/* פרטים אישיים */}
           <Typography variant="h5" sx={{ 
-            color: '#87CEEB', 
+            color: '#2C5282', 
             fontWeight: 'bold', 
             textAlign: 'right',
-            borderBottom: '3px solid #87CEEB',
+            borderBottom: '3px solid #2C5282',
             paddingBottom: '12px',
             marginBottom: '24px',
             textTransform: 'uppercase',
@@ -353,10 +353,10 @@ const Register = () => {
 
           {/* פרטי תקשורת */}
           <Typography variant="h5" sx={{ 
-            color: '#87CEEB', 
+            color: '#2C5282', 
             fontWeight: 'bold', 
             textAlign: 'right',
-            borderBottom: '3px solid #87CEEB',
+            borderBottom: '3px solid #2C5282',
             paddingBottom: '12px',
             marginBottom: '24px',
             textTransform: 'uppercase',
@@ -422,10 +422,10 @@ const Register = () => {
 
           {/* כתובת */}
           <Typography variant="h5" sx={{ 
-            color: '#87CEEB', 
+            color: '#2C5282', 
             fontWeight: 'bold', 
             textAlign: 'right',
-            borderBottom: '3px solid #87CEEB',
+            borderBottom: '3px solid #2C5282',
             paddingBottom: '12px',
             marginBottom: '24px',
             textTransform: 'uppercase',
@@ -491,10 +491,10 @@ const Register = () => {
 
           {/* מידע רפואי */}
           <Typography variant="h5" sx={{ 
-            color: '#87CEEB', 
+            color: '#2C5282', 
             fontWeight: 'bold', 
             textAlign: 'right',
-            borderBottom: '3px solid #87CEEB',
+            borderBottom: '3px solid #2C5282',
             paddingBottom: '12px',
             marginBottom: '24px',
             textTransform: 'uppercase',
@@ -555,7 +555,7 @@ const Register = () => {
                   sx={{
                     color: '#000',
                     '&.Mui-checked': {
-                      color: '#87CEEB'
+                      color: '#2C5282'
                     }
                   }}
                 />

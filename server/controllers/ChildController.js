@@ -2,6 +2,7 @@ const Child = require("../models/Child");
 const bcrypt = require("bcrypt");
 const { sendMail } = require("../utils/sendMail");
 const {generatePassword}=require("../utils/generatePassword")
+const childAddedByAdminEmailTemplate = require('../templates/emails/childAddedByAdminEmail');
 const createChild = async (req, res) => {
   try {
     const child = req.body;
@@ -33,7 +34,8 @@ const createChild = async (req, res) => {
     });
 
     res.status(201).json({message:"new child created successfully"});
-    await sendMail(child.email, "Your Initial Password", `Your password is: ${password}`);
+    const emailContent = childAddedByAdminEmailTemplate(child.Fname, child.Lname, child.email, password);
+    await sendMail(child.email, "ברוכים הבאים ליד למיוחד", emailContent);
 
   } catch (error) {
     res.status(500).json({ message: "Error creating child", error: error.message });

@@ -266,14 +266,14 @@ const googleLogin = async (req, res) => {
     if (!user) {
       // אם המשתמש לא קיים בכלל
       return res.status(404).json({ 
-        message: "משתמש לא נמצא. אנא הירשם תחילה." 
+        message: "User not found. Please register first." 
       });
     }
     
     // בדיקה שהחשבון מאושר (רק אם זה Child)
     if (role === 'child' && !user.isApproved) {
       return res.status(401).json({ 
-        message: "החשבון ממתין לאישור מנהל" 
+        message: "Account pending approval" 
       });
     }
     

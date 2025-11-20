@@ -38,6 +38,7 @@ import { useGetChildrenQuery, useDeleteChildMutation } from "../../../api/childA
 import { useGetClubsQuery } from "../../../api/clubApi";
 import { useApproveChildMutation } from "../../../api/authApi";
 import ChildDetails from "./ChildDetails";
+import { parseServerError } from "../../../utils/errorHandler";
 import EditChildDialog from "./EditChildDialog";
 import AddChildDialog from "./AddChildDialog";
 import "./childManagement.css";
@@ -393,7 +394,7 @@ const ChildManagement = () => {
 				{isLoading ? (
 					<Box p={3}>טוען נתונים...</Box>
 				) : isError ? (
-					<Box p={3} color="error.main">{error?.data?.message || error?.error || "שגיאה"}</Box>
+					<Box p={3} color="error.main">{parseServerError(error, "שגיאה")}</Box>
 				) : (
 					<TableContainer>
 						<Table>

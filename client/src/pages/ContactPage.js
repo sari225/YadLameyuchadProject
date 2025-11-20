@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateMessageMutation } from "../api/messageApi";
+import { parseServerError } from "../utils/errorHandler";
 import "./ContactPage.css";
 
 export default function ContactPage() {
@@ -92,7 +93,8 @@ export default function ContactPage() {
         navigate("/");
       }, 2000);
     } catch (error) {
-      setMessage(error?.data?.message || "שגיאה בשליחת ההודעה");
+      const errorMessage = parseServerError(error, "שגיאה בשליחת ההודעה");
+      setMessage(errorMessage);
       setMessageType("error");
       setShowMessage(true);
       

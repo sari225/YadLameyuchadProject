@@ -25,6 +25,7 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateClubMutation } from "../../../api/clubApi";
+import { parseServerError } from "../../../utils/errorHandler";
 
 // =============================
 //     סכמת Zod מלאה להוספה
@@ -99,30 +100,8 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 			setSuccessDialog(true);
 			reset();
 		} catch (error) {
-			const msg = (error?.data?.message || "").toString();
-			const errorDetail =
-				typeof error?.data?.error === "string"
-					? error.data.error
-					: JSON.stringify(error?.data?.error || "");
-
-			// שגיאות ספציפיות
-			if (msg.includes("already exists") || msg.includes("כבר קיימת")) {
-				setServerError("❌ מועדונית בשם זה כבר קיימת במערכת");
-				return;
-			}
-
-			if (msg.includes("validation failed") || errorDetail.includes("validation failed")) {
-				const match = (msg + errorDetail).match(/message":"([^\"]+)"/);
-				if (match && match[1]) {
-					setServerError("❌ " + match[1]);
-				} else {
-					setServerError("❌ יש שגיאה באחד השדות. בדוק שכל השדות תקינים.");
-				}
-				return;
-			}
-
-			// שגיאה כללית
-			setServerError("❌ שגיאה ביצירת מועדונית. אנא בדוק את הנתונים ונסה שוב.");
+			const errorMessage = parseServerError(error, "❌ שגיאה ביצירת מועדונית. אנא בדוק את הנתונים ונסה שוב.");
+			setServerError(errorMessage);
 		}
 	};
 

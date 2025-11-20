@@ -33,6 +33,7 @@ import {
   useDeleteMessageMutation,
   useReplyToMessageMutation,
 } from "../../../api/messageApi";
+import { parseServerError } from "../../../utils/errorHandler";
 
 export default function ContactMessages() {
   const { data: messages = [], isLoading, refetch } = useGetAllMessagesQuery();
@@ -107,9 +108,10 @@ export default function ContactMessages() {
       });
       handleCloseReplyDialog();
     } catch (error) {
+      const errorMessage = parseServerError(error, "שגיאה בשליחת התשובה");
       setSnackbar({
         open: true,
-        message: error?.data?.message || "שגיאה בשליחת התשובה",
+        message: errorMessage,
         severity: "error",
       });
     }
@@ -126,9 +128,10 @@ export default function ContactMessages() {
         });
         refetch();
       } catch (error) {
+        const errorMessage = parseServerError(error, "שגיאה במחיקת ההודעה");
         setSnackbar({
           open: true,
-          message: error?.data?.message || "שגיאה במחיקת ההודעה",
+          message: errorMessage,
           severity: "error",
         });
       }

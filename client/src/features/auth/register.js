@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterMutation } from "../../api/authApi";
 import { useNavigate } from "react-router-dom";
+import { parseServerError } from "../../utils/errorHandler";
 import "./style/register.css";
 
 import {
@@ -139,40 +140,10 @@ const Register = () => {
     } catch (error) {
       console.log('Registration error:', error);
       console.log('Error data:', error?.data);
-      console.log('Error message:', error?.data?.message);
-      console.log('Full error object:', JSON.stringify(error, null, 2));
       
-      // בדיקה מפורטת של שגיאות
-      const errorMessage = error?.data?.message || error?.message || '';
-      const errorString = JSON.stringify(error);
-      
-      // בדיקה אם השגיאה קשורה לתאריך לידה עתידי
-      if (errorMessage.includes("תאריך לידה לא יכול להיות עתידי") || 
-          errorMessage.includes("dateOfBirth") ||
-          errorString.includes("תאריך לידה לא יכול להיות עתידי") ||
-          errorString.includes("dateOfBirth")) {
-        setServerError("❌ תאריך הלידה לא יכול להיות עתידי. אנא בחר תאריך תקין.");
-      }
-      // בדיקה אם השגיאה קשורה לערך כפול
-      else if (errorMessage.includes("duplicate") || 
-          errorMessage.includes("unique") ||
-          errorMessage.includes("E11000") ||
-          errorMessage.includes("already exists")) {
-        
-        // בדיקה ספציפית לאימייל
-        if (errorMessage.includes("email") || errorMessage.includes("Email")) {
-          setServerError("❌ כתובת האימייל כבר רשומה במערכת. אנא השתמש בכתובת אימייל אחרת או נסה להתחבר.");
-        } 
-        // בדיקה ספציפית למספר ת"ז
-        else if (errorMessage.includes("childId") || errorMessage.includes("ת\"ז") || errorMessage.includes("זהות")) {
-          setServerError("❌ מספר תעודת הזהות כבר רשום במערכת. אם זה הילד שלך, נסה להתחבר או פנה לתמיכה.");
-        } 
-        else {
-          setServerError("❌ הפרטים שהזנת כבר קיימים במערכת. אנא בדוק את האימייל ומספר הזהות.");
-        }
-      } else {
-        setServerError("❌ שגיאה בהרשמה. אנא בדוק את הפרטים ונסה שוב.");
-      }
+      // שימוש בפונקציית טיפול השגיאות המרכזית
+      const errorMessage = parseServerError(error, "❌ שגיאה בהרשמה. אנא בדוק את הפרטים ונסה שוב.");
+      setServerError(errorMessage);
     }
   };
 

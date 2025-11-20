@@ -37,6 +37,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { parseServerError } from "../../../utils/errorHandler";
 
 // Zod schema for update validation
 const updateSchema = z.object({
@@ -143,8 +144,8 @@ const UpdateManagement = () => {
         handleCloseDialog();
       }, 1500);
     } catch (error) {
-      const msg = error?.data?.message || "שגיאה בשמירת העדכון";
-      setServerError(msg);
+      const errorMessage = parseServerError(error, "שגיאה בשמירת העדכון");
+      setServerError(errorMessage);
     }
   };
 
@@ -166,8 +167,8 @@ const UpdateManagement = () => {
       setUpdateToDelete(null);
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
-      const msg = error?.data?.message || "שגיאה במחיקת העדכון";
-      setServerError(msg);
+      const errorMessage = parseServerError(error, "שגיאה במחיקת העדכון");
+      setServerError(errorMessage);
       setTimeout(() => setServerError(""), 3000);
     }
   };

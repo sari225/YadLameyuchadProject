@@ -30,6 +30,7 @@ import {
 } from "../../../api/dayCampApi";
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
+import { parseServerError } from "../../../utils/errorHandler";
 
 const UserCampsList = () => {
   const { data: allDayCamps = [], isLoading, isError, error, refetch } = useGetDayCampsQuery();
@@ -99,16 +100,8 @@ const UserCampsList = () => {
       setTimeout(() => setSuccessMessage(""), 5000);
     } catch (error) {
       console.error('Registration error:', error);
-      const errorMsg = error?.data?.message || "שגיאה בהרשמה לקייטנה";
-      
-      // אם השגיאה היא שהילד כבר רשום, נציג הודעה מתאימה
-      if (errorMsg.includes("already registered") || errorMsg.includes("כבר רשום")) {
-        setErrorMessage("אתה כבר רשום לקייטנה זו");
-        refetch(); // רענון כדי לעדכן את המצב
-      } else {
-        setErrorMessage(errorMsg);
-      }
-      
+      const errorMessage = parseServerError(error, "שגיאה בהרשמה לקייטנה");
+      setErrorMessage(errorMessage);
       setOpenDialog(false);
       setSelectedCamp(null);
       setTimeout(() => setErrorMessage(""), 5000);
@@ -132,7 +125,7 @@ const UserCampsList = () => {
     return (
       <Box sx={{ p: 3 }} dir="rtl">
         <Alert severity="error">
-          שגיאה בטעינת הקייטנות: {error?.data?.message || error?.error}
+          {parseServerError(error, "שגיאה בטעינת הקייטנות")}
         </Alert>
       </Box>
     );

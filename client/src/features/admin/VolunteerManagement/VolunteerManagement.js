@@ -38,6 +38,7 @@ import VolunteerDetails from "./VolunteerDetails";
 import EditVolunteerDialog from "./EditVolunteerDialog";
 import AddVolunteerDialog from "./AddVolunteerDialog";
 import "./volunteerManagement.css";
+import { parseServerError } from "../../../utils/errorHandler";
 
 // פונקציה לחישוב גיל מתאריך לידה
 function calcAge(dob) {
@@ -191,7 +192,7 @@ const VolunteerManagement = () => {
 				<Typography color="error" variant="h6">
 					שגיאה בטעינת נתוני המתנדבות
 				</Typography>
-				<Typography color="error">{error?.data?.message || error?.message}</Typography>
+				<Typography color="error">{parseServerError(error, "שגיאה בטעינת נתוני המתנדבות")}</Typography>
 			</Box>
 		);
 	}

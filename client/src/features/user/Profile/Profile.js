@@ -24,6 +24,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { parseServerError } from "../../../utils/errorHandler";
 
 // Zod schema for password dialog
 const passwordSchema = z.object({
@@ -407,7 +408,7 @@ const Profile = () => {
       {isFetching && <CircularProgress />}
       {isError && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {error?.data?.message || "שגיאה בטעינת הנתונים"}
+          {parseServerError(error, "שגיאה בטעינת הנתונים")}
         </Alert>
       )}
       {serverErr && (

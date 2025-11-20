@@ -37,6 +37,7 @@ import {
   useDeleteDayCampMutation,
 } from "../../../api/dayCampApi";
 import { useNavigate } from "react-router-dom";
+import { parseServerError } from "../../../utils/errorHandler";
 
 const DayCampManagement = () => {
   const navigate = useNavigate();
@@ -170,8 +171,8 @@ const DayCampManagement = () => {
         handleCloseDialog();
       }, 1500);
     } catch (error) {
-      const msg = error?.data?.message || "שגיאה בשמירת הקייטנה";
-      setServerError(msg);
+      const errorMessage = parseServerError(error, "שגיאה בשמירת הקייטנה");
+      setServerError(errorMessage);
     }
   };
 
@@ -193,8 +194,8 @@ const DayCampManagement = () => {
       setDayCampToDelete(null);
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
-      const msg = error?.data?.message || "שגיאה במחיקת הקייטנה";
-      setServerError(msg);
+      const errorMessage = parseServerError(error, "שגיאה במחיקת הקייטנה");
+      setServerError(errorMessage);
       setTimeout(() => setServerError(""), 3000);
     }
   };

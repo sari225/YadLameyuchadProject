@@ -23,6 +23,7 @@ import {
   useUpdateChildMutation,
   useGetChildByIdQuery,
 } from "../../../api/childApi";
+import { parseServerError } from "../../../utils/errorHandler";
 
 // =============================
 //     סכמת Zod מלאה לעריכה
@@ -178,8 +179,7 @@ const EditChildDialog = ({ open, onClose, child, onSuccess }) => {
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md" dir="rtl">
         <Box sx={{ p: 4, textAlign: "center" }}>
           <Alert severity="error" sx={{ mb: 2 }}>
-            {childLoadError?.data?.message ||
-              "שגיאה בטעינת פרטי הילד מהשרת."}
+            {parseServerError(childLoadError, "שגיאה בטעינת פרטי הילד מהשרת.")}
           </Alert>
           <Button variant="outlined" onClick={onClose}>
             סגירה
@@ -220,43 +220,8 @@ const EditChildDialog = ({ open, onClose, child, onSuccess }) => {
       if (onSuccess) onSuccess();
       onClose();
     } catch (error) {
-      // קריאת התשובה מהשרת לפי הקונטרולר והמודל
-      const msg = (error?.data?.message || "").toString();
-      const errorDetail =
-        typeof error?.data?.error === "string"
-          ? error.data.error
-          : JSON.stringify(error?.data?.error || "");
-      const raw = `${msg} ${errorDetail}`;
-      const lower = raw.toLowerCase();
-
-      // מייל כפול – createChild מחזיר:
-      // "Email already exists. Please use a different email address."
-      if (
-        lower.includes("email already exists") ||
-        (lower.includes("email") && lower.includes("exists")) ||
-        lower.includes("email_1")
-      ) {
-        setServerError(
-          "❌ כתובת האימייל כבר רשומה במערכת. אנא השתמשי בכתובת אחרת."
-        );
-      }
-      // ת"ז כפולה – createChild מחזיר:
-      // "childId already exists. This ID is already registered in the system."
-      else if (
-        lower.includes("childid already exists") ||
-        (lower.includes("childid") && lower.includes("exists")) ||
-        lower.includes("childid_1")
-      ) {
-        setServerError(
-          "❌ מספר תעודת הזהות כבר רשום במערכת. אם זה הילד שלך, פנו לתמיכה."
-        );
-      }
-      // הודעת הוולידציה מהמודל במונגוס
-      else if (raw.includes("תאריך לידה לא יכול להיות עתידי")) {
-        setServerError("❌ תאריך הלידה לא יכול להיות עתידי. אנא בחרי תאריך תקין.");
-      } else {
-        setServerError("❌ שגיאה בעדכון. אנא בדקי את הנתונים ונסי שוב.");
-      }
+      const errorMessage = parseServerError(error, "❌ שגיאה בעדכון. אנא בדקי את הנתונים ונסי שוב.");
+      setServerError(errorMessage);
     }
   };
 

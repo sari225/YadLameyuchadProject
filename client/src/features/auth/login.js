@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { GoogleLogin } from '@react-oauth/google';
+import { parseServerError } from "../../utils/errorHandler";
 import "./style/login.css";
 
 import {
@@ -86,7 +87,8 @@ const Login = () => {
       setForgotPasswordMessage("סיסמה חדשה נשלחה למייל שלך");
       setShowForgotPassword(false);
     } catch (error) {
-      setServerError("שגיאה בשליחת סיסמה חדשה. אנא בדוק את כתובת המייל");
+      const errorMessage = parseServerError(error, "שגיאה בשליחת סיסמה חדשה. אנא בדוק את כתובת המייל");
+      setServerError(errorMessage);
     }
   };
 
@@ -108,7 +110,8 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Google login error:', error);
-      setServerError(error?.data?.message || "❌ התחברות עם Google נכשלה. אנא וודא שאתה רשום במערכת.");
+      const errorMessage = parseServerError(error, "❌ התחברות עם Google נכשלה. אנא וודא שאתה רשום במערכת.");
+      setServerError(errorMessage);
     }
   };
 

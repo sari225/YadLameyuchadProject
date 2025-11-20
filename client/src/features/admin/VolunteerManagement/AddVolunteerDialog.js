@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateVolunteerMutation } from "../../../api/volunteerApi";
+import { parseServerError } from "../../../utils/errorHandler";
 
 // סכמת Zod להוספת מתנדבת
 const addVolunteerSchema = z.object({
@@ -117,41 +118,8 @@ const AddVolunteerDialog = ({ open, onClose, onSuccess }) => {
 			reset();
 			onClose();
 		} catch (error) {
-			const msg = (error?.data?.message || "").toString();
-			const errorDetail = typeof error?.data?.error === "string"
-				? error.data.error
-				: JSON.stringify(error?.data?.error || "");
-			const raw = `${msg} ${errorDetail}`;
-
-			// ת"ז כפולה
-			if (msg.includes("E11000") || msg.includes("duplicate") || raw.includes("duplicate key")) {
-				if (raw.includes("id")) {
-					setServerError("❌ תעודת זהות זו כבר קיימת במערכת. אנא בדקי שוב.");
-					return;
-				}
-				setServerError("❌ הערך הזה כבר קיים במערכת.");
-				return;
-			}
-
-			// תאריך לידה עתידי
-			if (msg.includes("תאריך לידה לא יכול להיות עתידי") || errorDetail.includes("תאריך לידה לא יכול להיות עתידי")) {
-				setServerError("❌ תאריך הלידה לא יכול להיות עתידי. אנא בחרי תאריך תקין.");
-				return;
-			}
-
-			// שגיאות ולידציה ממונגוס
-			if (msg.includes("validation failed") || errorDetail.includes("validation failed")) {
-				const match = raw.match(/message":"([^\"]+)"/);
-				if (match && match[1]) {
-					setServerError("❌ " + match[1]);
-				} else {
-					setServerError("❌ יש שגיאה באחד השדות. בדקי שכל השדות תקינים.");
-				}
-				return;
-			}
-
-			// שגיאה כללית
-			setServerError("❌ שגיאה בהוספת מתנדבת. אנא בדקי את הנתונים ונסי שוב.");
+			const errorMessage = parseServerError(error, "❌ שגיאה בהוספת מתנדבת. אנא בדקי את הנתונים ונסי שוב.");
+			setServerError(errorMessage);
 		}
 	};
 

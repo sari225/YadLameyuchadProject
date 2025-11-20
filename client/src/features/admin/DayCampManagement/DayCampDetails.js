@@ -43,6 +43,7 @@ import {
 import { useGetChildrenQuery } from "../../../api/childApi";
 import { useParams, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
+import { parseServerError } from "../../../utils/errorHandler";
 import { Document, Packer, Paragraph, Table as DocxTable, TableRow as DocxTableRow, TableCell as DocxTableCell, WidthType, AlignmentType, TextRun, BorderStyle, ShadingType, TableLayoutType } from "docx";
 import { saveAs } from "file-saver";
 
@@ -104,7 +105,8 @@ const DayCampDetails = () => {
       setSelectedChild(null);
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
-      setServerError(error?.data?.message || "שגיאה בהוספת ילד");
+      const errorMessage = parseServerError(error, "שגיאה בהוספת ילד");
+      setServerError(errorMessage);
       setTimeout(() => setServerError(""), 3000);
     }
   };
@@ -125,7 +127,8 @@ const DayCampDetails = () => {
       setChildToDelete(null);
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
-      setServerError(error?.data?.message || "שגיאה בהסרת ילד");
+      const errorMessage = parseServerError(error, "שגיאה בהסרת ילד");
+      setServerError(errorMessage);
       setOpenDeleteDialog(false);
       setChildToDelete(null);
       setTimeout(() => setServerError(""), 3000);

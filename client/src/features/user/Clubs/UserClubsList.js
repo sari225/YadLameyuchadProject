@@ -33,6 +33,7 @@ import {
 } from "../../../api/clubApi";
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
+import { parseServerError } from "../../../utils/errorHandler";
 
 const UserClubsList = () => {
   const { data: allClubs = [], isLoading, isError, error, refetch } = useGetClubsQuery();
@@ -164,7 +165,8 @@ const UserClubsList = () => {
       refetch();
     } catch (error) {
       console.error("Failed to request join:", error);
-      setErrorMessage(error?.data?.message || "שגיאה בשליחת הבקשה");
+      const errorMessage = parseServerError(error, "שגיאה בשליחת הבקשה");
+      setErrorMessage(errorMessage);
       setTimeout(() => setErrorMessage(""), 3000);
     }
   };
@@ -181,7 +183,7 @@ const UserClubsList = () => {
     return (
       <Box sx={{ p: 3 }}>
         <Alert severity="error">
-          שגיאה בטעינת המועדוניות: {error?.data?.message || error?.message || "שגיאה לא ידועה"}
+          {parseServerError(error, "שגיאה בטעינת המועדוניות")}
         </Alert>
       </Box>
     );

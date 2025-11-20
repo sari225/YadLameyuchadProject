@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateChildMutation } from "../../../api/childApi";
+import { parseServerError } from "../../../utils/errorHandler";
 
 // =============================
 //     סכמת Zod מלאה להוספה
@@ -147,44 +148,8 @@ const AddChildDialog = ({ open, onClose, onSuccess }) => {
 			reset();
 			onClose();
 		} catch (error) {
-			const msg = (error?.data?.message || "").toString();
-			const errorDetail = typeof error?.data?.error === "string"
-				? error.data.error
-				: JSON.stringify(error?.data?.error || "");
-			const raw = `${msg} ${errorDetail}`;
-
-			// מייל כפול
-			if (msg.includes("Email already exists")) {
-				setServerError("❌ כתובת האימייל שהזנת כבר רשומה במערכת. אנא השתמשי בכתובת אחרת.");
-				return;
-			}
-			// ת"ז כפולה
-			if (msg.includes("childId already exists")) {
-				setServerError("❌ מספר תעודת הזהות שהזנת כבר רשום במערכת. אנא בדקי שוב.");
-				return;
-			}
-			// תאריך לידה עתידי
-			if (msg.includes("תאריך לידה לא יכול להיות עתידי") || errorDetail.includes("תאריך לידה לא יכול להיות עתידי")) {
-				setServerError("❌ תאריך הלידה לא יכול להיות עתידי. אנא בחרי תאריך תקין.");
-				return;
-			}
-			// אימייל לא מוגדר
-			if (raw.includes("email is not defined")) {
-				setServerError("❌ כתובת אימייל היא שדה חובה. אנא הזיני כתובת אימייל תקינה.");
-				return;
-			}
-			// שגיאות ולידציה ממונגוס
-			if (msg.includes("validation failed") || errorDetail.includes("validation failed")) {
-				const match = raw.match(/message":"([^\"]+)"/);
-				if (match && match[1]) {
-					setServerError("❌ " + match[1]);
-				} else {
-					setServerError("❌ יש שגיאה באחד השדות. בדקי שכל השדות תקינים.");
-				}
-				return;
-			}
-			// שגיאה כללית
-			setServerError("❌ שגיאה ביצירת ילד. אנא בדקי את הנתונים ונסי שוב.");
+			const errorMessage = parseServerError(error, "❌ שגיאה ביצירת ילד. אנא בדקי את הנתונים ונסי שוב.");
+			setServerError(errorMessage);
 		}
 	};
 

@@ -106,7 +106,7 @@ export default function ContactPage() {
     <div className="contact-page">
       {/* Background Image */}
       <div className="background-image">
-        <img src="/HOME/A.png" alt="רקע" />
+        <img src="/images/home/A.png" alt="רקע" />
       </div>
 
       {/* Back Button */}

@@ -6,6 +6,11 @@ const { sendMail } = require("../utils/sendMail");
 const {generatePassword}=require("../utils/generatePassword");
 const { OAuth2Client } = require('google-auth-library');
 
+// Email Templates
+const verificationEmailTemplate = require('../templates/emails/verificationEmail');
+const approvalEmailTemplate = require('../templates/emails/approvalEmail');
+const resetPasswordEmailTemplate = require('../templates/emails/resetPasswordEmail');
+
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 
@@ -58,8 +63,8 @@ const registerChild = async (req, res) => {
 
     await sendMail(
       email,
-      "Email Verification - YadLemeyuchad",
-      `Your verification code is: ${otp}`
+      "אימות מייל - יד למיוחד",
+      verificationEmailTemplate(otp)
     );
 
     res.status(201).json({ 
@@ -134,7 +139,11 @@ const approveChild = async (req, res) => {
     child.isApproved = true;
     await child.save();
 
-    await sendMail(child.email, "Your Initial Password", `Your password is: ${plainPassword}`);
+    await sendMail(
+      child.email,
+      "הסיסמה הראשונית שלך - יד למיוחד",
+      approvalEmailTemplate(child.Fname, child.Lname, plainPassword)
+    );
 
     res.json({ message: "Child approved and password sent" });
   } catch (err) {
@@ -209,7 +218,11 @@ const forgotPassword = async (req, res) => {
       await child.save();
 
       // שולחים למייל
-      await sendMail(email, "Password Reset", `Your temporary password is: ${tempPassword}`);
+      await sendMail(
+        email,
+        "שחזור סיסמה - יד למיוחד",
+        resetPasswordEmailTemplate(child.Fname, child.Lname, tempPassword, false)
+      );
 
       return res.json({ message: "Temporary password sent to your email" });
     }
@@ -224,7 +237,11 @@ const forgotPassword = async (req, res) => {
       await admin.save();
 
       // שולחים למייל
-      await sendMail(email, "Password Reset", `Your temporary password is: ${tempPassword}`);
+      await sendMail(
+        email,
+        "שחזור סיסמה - יד למיוחד",
+        resetPasswordEmailTemplate(null, null, tempPassword, true)
+      );
 
       return res.json({ message: "Temporary password sent to your email" });
     }

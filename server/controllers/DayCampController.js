@@ -3,6 +3,7 @@ const Child = require("../models/Child")
 const fs = require('fs')
 const path = require('path')
 const { sendMail } = require('../utils/sendMail')
+const dayCampRegistrationEmailTemplate = require('../templates/emails/dayCampRegistrationEmail')
 
 const createDayCamp = async (req, res) => {
   try {
@@ -133,28 +134,9 @@ const addChildToDayCamp = async (req, res) => {
     await dayCamp.save();
 
     // שליחת מייל עם כל הפרטים של הקייטנה
-    const emailSubject = `אישור הרשמה לקייטנה ${dayCamp.name}`;
-    const emailBody = `
-      <div dir="rtl" style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <h2 style="color: #4CAF50;">שלום ${child.Fname} ${child.Lname},</h2>
-        <p>נרשמת בהצלחה לקייטנה!</p>
-        
-        <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="color: #2196F3; margin-top: 0;">פרטי הקייטנה:</h3>
-          
-          <p><strong>שם הקייטנה:</strong> ${dayCamp.name}</p>
-          <p><strong>תאריך התחלה:</strong> ${new Date(dayCamp.startDate).toLocaleDateString('he-IL')}</p>
-          <p><strong>תאריך סיום:</strong> ${new Date(dayCamp.endDate).toLocaleDateString('he-IL')}</p>
-          <p><strong>מיקום:</strong> ${dayCamp.location}</p>
-          <p><strong>מספר משתתפים נוכחי:</strong> ${dayCamp.subscribersNumber}</p>
-        </div>
-        
-        
-        <p style="margin-top: 20px;">בברכה,<br/>צוות הניהול</p>
-      </div>
-    `;
+    const childFullName = `${child.Fname} ${child.Lname}`;
 
-    // הכנת attachments אם יש קובץ - בדיוק כמו ב-UpdateController
+    // הכנת attachments אם יש קובץ
     let attachments = undefined;
     if (dayCamp.file?.path) {
       attachments = {
@@ -164,7 +146,12 @@ const addChildToDayCamp = async (req, res) => {
     }
 
     try {
-      await sendMail(child.email, emailSubject, emailBody, attachments);
+      await sendMail(
+        child.email,
+        `אישור הרשמה לקייטנה ${dayCamp.name}`,
+        dayCampRegistrationEmailTemplate(childFullName, dayCamp),
+        attachments
+      );
       console.log('Email sent successfully to:', child.email);
     } catch (emailError) {
       console.error('Failed to send email:', emailError);

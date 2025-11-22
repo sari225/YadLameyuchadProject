@@ -1,0 +1,78 @@
+/* דיאלוג יצירת קשר - עיצוב כללי */
+
+/* דיאלוג ראשי */
+.contact-dialog-paper {
+  border-radius: 15px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* כותרת דיאלוג */
+.contact-dialog-title {
+  text-align: center !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+  color: #333 !important;
+  padding-bottom: 8px !important;
+}
+
+/* תיבת תוכן */
+.contact-content-box {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+/* שדות טקסט */
+.contact-text-field .MuiInputBase-root {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.contact-text-field .MuiInputLabel-root {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* הודעת התראה */
+.contact-alert {
+  margin-bottom: 16px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* טקסט הסבר */
+.contact-info-text {
+  color: #666 !important;
+  font-size: 0.8rem !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* כפתורי פעולה */
+.contact-actions {
+  padding: 16px !important;
+  gap: 8px !important;
+}
+
+/* כפתור ביטול */
+.contact-cancel-button {
+  color: #666 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+/* כפתור שליחה */
+.contact-submit-button {
+  background-color: #FFB6C1 !important;
+  color: #333 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 600 !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.contact-submit-button:hover {
+  background-color: #FF9FAB !important;
+}
+
+.contact-submit-button:disabled {
+  background-color: #f0f0f0 !important;
+  color: #999 !important;
+}

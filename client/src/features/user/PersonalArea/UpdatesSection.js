@@ -1,17 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, Typography, Paper, IconButton, CircularProgress, Alert, Button } from "@mui/material";
-import { GetApp as DownloadIcon, AttachFile as AttachFileIcon, ArrowForward as ArrowForwardIcon } from "@mui/icons-material";
+import { GetApp as DownloadIcon, AttachFile as AttachFileIcon, InfoOutlined as InfoIcon } from "@mui/icons-material";
 import { useGetUpdatingsQuery } from "../../../api/updateApi";
 import { useNavigate } from "react-router-dom";
-import "./allUpdatesStyles.css";
+import "./styles/updatesSectionStyles.css";
 
-const AllUpdates = () => {
+const UpdatesSection = () => {
   const navigate = useNavigate();
   const { data: updates = [], isLoading, isError } = useGetUpdatingsQuery();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const normalizePath = (p) => {
     if (!p) return "";
@@ -51,7 +47,9 @@ const AllUpdates = () => {
     const ext = name.toLowerCase().split(".").pop();
     return ["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(ext);
   };
+
   const isPdfFile = (name) => !!name && name.toLowerCase().endsWith(".pdf");
+
   const isVideoFile = (name) => {
     if (!name) return false;
     const ext = name.toLowerCase().split(".").pop();
@@ -59,48 +57,63 @@ const AllUpdates = () => {
   };
 
   return (
-    <Box className="all-updates-main-container" sx={{ minHeight: "100vh", p: 4 }} dir="rtl">
-      <Typography variant="h3" className="updates-title" sx={{ fontWeight: 700, textShadow: "2px 2px 4px rgba(0,0,0,0.2)", mb: 4 }}>
-        כל העדכונים
+    <Box className="updates-main-container">
+      <Typography variant="h4" className="updates-title">
+        עדכונים אחרונים
       </Typography>
 
       {isLoading && (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
+        <Box className="loading-container">
           <CircularProgress />
         </Box>
       )}
       {isError && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" className="error-alert">
           שגיאה בטעינת העדכונים
         </Alert>
       )}
       {!isLoading && !isError && visibleUpdates.length === 0 && (
         <Paper className="no-updates-container">
-          <Typography className="no-updates-title">אין עדכונים כרגע</Typography>
-          <Typography className="no-updates-subtext">נעדכן כשתפורסמו הודעות חדשות</Typography>
+          <InfoIcon className="no-updates-icon" />
+          <Typography className="no-updates-title">
+            אין עדכונים חדשים
+          </Typography>
+          <Typography className="no-updates-subtitle">
+            כל העדכונים וההודעות החדשות יופיעו כאן
+          </Typography>
         </Paper>
       )}
 
-      <Box className="updates-list" sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
-        {visibleUpdates.map((update) => (
-          <Paper key={update._id} className="update-card-horizontal" elevation={3}>
-            {update.file?.filename && (
+      <Box className="updates-list">
+        {visibleUpdates.slice(0, 4).map((update) => (
+          <Paper key={update._id} className="update-card-horizontal">
+            {/* תצוגה מקדימה של קובץ יחיד אם קיים */}
+            {((update.files && update.files[0]) || update.file) && (
               <Box
-                onClick={() => window.open(getFileURL(update.file.path), "_blank", "noopener")}
+                onClick={() => window.open(getFileURL((update.files && update.files[0] ? update.files[0].path : update.file.path)), "_blank", "noopener")}
                 className="update-media-container"
-                sx={{ "&:hover": { opacity: 0.8 } }}
               >
-                {isImageFile(update.file.filename) ? (
-                  <Box component="img" src={getFileURL(update.file.path)} alt={update.title} className="update-image" sx={{ display: "block" }} />
-                ) : isPdfFile(update.file.filename) ? (
+                {isImageFile((update.files && update.files[0] ? update.files[0].filename : update.file.filename)) ? (
+                  <Box 
+                    component="img" 
+                    src={getFileURL((update.files && update.files[0] ? update.files[0].path : update.file.path))}
+                    alt={update.title} 
+                    className="update-image"
+                  />
+                ) : isPdfFile((update.files && update.files[0] ? update.files[0].filename : update.file.filename)) ? (
                   <Box className="update-pdf-container">
-                    <iframe title={update.title} src={`${getFileURL(update.file.path)}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`} className="update-pdf-iframe" scrolling="no" />
+                    <iframe
+                      title={update.title}
+                      src={`${getFileURL((update.files && update.files[0] ? update.files[0].path : update.file.path))}#view=FitH&toolbar=0&navpanes=0&scrollbar=0&zoom=page-fit`}
+                      className="update-pdf-iframe"
+                      scrolling="no"
+                    />
                     <Box className="pdf-overlay" />
                   </Box>
-                ) : isVideoFile(update.file.filename) ? (
+                ) : isVideoFile((update.files && update.files[0] ? update.files[0].filename : update.file.filename)) ? (
                   <Box
                     component="video"
-                    src={getFileURL(update.file.path)}
+                    src={getFileURL((update.files && update.files[0] ? update.files[0].path : update.file.path))}
                     autoPlay
                     muted
                     loop
@@ -120,7 +133,7 @@ const AllUpdates = () => {
                 <IconButton
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDownloadFile(update.file);
+                    handleDownloadFile((update.files && update.files[0] ? update.files[0] : update.file));
                   }}
                   className="download-button-overlay"
                   size="small"
@@ -148,8 +161,21 @@ const AllUpdates = () => {
           </Paper>
         ))}
       </Box>
+
+      {visibleUpdates.length > 4 && (
+        <Box className="show-all-container">
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => navigate("/user/all-updates")}
+            className="show-all-button"
+          >
+            הצג את כל העדכונים
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
 
-export default AllUpdates;
+export default UpdatesSection;

@@ -1,0 +1,333 @@
+/* עיצוב האזור האישי - מעוצב לפי הקובץ JS המקורי */
+
+/* מיכל ראשי */
+.main-container {
+  min-height: 100vh;
+  background-image: url('../../../../../public/images/home/B.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding: 40px;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  position: relative;
+}
+
+.main-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(1px);
+  z-index: -1;
+  background-image: url('../../../../../public/images/home/B.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* כותרת ברוך הבא */
+.welcome-container {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.welcome-title {
+  font-weight: 700 !important;
+  margin-bottom: 16px !important;
+  color: #333 !important;
+  font-size: 3rem !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  position: relative;
+}
+
+.welcome-title::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 5px;
+  background: linear-gradient(90deg, #8A4CA3, #B76BA3, #4A90E2);
+  border-radius: 3px;
+}
+
+.welcome-subtitle {
+  font-weight: 500 !important;
+  color: #666 !important;
+  font-size: 1.3rem !important;
+  margin-top: 32px !important;
+  line-height: 1.6 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* קונטיינר סטטיסטיקות - פשוט וישר על הרקע */
+.stats-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 64px;
+  margin-bottom: 64px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+/* ריבוע סטטיסטיקה בודד - Override HomePage.css conflicts */
+.main-container .stats-container .stat-item {
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 280px !important;
+  height: 200px !important;
+  background: linear-gradient(135deg, rgba(138, 76, 163, 0.05), rgba(183, 107, 163, 0.08), rgba(74, 144, 226, 0.05)) !important;
+  border-radius: 15px !important;
+  box-shadow: 0 4px 12px rgba(138, 76, 163, 0.08) !important;
+  padding: 20px !important;
+  position: relative !important;
+  backdrop-filter: blur(10px) !important;
+  
+  /* Critical overrides to fix HomePage.css conflicts */
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* מיכל תוכן עליון - Override any conflicts */
+.main-container .stats-container .stat-item .content-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+  min-height: 120px !important;
+  padding: 20px 10px 10px 10px !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* מספר בסטטיסטיקה */
+.main-container .stats-container .stat-item .content-container .stat-number {
+  font-size: 3.5rem !important;
+  font-weight: 800 !important;
+  color: #333 !important;
+  margin: 10px 0 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  line-height: 1 !important;
+  display: block !important;
+  text-align: center !important;
+  z-index: 10 !important;
+  position: relative !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* טקסט קייטנה פעילה */
+
+.main-container .stats-container .stat-item .content-container .active-camp-text {
+  font-size: 1.7rem !important;
+  font-weight: 500 !important;
+  color: #111 !important;
+  margin: 6px 0 !important;
+  align-items: center !important;
+  line-height: 1.3 !important;
+  text-align: center !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  display: block !important;
+  z-index: 10 !important;
+  position: relative !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* טקסט אין קייטנה */
+.main-container .stats-container .stat-item .content-container .no-camp-text {
+  font-size: 1.5rem !important;
+  font-weight: 500 !important;
+  color: #111 !important;
+  margin: 10px 0 !important;
+  line-height: 1.3 !important;
+  text-align: center !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  display: block !important;
+  z-index: 10 !important;
+  position: relative !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* תווית סטטיסטיקה (כולל קייטנה פעילה ומועדוניות) */
+.main-container .stats-container .stat-item .stat-label {
+  font-size: 1.3rem !important;
+  color: #111 !important;
+  font-weight: 700 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  line-height: 1.5rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  letter-spacing: 0.5px;
+}
+
+/* עמודת קישורים מהירים */
+.quick-links-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  width: 280px;
+  height: 100%;
+}
+
+/* קישור מהיר בודד */
+.quick-link-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 82px;
+  background: linear-gradient(135deg, rgba(138, 76, 163, 0.05), rgba(183, 107, 163, 0.08), rgba(74, 144, 226, 0.05));
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  color: #111 !important;
+  box-shadow: 0 4px 12px rgba(138, 76, 163, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.quick-link-item .MuiTypography-root {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 600 !important;
+  color: #111 !important;
+  font-size: 1rem !important;
+}
+
+.quick-link-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(138, 76, 163, 0.12);
+}
+
+/* כפתור יצירת קשר */
+.contact-button {
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.3), rgba(255, 159, 171, 0.4)) !important;
+}
+
+.contact-button:hover {
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.5), rgba(255, 159, 171, 0.6)) !important;
+}
+
+/* כפתור פרופיל */
+.profile-button {
+  background: linear-gradient(135deg, rgba(208, 217, 255, 0.3), rgba(184, 199, 255, 0.4)) !important;
+}
+
+.profile-button:hover {
+  background: linear-gradient(135deg, rgba(208, 217, 255, 0.5), rgba(184, 199, 255, 0.6)) !important;
+}
+
+/* אייקון בכפתור */
+.icon {
+  font-size: 1.5rem;
+}
+
+/* סלקטורים כלליים חזקים מאוד */
+div[dir="rtl"] .stats-container .stat-item * {
+  opacity: 1 !important;
+  transform: none !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* חיזוק נוסף לאייקונים */
+.main-container .stats-container .stat-item svg {
+  opacity: 1 !important;
+  transform: none !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* חיזוק ספציפי ל-Typography של Material-UI */
+.main-container .MuiTypography-root {
+  opacity: 1 !important;
+  transform: none !important;
+  position: relative !important;
+  z-index: 10 !important;
+  display: block !important;
+}
+
+/* חיזוק אולטימטיבי */
+.main-container * {
+  transition: none !important;
+}
+
+.main-container .stats-container .stat-item {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* רספונסיביות למובייל - מרחיבים בקצת את הסטטיסטיקות והקישורים */
+@media (max-width: 600px) {
+  .stats-container {
+    gap: 24px;
+    margin-bottom: 40px;
+    margin-top: 24px;
+    justify-content: center;
+  }
+
+  .main-container .stats-container .stat-item {
+    width: min(360px, 92%) !important;
+    max-width: 360px !important;
+    height: auto !important;
+    padding: 26px !important;
+    box-shadow: 0 6px 18px rgba(138, 76, 163, 0.08) !important;
+  }
+
+  .main-container .stats-container .stat-item .content-container {
+    min-height: auto !important;
+    padding: 14px 12px 10px 12px !important;
+  }
+
+  .main-container .stats-container .stat-item .content-container .stat-number {
+    font-size: 4rem !important;
+  }
+
+  .main-container .stats-container .stat-item .content-container .active-camp-text,
+  .main-container .stats-container .stat-item .content-container .no-camp-text {
+    font-size: 1.9rem !important;
+  }
+
+  /* קישורים מהירים מעט גדולים יותר ונוחים למגע */
+  .quick-links-column {
+    width: min(360px, 92%) !important;
+    gap: 18px !important;
+    align-items: stretch;
+  }
+
+  .quick-link-item {
+    height: 96px !important;
+    font-size: 1.05rem !important;
+    padding: 12px !important;
+  }
+
+}
+
+

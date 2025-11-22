@@ -31,6 +31,7 @@ import {
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { parseServerError } from "../../../utils/errorHandler";
+import "./userCampsListStyles.css";
 
 const UserCampsList = () => {
   const { data: allDayCamps = [], isLoading, isError, error, refetch } = useGetDayCampsQuery();
@@ -132,75 +133,65 @@ const UserCampsList = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }} dir="rtl">
-      <Typography variant="h4" sx={{ mb: 3, textAlign: "center", fontWeight: "bold" }}>
+    <div className="camps-main-container" dir="rtl">
+      <Typography variant="h3" className="camps-page-title">
         קייטנות להרשמה
       </Typography>
+      
+      <div className="camps-description-container">
+        <Typography variant="h6" className="camps-description">
+          כאן תוכל להירשם לקייטנות הקרובות שלנו.
+          <br />
+          בחר את הקייטנה המתאימה לך ולחץ על כפתור ההרשמה
+        </Typography>
+      </div>
 
       {successMessage && (
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert severity="success" className="camps-alert">
           {successMessage}
         </Alert>
       )}
 
       {errorMessage && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" className="camps-alert">
           {errorMessage}
         </Alert>
       )}
 
       {dayCamps.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography variant="h6" color="text.secondary">
-            אין קייטנות זמינות כרגע
+        <div className="no-camps-simple-message">
+          <CalendarIcon className="no-camps-icon-simple" />
+          <Typography className="no-camps-simple-text">
+              אין קייטנות זמינות להרשמה
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            בדוק שוב בהמשך או פנה למנהל המערכת
-          </Typography>
-        </Paper>
+        </div>
       ) : (
-        <Box sx={{ 
-          display: "grid", 
-          gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" },
-          gap: 3
-        }}>
+        <div className="camps-grid">
           {dayCamps.map((camp) => (
-            <Card 
-              key={camp._id}
-              sx={{ 
-                height: 600,
-                display: "flex", 
-                flexDirection: "column",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: 6,
-                },
-              }}
-            >
-                <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-                  <Typography variant="h5" component="h2" sx={{ mb: 2, fontWeight: "bold", minHeight: "32px" }}>
+            <Card key={camp._id} className="camp-card">
+                <CardContent className="camp-card-content">
+                  <Typography className="camp-name">
                     {camp.name}
                   </Typography>
                   
-                  <Box sx={{ mb: 2 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <CalendarIcon sx={{ ml: 1, color: "primary.main" }} />
-                      <Typography variant="body2">
+                  <div className="camp-details">
+                    <div className="camp-detail-row">
+                      <CalendarIcon className="camp-detail-icon" />
+                      <Typography className="camp-detail-text">
                         {new Date(camp.startDate).toLocaleDateString("he-IL")} - {" "}
                         {new Date(camp.endDate).toLocaleDateString("he-IL")}
                       </Typography>
-                    </Box>
+                    </div>
                     
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <LocationIcon sx={{ ml: 1, color: "primary.main" }} />
-                      <Typography variant="body2">{camp.location}</Typography>
-                    </Box>
-                  </Box>
+                    <div className="camp-detail-row">
+                      <LocationIcon className="camp-detail-icon" />
+                      <Typography className="camp-detail-text">{camp.location}</Typography>
+                    </div>
+                  </div>
 
-                  <Divider sx={{ my: 2 }} />
+                  <Divider className="camp-divider" />
 
-                  <Box sx={{ mb: 2 }}>
+                  <div className="status-chip-container">
                     {isAlreadyRegistered(camp) ? (
                       <Chip 
                         label="נרשמת לקייטנה בהצלחה" 
@@ -214,44 +205,24 @@ const UserCampsList = () => {
                         size="small"
                       />
                     )}
-                  </Box>
+                  </div>
 
                   {/* תצוגה מקדימה של קובץ */}
                   {camp.file?.filename && (
-                    <Box sx={{ mt: 2, border: "1px solid #e0e0e0", borderRadius: 2, overflow: "hidden", bgcolor: "#fafafa" }}>
+                    <div className="file-preview-container">
                       {/* כותרת עם שם הקובץ וכפתור פתיחה */}
-                      <Box sx={{ p: 1.5, bgcolor: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #e0e0e0" }}>
-                        <Box sx={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
-                          <AttachFileIcon sx={{ ml: 1, color: "primary.main", fontSize: 20 }} />
-                          <Typography variant="body2" sx={{ fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div className="file-header">
+                        <div className="file-header-content">
+                          <AttachFileIcon className="file-icon" />
+                          <Typography className="file-name">
                             {camp.file.filename}
                           </Typography>
-                        </Box>
-                        <Button
-                          size="small"
-                          variant="text"
-                          onClick={() => {
-                            const fileURL = `${process.env.REACT_APP_API_URL}/${camp.file.path.replace(/\\/g, "/")}`;
-                            window.open(fileURL, "_blank");
-                          }}
-                          sx={{ minWidth: "auto", px: 1, fontSize: "0.75rem" }}
-                        >
-                          פתח
-                        </Button>
-                      </Box>
+                        </div>
+                      </div>
                       
                       {/* תצוגה מקדימה של התוכן */}
-                      <Box 
-                        sx={{ 
-                          height: 200, 
-                          display: "flex", 
-                          alignItems: "center", 
-                          justifyContent: "center",
-                          bgcolor: "white",
-                          cursor: "pointer",
-                          position: "relative",
-                          overflow: "hidden"
-                        }}
+                      <div 
+                        className="file-preview-content"
                         onClick={() => {
                           const fileURL = `${process.env.REACT_APP_API_URL}/${camp.file.path.replace(/\\/g, "/")}`;
                           window.open(fileURL, "_blank");
@@ -263,33 +234,20 @@ const UserCampsList = () => {
                             component="img"
                             src={`${process.env.REACT_APP_API_URL}/${camp.file.path.replace(/\\/g, "/")}`}
                             alt={camp.file.filename}
-                            sx={{
-                              maxWidth: "100%",
-                              maxHeight: "100%",
-                              objectFit: "contain"
-                            }}
+                            className="preview-image"
                           />
                         ) : camp.file.filename.toLowerCase().endsWith(".pdf") ? (
                           // PDF - תצוגה מקדימה ללא סרגל גלילה
-                          <Box sx={{ width: "100%", height: "100%", position: "relative", overflow: "hidden" }}>
+                          <div className="pdf-preview-container">
                             <iframe
                               src={`${process.env.REACT_APP_API_URL}/${camp.file.path.replace(/\\/g, "/")}#view=FitH&toolbar=0&navpanes=0&scrollbar=0&zoom=page-fit`}
-                              style={{
-                                width: "120%",
-                                height: "120%",
-                                border: "none",
-                                pointerEvents: "none",
-                                overflow: "hidden",
-                                position: "absolute",
-                                top: "-10%",
-                                left: "-10%"
-                              }}
+                              className="pdf-iframe"
                               scrolling="no"
                               title={camp.file.filename}
                             />
                             {/* שכבה שקופה למניעת קליקים ומסתירה את סרגל הגלילה */}
-                            <Box sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, bgcolor: "transparent" }} />
-                          </Box>
+                            <div className="pdf-overlay" />
+                          </div>
                         ) : camp.file.filename.toLowerCase().match(/\.(mp4|webm|ogg|mov|avi|mpeg)$/i) ? (
                           // סרטון - תצוגה מקדימה
                           <Box
@@ -300,66 +258,50 @@ const UserCampsList = () => {
                             loop
                             controls
                             playsInline
-                            sx={{ 
-                              width: "100%", 
-                              height: "100%", 
-                              objectFit: "contain",
-                              display: "block",
-                              backgroundColor: "#000"
-                            }}
+                            className="preview-video"
                             onClick={(e) => e.stopPropagation()}
                           />
                         ) : (
                           // קבצים אחרים - אייקון
                           <Box sx={{ textAlign: "center", p: 3 }}>
-                            <AttachFileIcon sx={{ fontSize: 60, color: "#bdbdbd", mb: 1 }} />
-                            <Typography variant="body2" color="text.secondary">
+                            <AttachFileIcon className="file-icon-large" />
+                            <Typography className="file-type-text">
                               {camp.file.filename.split(".").pop().toUpperCase()} קובץ
                             </Typography>
                           </Box>
                         )}
-                      </Box>
-                    </Box>
+                      </div>
+                    </div>
                   )}
                 </CardContent>
                 
-                <Box sx={{ p: 2, pt: 0, mt: "auto" }}>
+                <div className="camp-actions">
                   {isAlreadyRegistered(camp) ? (
                     <Button
-                      variant="outlined"
-                      fullWidth
+                      variant="contained"
                       disabled
-                      sx={{
-                        fontWeight: "bold",
-                        py: 1.5,
-                      }}
+                      className="register-button-clubs-style registered"
                     >
-                      הירשם לקייטנה
+                      נרשמת לקייטנה
                     </Button>
                   ) : (
                     <Button
                       variant="contained"
-                      fullWidth
                       onClick={() => handleRegisterClick(camp)}
-                      sx={{
-                        backgroundColor: "#4caf50",
-                        "&:hover": { backgroundColor: "#45a049" },
-                        fontWeight: "bold",
-                        py: 1.5,
-                      }}
+                      className="register-button-clubs-style"
                     >
-                      הירשם לקייטנה
+                      שלח בקשת הרשמה
                     </Button>
                   )}
-                </Box>
+                </div>
               </Card>
             ))}
-        </Box>
+        </div>
       )}
 
       {/* Dialog אישור הרשמה */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ textAlign: "right", fontWeight: "bold" }}>
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth className="confirmation-dialog">
+        <DialogTitle className="dialog-title">
           אישור הרשמה לקייטנה
           <IconButton
             onClick={handleCloseDialog}
@@ -368,40 +310,36 @@ const UserCampsList = () => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent className="dialog-content">
           {selectedCamp && (
-            <Box sx={{ textAlign: "right" }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
+            <div>
+              <Typography className="dialog-camp-name">
                 {selectedCamp.name}
               </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
+              <Typography className="dialog-camp-detail">
                 <strong>תאריכים:</strong> {new Date(selectedCamp.startDate).toLocaleDateString("he-IL")} - {new Date(selectedCamp.endDate).toLocaleDateString("he-IL")}
               </Typography>
-              <Typography variant="body2" sx={{ mb: 2 }}>
+              <Typography className="dialog-camp-detail">
                 <strong>מיקום:</strong> {selectedCamp.location}
               </Typography>
-              <Typography variant="body1" sx={{ mt: 2 }}>
+              <Typography className="dialog-question">
                 האם אתה בטוח שברצונך להירשם לקייטנה זו?
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              <Typography className="dialog-note">
                 לאחר האישור נשלח אליך מייל עם כל הפרטים הנדרשים.
               </Typography>
-            </Box>
+            </div>
           )}
         </DialogContent>
-        <DialogActions sx={{ justifyContent: "flex-start", p: 2 }}>
-          <Button onClick={handleCloseDialog} variant="outlined">
+        <DialogActions className="dialog-actions">
+          <Button onClick={handleCloseDialog} variant="outlined" className="dialog-button-cancel">
             ביטול
           </Button>
           <Button
             onClick={handleConfirmRegister}
             variant="contained"
             disabled={isRegistering}
-            sx={{ 
-              backgroundColor: "#4caf50", 
-              "&:hover": { backgroundColor: "#45a049" },
-              ml: 1 
-            }}
+            className="dialog-button-confirm"
           >
             {isRegistering ? (
               <CircularProgress size={20} color="inherit" />
@@ -411,7 +349,7 @@ const UserCampsList = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </div>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
-  Grid,
   TextField,
   Button,
   CircularProgress,
@@ -12,8 +11,10 @@ import {
   DialogActions,
   Typography,
   Paper,
+  IconButton,
 } from "@mui/material";
-import { Edit as EditIcon, Lock as LockIcon, Email as EmailIcon } from "@mui/icons-material";
+import "./profileStyles.css";
+import { Edit as EditIcon, Lock as LockIcon, Email as EmailIcon, Close as CloseIcon } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -69,7 +70,13 @@ const profileSchema = z.object({
     .or(z.literal("")),
   city: z.string().min(2, "שם העיר חייב להכיל לפחות 2 תווים"),
   street: z.string().min(2, "שם הרחוב חייב להכיל לפחות 2 תווים"),
-  building: z.string().min(1, "מספר בית הוא שדה חובה"),
+  building: z.string()
+    .min(1, "מספר בית הוא שדה חובה")
+    .regex(/^[0-9]+$/, "מספר בית חייב להכיל רק ספרות")
+    .refine((val) => {
+      const num = parseInt(val, 10);
+      return num >= 1 && num <= 500;
+    }, "מספר בית חייב להיות בין 1 ל-500"),
   educationInstitution: z.string().optional(),
   specialNeeds: z.string().optional(),
   allergies: z.string().optional(),
@@ -91,43 +98,50 @@ const PasswordDialog = ({ open, onClose }) => {
     if (open) reset({ newPassword: "", confirmPassword: "" });
   }, [open, reset]);
 
-  const [serverError, setServerError] = useState("");
-  const [serverSuccess, setServerSuccess] = useState("");
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   const onSubmit = async ({ newPassword }) => {
-    setServerError("");
-    setServerSuccess("");
+    setMessage({ type: "", text: "" });
     try {
       await updatePassword({ newPassword }).unwrap();
-      setServerSuccess("הסיסמה עודכנה בהצלחה");
+      setMessage({ type: "success", text: "הסיסמה עודכנה בהצלחה" });
       reset();
+      setTimeout(() => {
+        setMessage({ type: "", text: "" });
+        onClose();
+      }, 2000);
     } catch (e) {
       const msg = e?.data?.message || "שגיאה בעדכון הסיסמה";
-      setServerError(msg);
+      setMessage({ type: "error", text: msg });
+      setTimeout(() => setMessage({ type: "", text: "" }), 5000);
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} dir="rtl">
-      <DialogTitle>עדכון סיסמה</DialogTitle>
-      <DialogContent>
-        {serverError && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {serverError}
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth className="confirmation-dialog">
+      <DialogTitle className="dialog-title">
+        שינוי סיסמה
+        <IconButton
+          onClick={onClose}
+          sx={{ position: "absolute", left: 8, top: 8 }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent className="dialog-content">
+        {message.text && (
+          <Alert severity={message.type} className="profile-alert">
+            {message.text}
           </Alert>
         )}
-        {serverSuccess && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {serverSuccess}
-          </Alert>
-        )}
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
           <TextField
             type="password"
             label="סיסמה חדשה"
             fullWidth
             margin="normal"
-            {...register("newPassword", { required: "חובה להקליד סיסמה" })}
+            className="profile-text-field"
+            {...register("newPassword")}
             error={!!errors.newPassword}
             helperText={errors.newPassword?.message}
           />
@@ -136,18 +150,27 @@ const PasswordDialog = ({ open, onClose }) => {
             label="אימות סיסמה"
             fullWidth
             margin="normal"
-            {...register("confirmPassword", { required: "חובה לאשר סיסמה" })}
+            className="profile-text-field"
+            {...register("confirmPassword")}
             error={!!errors.confirmPassword}
             helperText={errors.confirmPassword?.message}
           />
-          <DialogActions sx={{ px: 0, mt: 1 }}>
-            <Button onClick={onClose}>סגור</Button>
-            <Button type="submit" variant="contained" disabled={isLoading}>
-              {isLoading ? <CircularProgress size={20} /> : "עדכון"}
-            </Button>
-          </DialogActions>
         </Box>
       </DialogContent>
+      <DialogActions className="dialog-actions">
+        <Button onClick={onClose} variant="outlined" className="dialog-button-cancel">
+          ביטול
+        </Button>
+        <Button 
+          type="submit" 
+          variant="contained" 
+          disabled={isLoading} 
+          className="dialog-button-confirm"
+          onClick={handleSubmit(onSubmit)}
+        >
+          {isLoading ? <CircularProgress size={20} color="inherit" /> : "עדכן סיסמה"}
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
@@ -174,8 +197,7 @@ const Profile = () => {
 
   const [editMode, setEditMode] = useState(false);
   const [pwdOpen, setPwdOpen] = useState(false);
-  const [serverMsg, setServerMsg] = useState("");
-  const [serverErr, setServerErr] = useState("");
+  const [message, setMessage] = useState({ type: "", text: "" });
   const [isTogglingEmail, setIsTogglingEmail] = useState(false);
 
   const {
@@ -214,7 +236,7 @@ const Profile = () => {
         phone2: child.phone2 || "",
         city: child.address?.city || "",
         street: child.address?.street || "",
-        building: child.address?.building || "",
+        building: String(child.address?.building || ""),
         educationInstitution: child.educationInstitution || "",
         specialNeeds: child.definition || "",
         allergies: Array.isArray(child.allergies)
@@ -226,8 +248,7 @@ const Profile = () => {
 
   const onSubmit = async (data) => {
     if (!id) return;
-    setServerMsg("");
-    setServerErr("");
+    setMessage({ type: "", text: "" });
     const childData = {
       parentName: data.parentName,
       Fname: data.Fname,
@@ -245,66 +266,37 @@ const Profile = () => {
     };
     try {
       await updateChild({ id, childData }).unwrap();
-      setServerMsg("הפרטים עודכנו בהצלחה");
+      setMessage({ type: "success", text: "הפרטים עודכנו בהצלחה" });
+      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
       setEditMode(false);
       refetch();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
-      const msg = (e?.data?.message || "").toString();
-      const errorDetail =
-        typeof e?.data?.error === "string"
-          ? e.data.error
-          : JSON.stringify(e?.data?.error || "");
-      const raw = `${msg} ${errorDetail}`;
-      const lower = raw.toLowerCase();
-
-      if (
-        lower.includes("email already exists") ||
-        (lower.includes("email") && lower.includes("exists")) ||
-        lower.includes("email_1")
-      ) {
-        setServerErr(
-          "❌ כתובת האימייל כבר רשומה במערכת. אנא השתמש בכתובת אחרת."
-        );
-      } else if (
-        lower.includes("childid already exists") ||
-        (lower.includes("childid") && lower.includes("exists")) ||
-        lower.includes("childid_1")
-      ) {
-        setServerErr(
-          "❌ מספר תעודת הזהות כבר רשום במערכת. אם זה הילד שלך, פנה לתמיכה."
-        );
-      } else if (raw.includes("תאריך לידה לא יכול להיות עתידי")) {
-        setServerErr("❌ תאריך הלידה לא יכול להיות עתידי. אנא בחר תאריך תקין.");
-      } else if (e?.status === 409) {
-        setServerErr("המייל או מספר הילד כבר קיימים במערכת");
-      } else if (e?.status === 400) {
-        setServerErr("נתונים לא תקינים, אנא בדוק את השדות");
-      } else if (e?.status === 500) {
-        setServerErr("שגיאת שרת, נסה שוב מאוחר יותר");
-      } else {
-        setServerErr("שגיאה בעדכון הפרופיל");
-      }
+      const errorMessage = parseServerError(e, "שגיאה בעדכון הפרופיל");
+      setMessage({ type: "error", text: errorMessage });
+      setTimeout(() => setMessage({ type: "", text: "" }), 5000);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handleToggleEmailConsent = async () => {
     if (!id || !child) return;
     setIsTogglingEmail(true);
-    setServerMsg("");
-    setServerErr("");
+    setMessage({ type: "", text: "" });
     try {
       await updateChild({
         id,
         childData: { emailConsent: !child.emailConsent },
       }).unwrap();
-      setServerMsg(
-        child.emailConsent
-          ? "בוטלה הסכמה לקבלת דיוור במייל"
-          : "ניתנה הסכמה לקבלת דיוור במייל"
-      );
+      const text = child.emailConsent
+        ? "בוטלה הסכמה לקבלת דיוור במייל"
+        : "ניתנה הסכמה לקבלת דיוור במייל";
+      setMessage({ type: "success", text });
+      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
       refetch();
     } catch (e) {
-      setServerErr("שגיאה בעדכון הגדרות דיוור");
+      setMessage({ type: "error", text: "שגיאה בעדכון הגדרות דיוור" });
+      setTimeout(() => setMessage({ type: "", text: "" }), 5000);
     } finally {
       setIsTogglingEmail(false);
     }
@@ -315,89 +307,50 @@ const Profile = () => {
   }
 
   return (
-    <Box
-      sx={{
-        maxWidth: 700,
-        mx: "auto",
-        p: 3,
-        backgroundColor: "#fafafa",
-        minHeight: "100vh",
-      }}
-      dir="rtl"
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 2,
-        }}
-      >
-        <Typography variant="h4" sx={{ fontWeight: "600", color: "#333" }}>
-          הפרופיל שלי
+    <Box className="profile-main-container" dir="rtl">
+      <Typography variant="h3" className="profile-page-title">
+        הפרופיל שלי
+      </Typography>
+
+      <div className="profile-description-container">
+        <Typography variant="h6" className="profile-description">
+          כאן תוכל לעדכן את הפרטים האישיים שלך ולשנות את הסיסמה
         </Typography>
-        <Box sx={{ display: "flex", gap: 2 }}>
+      </div>
+
+      <Box className="profile-header">
+        <Box className="profile-actions">
           {!editMode && (
             <>
               <Button
-                variant="outlined"
+                variant="contained"
                 startIcon={<EditIcon />}
                 onClick={() => setEditMode(true)}
-                sx={{
-                  borderColor: "#d486b8",
-                  color: "#d486b8",
-                  fontSize: "15px",
-                  borderRadius: "8px",
-                  textTransform: "none",
-                  "&:hover": {
-                    backgroundColor: "rgba(212, 134, 184, 0.04)",
-                    borderColor: "#a57bad",
-                  },
-                }}
+                className="profile-action-button"
               >
-                עריכת פרטים
+                <span className="button-text">עריכת פרטים</span>
               </Button>
               <Button
                 variant="outlined"
                 startIcon={<LockIcon />}
                 onClick={() => setPwdOpen(true)}
-                sx={{
-                  borderColor: "#a57bad",
-                  color: "#a57bad",
-                  fontSize: "15px",
-                  borderRadius: "8px",
-                  textTransform: "none",
-                  "&:hover": {
-                    backgroundColor: "rgba(165, 123, 173, 0.04)",
-                    borderColor: "#a57bad",
-                  },
-                }}
+                className="profile-secondary-button"
               >
-                שינוי סיסמה
+                <span className="button-text">שינוי סיסמה</span>
               </Button>
               <Button
                 variant="outlined"
                 startIcon={<EmailIcon />}
                 onClick={handleToggleEmailConsent}
                 disabled={isTogglingEmail}
-                sx={{
-                  borderColor: child?.emailConsent ? "#4caf50" : "#9e9e9e",
-                  color: child?.emailConsent ? "#4caf50" : "#9e9e9e",
-                  fontSize: "15px",
-                  borderRadius: "8px",
-                  textTransform: "none",
-                  "&:hover": {
-                    backgroundColor: child?.emailConsent ? "rgba(76, 175, 80, 0.04)" : "rgba(158, 158, 158, 0.04)",
-                    borderColor: child?.emailConsent ? "#388e3c" : "#757575",
-                  },
-                }}
+                className="profile-secondary-button"
               >
                 {isTogglingEmail ? (
                   <CircularProgress size={20} />
-                ) : child?.emailConsent ? (
-                  "ביטול דיוור"
                 ) : (
-                  "קבלת דיוור"
+                  <span className="button-text">
+                    {child?.emailConsent ? "ביטול דיוור" : "קבלת דיוור"}
+                  </span>
                 )}
               </Button>
             </>
@@ -405,53 +358,31 @@ const Profile = () => {
         </Box>
       </Box>
 
-      {isFetching && <CircularProgress />}
+      {isFetching && (
+        <Box className="profile-loading-container">
+          <CircularProgress size={60} className="profile-loading" />
+        </Box>
+      )}
       {isError && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" className="profile-alert">
           {parseServerError(error, "שגיאה בטעינת הנתונים")}
         </Alert>
       )}
-      {serverErr && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {serverErr}
-        </Alert>
-      )}
-      {serverMsg && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          {serverMsg}
+      {message.text && (
+        <Alert severity={message.type} className="profile-alert">
+          {message.text}
         </Alert>
       )}
 
-      <Paper
-        sx={{
-          p: 3,
-          backgroundColor: "white",
-          borderRadius: 1,
-          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{ mb: 3, fontWeight: "600", color: "#333", fontSize: "18px" }}
-        >
+      <Paper className="profile-card">
+        <Typography className="profile-card-title">
           פרטים אישיים
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-            {/* אימייל */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                כתובת מייל
-              </Typography>
+          <Box className="profile-form-group">
+            <Box className="profile-field">
+              <Typography className="profile-field-label">כתובת מייל</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -460,37 +391,12 @@ const Profile = () => {
                 error={!!errors.email}
                 helperText={errors.email?.message}
                 placeholder="example@example.com"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* שם הורה */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                שם הורה
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">שם הורה</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -499,37 +405,12 @@ const Profile = () => {
                 error={!!errors.parentName}
                 helperText={errors.parentName?.message}
                 placeholder="שם הורה"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* טלפון ראשי */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                טלפון אבא
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">טלפון אבא</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -538,37 +419,12 @@ const Profile = () => {
                 error={!!errors.phone1}
                 helperText={errors.phone1?.message}
                 placeholder="05xxxxxxxx"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* טלפון משני */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                טלפון אמא
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">טלפון אמא</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -577,38 +433,13 @@ const Profile = () => {
                 error={!!errors.phone2}
                 helperText={errors.phone2?.message}
                 placeholder="05xxxxxxxx"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-            {/* שם פרטי */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                שם פרטי
-              </Typography>
+          <Box className="profile-form-group">
+            <Box className="profile-field">
+              <Typography className="profile-field-label">שם פרטי</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -617,37 +448,12 @@ const Profile = () => {
                 error={!!errors.Fname}
                 helperText={errors.Fname?.message}
                 placeholder="שם פרטי"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* שם משפחה */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                שם משפחה 
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">שם משפחה</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -656,37 +462,12 @@ const Profile = () => {
                 error={!!errors.Lname}
                 helperText={errors.Lname?.message}
                 placeholder="שם משפחה"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* תאריך לידה */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                תאריך לידה
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">תאריך לידה</Typography>
               <TextField
                 type="date"
                 variant="outlined"
@@ -695,37 +476,15 @@ const Profile = () => {
                 {...register("dateOfBirth")}
                 error={!!errors.dateOfBirth}
                 helperText={errors.dateOfBirth?.message}
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
+                className="profile-text-field"
+                inputProps={{
+                  max: new Date().toISOString().split('T')[0]
                 }}
               />
             </Box>
 
-            {/* גיל */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                גיל
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">גיל</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -739,31 +498,12 @@ const Profile = () => {
                     : ""
                 }
                 placeholder="גיל מחושב אוטומטית"
-                InputProps={{
-                  sx: {
-                    backgroundColor: "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#e0e0e0",
-                    },
-                  },
-                }}
+                className="profile-text-field profile-text-field-disabled"
               />
             </Box>
 
-            {/* עיר */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                עיר
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">עיר</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -772,37 +512,12 @@ const Profile = () => {
                 error={!!errors.city}
                 helperText={errors.city?.message}
                 placeholder="עיר"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* רחוב */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                רחוב
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">רחוב</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -811,37 +526,12 @@ const Profile = () => {
                 error={!!errors.street}
                 helperText={errors.street?.message}
                 placeholder="רחוב"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* מספר בית */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                מספר בית
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">מספר בית</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -850,157 +540,55 @@ const Profile = () => {
                 error={!!errors.building}
                 helperText={errors.building?.message}
                 placeholder="מספר בית"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* מוסד לימודי */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                מוסד לימודים
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">מוסד לימודים</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
                 disabled={!editMode}
                 {...register("educationInstitution")}
                 placeholder="שם המוסד החינוכי"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* פירוט הגדרה */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                פירוט הגדרה של הילד
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">פירוט הגדרה של הילד</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
                 disabled={!editMode}
                 {...register("specialNeeds")}
                 placeholder="הערות או הגדרות מיוחדות"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
 
-            {/* אלרגיות */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#333",
-                  mb: 0.5,
-                  textAlign: "right",
-                }}
-              >
-                אלרגיות 
-              </Typography>
+            <Box className="profile-field">
+              <Typography className="profile-field-label">אלרגיות</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
                 disabled={!editMode}
                 {...register("allergies")}
                 placeholder="לדוגמה: בוטנים, חלב, ביצים"
-                InputProps={{
-                  sx: {
-                    backgroundColor: editMode ? "white" : "#f5f5f5",
-                    borderRadius: "4px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#bdbdbd" : "#e0e0e0",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: editMode ? "#757575" : "#e0e0e0",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#03a9f4",
-                    },
-                  },
-                }}
+                className="profile-text-field"
               />
             </Box>
           </Box>
 
           {editMode && (
-            <Box sx={{ mt: 4, display: "flex", gap: 2 }}>
+            <Box className="profile-buttons-container">
               <Button
                 type="submit"
                 variant="contained"
                 fullWidth
                 disabled={isSaving}
-                sx={{
-                  backgroundColor: "#03a9f4",
-                  color: "white",
-                  py: 1.2,
-                  fontSize: "15px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  borderRadius: "6px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    backgroundColor: "#0288d1",
-                    boxShadow: "0 2px 8px rgba(3,169,244,0.3)",
-                  },
-                }}
+                className="profile-save-button"
               >
                 {isSaving ? <CircularProgress size={20} /> : "עדכון פרטים"}
               </Button>
@@ -1022,7 +610,7 @@ const Profile = () => {
                       phone2: child.phone2 || "",
                       city: child.address?.city || "",
                       street: child.address?.street || "",
-                      building: child.address?.building || "",
+                      building: String(child.address?.building || ""),
                       educationInstitution: child.educationInstitution || "",
                       specialNeeds: child.definition || "",
                       allergies: Array.isArray(child.allergies)
@@ -1030,20 +618,9 @@ const Profile = () => {
                         : "",
                     });
                   }
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                sx={{
-                  borderColor: "#bdbdbd",
-                  color: "#666",
-                  py: 1.2,
-                  fontSize: "15px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  borderRadius: "6px",
-                  "&:hover": {
-                    borderColor: "#757575",
-                    backgroundColor: "#f5f5f5",
-                  },
-                }}
+                className="profile-cancel-button"
               >
                 ביטול
               </Button>

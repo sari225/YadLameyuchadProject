@@ -43,8 +43,7 @@ const ClubDetailsDialog = ({
         return (
           <Chip
             label="רשום"
-            color="success"
-            variant="filled"
+            variant="outlined"
             className="status-chip-registered"
           />
         );
@@ -52,8 +51,7 @@ const ClubDetailsDialog = ({
         return (
           <Chip
             label="ממתין לאישור"
-            color="warning"
-            variant="filled"
+            variant="outlined"
             className="status-chip-waiting"
           />
         );
@@ -61,8 +59,7 @@ const ClubDetailsDialog = ({
         return (
           <Chip
             label="נדחה"
-            color="error"
-            variant="filled"
+            variant="outlined"
             className="status-chip-refused"
           />
         );

@@ -3,7 +3,7 @@
 /* מיכל ראשי */
 .camps-main-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
   background-attachment: fixed;
   padding: 40px;
   font-family: 'M PLUS Rounded 1c', sans-serif;
@@ -133,23 +133,20 @@
 }
 
 /* עיצוב צ'יפים לפי סטטוס */
-.status-chip-container .MuiChip-root {
-  font-weight: 600 !important;
+.camp-status-chip-registered,
+.camp-status-chip-open {
+  font-weight: bold !important;
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-color: #8A4CA3 !important;
+  color: #8A4CA3 !important;
+  min-width: 180px !important;
+  width: 180px !important;
 }
 
-/* צ'יפ "נרשמת לקייטנה בהצלחה" - כחול */
-.status-chip-container .MuiChip-colorInfo {
-  background: #2196F3 !important;
-  color: white !important;
-  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.4) !important;
-}
-
-/* צ'יפ "הרשמה פתוחה" - ירוק */
-.status-chip-container .MuiChip-colorSuccess {
-  background: #4CAF50 !important;
-  color: white !important;
-  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4) !important;
+.camp-status-chip-registered .MuiChip-label,
+.camp-status-chip-open .MuiChip-label {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: bold !important;
 }
 
 /* תצוגת קובץ - שמירה על העיצוב הנוכחי */

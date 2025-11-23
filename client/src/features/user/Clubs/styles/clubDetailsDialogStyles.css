@@ -72,14 +72,16 @@
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
 }
 
-.status-chip-refused .MuiChip-icon {
-  margin-left: 2px !important;
-  margin-right: 0px !important;
-}
-
+.status-chip-registered,
+.status-chip-waiting,
+.status-chip-refused,
 .status-chip-not-registered {
   font-weight: bold !important;
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  min-width: 140px !important;
+  width: 140px !important;
+  border-color: #8A4CA3 !important;
+  color: #8A4CA3 !important;
 }
 
 /* מפריד */

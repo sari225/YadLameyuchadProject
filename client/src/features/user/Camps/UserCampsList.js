@@ -194,15 +194,17 @@ const UserCampsList = () => {
                   <div className="status-chip-container">
                     {isAlreadyRegistered(camp) ? (
                       <Chip 
-                        label="נרשמת לקייטנה בהצלחה" 
-                        color="info" 
+                        label="נרשמת בהצלחה" 
+                        variant="outlined"
                         size="small"
+                        className="camp-status-chip-registered"
                       />
                     ) : (
                       <Chip 
                         label="הרשמה פתוחה" 
-                        color="success" 
+                        variant="outlined"
                         size="small"
+                        className="camp-status-chip-open"
                       />
                     )}
                   </div>

@@ -83,37 +83,24 @@ const UserClubsList = () => {
         return (
           <Chip
             label="רשום"
-            color="success"
-            variant="filled"
-            sx={{ 
-              fontWeight: 'bold'
-            }}
+            variant="outlined"
+            className="club-status-chip"
           />
         );
       case 'waiting':
         return (
           <Chip
             label="ממתין לאישור"
-            color="warning"
-            variant="filled"
-            sx={{ 
-              fontWeight: 'bold'
-            }}
+            variant="outlined"
+            className="club-status-chip"
           />
         );
       case 'refused':
         return (
           <Chip
             label="נדחה"
-            color="error"
-            variant="filled"
-            sx={{ 
-              fontWeight: 'bold',
-              '& .MuiChip-icon': {
-                marginLeft: '2px',
-                marginRight: '0px'
-              }
-            }}
+            variant="outlined"
+            className="club-status-chip"
           />
         );
       default:

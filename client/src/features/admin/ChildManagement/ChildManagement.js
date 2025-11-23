@@ -1,4 +1,5 @@
-﻿import React, { useMemo, useState } from "react";
+﻿import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
 	Box,
 	Paper,
@@ -41,17 +42,20 @@ import ChildDetails from "./ChildDetails";
 import { parseServerError } from "../../../utils/errorHandler";
 import EditChildDialog from "./EditChildDialog";
 import AddChildDialog from "./AddChildDialog";
+import {
+	setSearchQuery,
+	setSearchField,
+	setShowPending,
+} from "./ChildManagmentSlice";
+import {
+	calcAge,
+	filterApprovedChildren,
+	filterPendingChildren,
+	createClubsDict,
+	filterAndSortChildren,
+	getChildClubs,
+} from "./childManagementHelpers";
 import "./childManagement.css";
-// פונקציה לחישוב גיל מתאריך לידה
-function calcAge(dob) {
-	if (!dob) return "-";
-	const birth = new Date(dob);
-	const today = new Date();
-	let age = today.getFullYear() - birth.getFullYear();
-	const m = today.getMonth() - birth.getMonth();
-	if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-	return age;
-}
 
 
 const Row = ({ child, childClubs, onDeleted, isPending }) => {
@@ -91,7 +95,7 @@ const Row = ({ child, childClubs, onDeleted, isPending }) => {
 				<TableCell sx={{ width: "23%", textAlign: "center" }}>{child.Fname} {child.Lname}</TableCell>
 			<TableCell sx={{ width: "18%", textAlign: "center" }}>{child.childId}</TableCell>
 			<TableCell sx={{ width: "27%", textAlign: "center" }}>{child.phone1}</TableCell>
-			<TableCell sx={{ width: "27%", textAlign: "center" }}>{calcAge(child.dateOfBirth)}</TableCell>
+			<TableCell sx={{ width: "27%", textAlign: "center" }}>{calcAge(child.dateOfBirth) || "-"}</TableCell>
 			<TableCell sx={{ width: "12%", textAlign: "center" }}>
 				{isPending ? (
 					<Stack direction="row" spacing={1} justifyContent="center">
@@ -180,103 +184,31 @@ const Row = ({ child, childClubs, onDeleted, isPending }) => {
 
 
 const ChildManagement = () => {
+	const dispatch = useDispatch();
 	const { data: children = [], isLoading, isError, error, refetch } = useGetChildrenQuery();
 	const { data: clubs = [] } = useGetClubsQuery();
-	
-	const [showPending, setShowPending] = useState(false);
-	const [searchQuery, setSearchQuery] = useState("");
-	const [searchField, setSearchField] = useState(""); // ריק = חיפוש חופשי
+
+	// מצבים מ-Redux
+	const searchQuery = useSelector((state) => state.childManagement.searchQuery);
+	const searchField = useSelector((state) => state.childManagement.searchField);
+	const showPending = useSelector((state) => state.childManagement.showPending);
+
+	// עיבוד נתונים בעזרת הפונקציות מה-helpers
+	const approvedChildren = filterApprovedChildren(children);
+	const pendingChildren = filterPendingChildren(children);
+	const clubsDict = createClubsDict(clubs);
+	const filteredApproved = filterAndSortChildren(approvedChildren, searchQuery, searchField, clubsDict);
+
+	// מצב מקומי רק לדיאלוג
 	const [addDialogOpen, setAddDialogOpen] = useState(false);
 
-	const approvedChildren = useMemo(() => children.filter(c => c.isApproved === true), [children]);
-	// Pending = not approved yet BUT email/otp verified
-	const pendingChildren = useMemo(() => children.filter(c => c.isApproved === false && c.isVerified === true), [children]);
-
-	// יצירת מילון מועדוניות
-	const clubsDict = useMemo(() => {
-		const dict = {};
-		clubs.forEach(club => {
-			dict[club._id] = { name: club.name, children: club.registeredChildren };
-		});
-		return dict;
-	}, [clubs]);
-
 	// פונקציה להחזרת מועדוניות של ילד
-	const getChildClubs = (child) => {
-		if (!child || !child.clubs || child.clubs.length === 0) return [];
-		return child.clubs
-			.map(clubId => clubsDict[clubId])
-			.filter(Boolean);
+	const getChildClubsForChild = (child) => {
+		return getChildClubs(child, clubsDict);
 	};
 
-	// סינון ילדים מאושרים לפי חיפוש ומיון לפי שם פרטי
-	const filteredApproved = useMemo(() => {
-		let filtered = approvedChildren;
-		
-		if (searchQuery) {
-			const query = searchQuery.toLowerCase();
-			
-			filtered = approvedChildren.filter(child => {
-				switch(searchField) {
-					case "name":
-						return (child.Fname + " " + child.Lname).toLowerCase().includes(query);
-					case "educationInstitution":
-						return (child.educationInstitution || "").toLowerCase().includes(query);
-					case "age":
-						if (!child.dateOfBirth) return false;
-						const age = calcAge(child.dateOfBirth);
-						return age !== null && age.toString() === query;
-					case "dateOfBirth":
-						return (child.dateOfBirth || "").includes(query);
-					case "clubs":
-						const childClubs = getChildClubs(child);
-						return childClubs.some(club => club.name.toLowerCase().includes(query));
-					default: {
-						// חיפוש חופשי על כל השדות
-						const contains = (v) => (v ?? "").toString().toLowerCase().includes(query);
-						const fullName = `${child.Fname || ""} ${child.Lname || ""}`;
-						const age = calcAge(child.dateOfBirth);
-						const dobIso = child.dateOfBirth || "";
-						const dobLocal = child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : "";
-						const clubs = getChildClubs(child);
-						const clubsJoined = clubs.map(c => c.name).join(", ");
-						const allergiesJoined = Array.isArray(child.allergies) ? child.allergies.join(", ") : (child.allergies || "");
-						const emailConsentLabel = child.emailConsent ? "כן" : "לא";
-
-						const matches = [
-							contains(fullName),
-							contains(child.childId),
-							contains(child.parentName),
-							contains(child.educationInstitution),
-							contains(child.phone1),
-							contains(child.phone2),
-							contains(child.email),
-							contains(child.address?.city),
-							contains(child.address?.street),
-							contains(child.address?.building),
-							contains(child.definition),
-							contains(allergiesJoined),
-							contains(dobIso),
-							contains(dobLocal),
-							contains(clubsJoined),
-							contains(emailConsentLabel),
-							age !== null ? age.toString() === query : false,
-						];
-
-						return matches.some(Boolean);
-					}
-				}
-			});
-		}
-		
-		// מיון לפי שם פרטי (א' ב')
-		return filtered.sort((a, b) => {
-			return (a.Fname || "").localeCompare(b.Fname || "", 'he');
-		});
-	}, [approvedChildren, searchQuery, searchField, clubsDict]);
-
 	return (
-		<Box sx={{ 
+		<Box className="child-management-container" sx={{ 
 			p: 3, 
 			direction: 'rtl', 
 			textAlign: 'right'
@@ -289,15 +221,15 @@ const ChildManagement = () => {
 			<Paper sx={{ mb: 2, p: 2, background: 'linear-gradient(135deg, #4fc3f7 0%, #0288d1 100%)' }}>
 				<Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
 					<Button
-						onClick={() => setShowPending(false)}
+						onClick={() => dispatch(setShowPending(false))}
 						sx={{
 							flex: 1,
 							borderRadius: '6px',
-							py: 1.5,
-							backgroundColor: !showPending ? 'white' : 'transparent',
-							color: !showPending ? '#0288d1' : 'rgba(255,255,255,0.9)',
-							fontWeight: !showPending ? 600 : 500,
-							boxShadow: !showPending ? '0 2px 4px rgba(0,0,0,0.2)' : 'none',
+						py: 1.5,
+						backgroundColor: !showPending ? 'white' : 'transparent',
+						color: '#87c8d2' ,
+						fontWeight: !showPending ? 600 : 500,
+						boxShadow: !showPending ? '0 2px 4px rgba(0,0,0,0.2)' : 'none',
 							transition: 'all 0.3s ease',
 							'&:hover': {
 								backgroundColor: !showPending ? 'white' : 'rgba(255,255,255,0.15)',
@@ -307,13 +239,13 @@ const ChildManagement = () => {
 						ילדים רשומים ({approvedChildren.length})
 					</Button>
 					<Button
-						onClick={() => setShowPending(true)}
+						onClick={() => dispatch(setShowPending(true))}
 						sx={{
 							flex: 1,
 							borderRadius: '6px',
 							py: 1.5,
 							backgroundColor: showPending ? 'white' : 'transparent',
-							color: showPending ? '#0288d1' : 'rgba(255,255,255,0.9)',
+							color: '#87c8d2' ,
 							fontWeight: showPending ? 600 : 500,
 							boxShadow: showPending ? '0 2px 4px rgba(0,0,0,0.2)' : 'none',
 							transition: 'all 0.3s ease',
@@ -335,7 +267,7 @@ const ChildManagement = () => {
 							fullWidth
 							placeholder="חיפוש..."
 							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
+							onChange={(e) => dispatch(setSearchQuery(e.target.value))}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment position="start">
@@ -352,7 +284,7 @@ const ChildManagement = () => {
 								labelId="search-field-label"
 								value={searchField}
 								label="חיפוש לפי"
-								onChange={(e) => setSearchField(e.target.value)}
+								onChange={(e) => dispatch(setSearchField(e.target.value))}
 								renderValue={(val) => val ? (
 									{
 										name: 'שם',
@@ -371,20 +303,16 @@ const ChildManagement = () => {
 								<MenuItem value="clubs">מועדוניות</MenuItem>
 							</Select>
 						</FormControl>
-						<Button
-							variant="contained"
+						<IconButton
+							className="add-child-button"
 							onClick={() => setAddDialogOpen(true)}
-							startIcon={<AddIcon />}
 							sx={{
-								bgcolor: '#4CAF50',
-								'&:hover': { bgcolor: '#388E3C' },
-								whiteSpace: 'nowrap',
-								minWidth: 'fit-content',
-								fontWeight: 'bold',
+								width: '56px',
+								height: '56px',
 							}}
 						>
-							הוספת ילד
-						</Button>
+							<AddIcon sx={{ fontSize: '2rem' }} />
+						</IconButton>
 					</Stack>
 				</Paper>
 			)}
@@ -399,7 +327,7 @@ const ChildManagement = () => {
 					<TableContainer>
 						<Table>
 							<TableHead>
-								<TableRow sx={{ bgcolor: '#1976d2' }}>
+								<TableRow sx={{ bgcolor: '#d21979ff' }}>
 									<TableCell sx={{ width: '5%', fontWeight: 'bold', color: 'white', textAlign: 'center' }} />
 									<TableCell sx={{ width: '23%', fontWeight: 'bold', color: 'white', textAlign: 'center' }}>שם</TableCell>
 									<TableCell sx={{ width: '18%', fontWeight: 'bold', color: 'white', textAlign: 'center' }}>ת.ז</TableCell>
@@ -412,7 +340,7 @@ const ChildManagement = () => {
 								{showPending ? (
 									pendingChildren.length > 0 ? (
 									pendingChildren.map((child) => (
-										<Row key={child._id} child={child} childClubs={getChildClubs(child)} onDeleted={refetch} isPending={true} />
+										<Row key={child._id} child={child} childClubs={getChildClubsForChild(child)} onDeleted={refetch} isPending={true} />
 									))
 									) : (
 										<TableRow>
@@ -422,7 +350,7 @@ const ChildManagement = () => {
 								) : (
 									filteredApproved.length > 0 ? (
 									filteredApproved.map((child) => (
-										<Row key={child._id} child={child} childClubs={getChildClubs(child)} onDeleted={refetch} isPending={false} />
+										<Row key={child._id} child={child} childClubs={getChildClubsForChild(child)} onDeleted={refetch} isPending={false} />
 									))
 									) : (
 										<TableRow>

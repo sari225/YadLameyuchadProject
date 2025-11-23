@@ -1,0 +1,125 @@
+/* ניהול ילדים - עיצוב בצבעי האתר */
+
+/* כותרת ראשית */
+.child-management-container h4 {
+    color: #9e63a9;
+    font-family: 'Secular One', sans-serif;
+}
+
+/* כפתורי טאבים */
+.child-management-container .MuiPaper-root:first-of-type {
+    background: rgba(255, 255, 255, 0.4) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(158, 99, 169, 0.12) !important;
+    border-radius: 50px !important;
+    padding: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.child-management-container .MuiPaper-root:first-of-type .MuiBox-root {
+    gap: 8px !important;
+}
+
+.child-management-container .MuiPaper-root:first-of-type .MuiButton-root {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 500;
+    border-radius: 50px !important;
+    padding: 12px 32px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* כפתור טאב פעיל */
+.child-management-container .MuiPaper-root:first-of-type .MuiButton-root[style*="white"] {
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%) !important;
+    color: #87c8d2 !important;
+    box-shadow: 0 4px 12px rgba(158, 99, 169, 0.4) !important;
+    transform: scale(1.02);
+}
+
+/* כפתור טאב לא פעיל */
+.child-management-container .MuiPaper-root:first-of-type .MuiButton-root[style*="transparent"] {
+    color: #87c8d2 !important;
+}
+
+.child-management-container .MuiPaper-root:first-of-type .MuiButton-root:hover {
+    transform: translateY(-2px);
+}
+
+/* כפתור הוספה */
+.add-child-button {
+    background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+    color: white !important;
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 3px 8px rgba(135, 200, 210, 0.3) !important;
+}
+
+.add-child-button:hover {
+    background: linear-gradient(135deg, #b5e2ec 0%, #87c8d2 100%) !important;
+    box-shadow: 0 5px 15px rgba(135, 200, 210, 0.4) !important;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* כרטיס חיפוש */
+.child-management-container .MuiPaper-root:nth-of-type(2) {
+    border: 1px solid #b5e2ec;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(135, 200, 210, 0.15) !important;
+    border-radius: 20px !important;
+}
+
+/* שדות החיפוש */
+.child-management-container .MuiTextField-root .MuiOutlinedInput-root {
+    border-radius: 12px !important;
+}
+
+.child-management-container .MuiFormControl-root .MuiOutlinedInput-root {
+    border-radius: 12px !important;
+}
+
+/* כותרת טבלה */
+.child-management-container .MuiTableHead-root .MuiTableRow-root {
+    background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%) !important;
+}
+
+/* כפתורי פעולה */
+.child-management-container button[color="success"],
+.child-management-container button[aria-label="approve"] {
+    color: #87c8d2 !important;
+}
+
+.child-management-container button[color="error"],
+.child-management-container button[aria-label="delete"] {
+    color: #d687b9 !important;
+}
+
+.child-management-container button[color="primary"],
+.child-management-container button[aria-label="edit"] {
+    color: #87c8d2 !important;
+}
+
+/* כפתורי דיאלוג */
+.child-management-container .MuiDialog-root .MuiDialogTitle-root {
+    color: #9e63a9;
+    font-weight: bold;
+}
+
+.child-management-container .MuiDialog-root button[color="primary"] {
+    color: #9e63a9 !important;
+    border-color: #b5e2ec !important;
+}
+
+.child-management-container .MuiDialog-root button[color="error"] {
+    background-color: #d687b9 !important;
+}
+
+/* רקע כללי */
+.child-management-container {
+    background: linear-gradient(135deg, rgba(135, 200, 210, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+    min-height: 100vh;
+}
+

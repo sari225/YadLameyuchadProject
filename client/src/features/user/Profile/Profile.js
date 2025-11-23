@@ -12,9 +12,10 @@ import {
   Typography,
   Paper,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import "./profileStyles.css";
-import { Edit as EditIcon, Lock as LockIcon, Email as EmailIcon, Close as CloseIcon } from "@mui/icons-material";
+import { Edit as EditIcon, Lock as LockIcon, MarkEmailRead as MarkEmailReadIcon, Close as CloseIcon, Unsubscribe as UnsubscribeIcon } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -292,8 +293,7 @@ const Profile = () => {
         ? "בוטלה הסכמה לקבלת דיוור במייל"
         : "ניתנה הסכמה לקבלת דיוור במייל";
       setMessage({ type: "success", text });
-      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
-      refetch();
+      setTimeout(() => setMessage({ type: "", text: "" }), 5000);
     } catch (e) {
       setMessage({ type: "error", text: "שגיאה בעדכון הגדרות דיוור" });
       setTimeout(() => setMessage({ type: "", text: "" }), 5000);
@@ -318,47 +318,7 @@ const Profile = () => {
         </Typography>
       </div>
 
-      <Box className="profile-header">
-        <Box className="profile-actions">
-          {!editMode && (
-            <>
-              <Button
-                variant="contained"
-                startIcon={<EditIcon />}
-                onClick={() => setEditMode(true)}
-                className="profile-action-button"
-              >
-                <span className="button-text">עריכת פרטים</span>
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<LockIcon />}
-                onClick={() => setPwdOpen(true)}
-                className="profile-secondary-button"
-              >
-                <span className="button-text">שינוי סיסמה</span>
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<EmailIcon />}
-                onClick={handleToggleEmailConsent}
-                disabled={isTogglingEmail}
-                className="profile-secondary-button"
-              >
-                {isTogglingEmail ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  <span className="button-text">
-                    {child?.emailConsent ? "ביטול דיוור" : "קבלת דיוור"}
-                  </span>
-                )}
-              </Button>
-            </>
-          )}
-        </Box>
-      </Box>
-
-      {isFetching && (
+      {isFetching && !child && (
         <Box className="profile-loading-container">
           <CircularProgress size={60} className="profile-loading" />
         </Box>
@@ -368,16 +328,56 @@ const Profile = () => {
           {parseServerError(error, "שגיאה בטעינת הנתונים")}
         </Alert>
       )}
-      {message.text && (
-        <Alert severity={message.type} className="profile-alert">
-          {message.text}
-        </Alert>
-      )}
 
       <Paper className="profile-card">
-        <Typography className="profile-card-title">
-          פרטים אישיים
-        </Typography>
+        <Box className="profile-alert-container">
+          {message.text && (
+            <Alert severity={message.type} className="profile-alert-inside">
+              {message.text}
+            </Alert>
+          )}
+        </Box>
+        
+        <Box className="profile-card-header">
+          <Typography className="profile-card-title">
+            פרטים אישיים
+          </Typography>
+          {!editMode && (
+            <Box className="profile-card-actions">
+              <Tooltip title="עריכת פרטים" arrow placement="top">
+                <IconButton
+                  onClick={() => setEditMode(true)}
+                  className="profile-icon-button"
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="שינוי סיסמה" arrow placement="top">
+                <IconButton
+                  onClick={() => setPwdOpen(true)}
+                  className="profile-icon-button"
+                >
+                  <LockIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={child?.emailConsent ? "ביטול דיוור" : "קבלת דיוור"} arrow placement="top">
+                <span>
+                  <IconButton
+                    onClick={handleToggleEmailConsent}
+                    disabled={isTogglingEmail}
+                    className="profile-icon-button"
+                  >
+                    {isTogglingEmail ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      child?.emailConsent ? <UnsubscribeIcon /> : <MarkEmailReadIcon />
+                    )}
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </Box>
+          )}
+        </Box>
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
           <Box className="profile-form-group">

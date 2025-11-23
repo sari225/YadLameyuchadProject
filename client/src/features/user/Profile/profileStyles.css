@@ -67,88 +67,23 @@
   margin-bottom: 24px !important;
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
   border-radius: 12px !important;
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-/* כותרת וכפתורי פעולה */
-.profile-header {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  margin-bottom: 32px !important;
-  flex-wrap: wrap !important;
-  gap: 16px !important;
-    justify-content: center !important;
-}
-
-.profile-actions {
-  display: flex !important;
-  gap: 12px !important;
-  flex-wrap: wrap !important;
-}
-
-/* כפתורי פעולה */
-.profile-action-button {
-  background: #D0D9FF !important;
-  color: #333 !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 12px 20px !important;
-  font-weight: 600 !important;
-  font-size: 0.9rem !important;
-  cursor: pointer !important;
+.profile-alert-container {
+  min-height: 0 !important;
   transition: none !important;
-  font-family: 'M PLUS Rounded 1c', sans-serif !important;
-  text-transform: none !important;
-  box-shadow: none !important;
-  position: relative !important;
-  overflow: visible !important;
-  min-width: 140px !important;
+  margin-bottom: 0 !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
+  align-items: flex-start !important;
 }
 
-
-
-.profile-action-button:hover {
-  background: #B8C7FF !important;
-}
-
-.profile-action-button:active {
-  background: #A5B8FF !important;
-}
-
-/* כפתור משני */
-.profile-secondary-button {
-  background: transparent !important;
-  color: #6B7FDE !important;
-  border: 2px solid #D0D9FF !important;
-  border-radius: 8px !important;
-  padding: 12px 20px !important;
-  font-weight: 600 !important;
-  font-size: 0.9rem !important;
-  cursor: pointer !important;
-  transition: none !important;
+.profile-alert-inside {
+  margin-bottom: 16px !important;
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
-  text-transform: none !important;
-  position: relative !important;
-  overflow: visible !important;
-  min-width: 140px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-}
-
-.profile-secondary-button:hover {
-  background: #D0D9FF !important;
-  color: #333 !important;
-  border-color: #B8C7FF !important;
-}
-
-.profile-secondary-button:active {
-  background: #B8C7FF !important;
+  border-radius: 12px !important;
 }
 
 /* כרטיס פרופיל */
@@ -160,13 +95,58 @@
   backdrop-filter: blur(15px) !important;
   padding: 32px !important;
   margin-bottom: 24px !important;
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.profile-card-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 24px !important;
+  padding-bottom: 16px !important;
+  border-bottom: 2px solid rgba(208, 217, 255, 0.3) !important;
+}
+
+.profile-card-actions {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.profile-icon-button {
+  background: rgba(208, 217, 255, 0.2) !important;
+  color: #6B7FDE !important;
+  width: 44px !important;
+  height: 44px !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid rgba(208, 217, 255, 0.3) !important;
+  flex-shrink: 0 !important;
+}
+
+.profile-icon-button svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.profile-icon-button:hover:not(:disabled) {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(208, 217, 255, 0.3) !important;
+}
+
+.profile-icon-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
 }
 
 .profile-card-title {
   color: #333 !important;
   font-weight: 700 !important;
   font-size: 1.5rem !important;
-  margin-bottom: 24px !important;
+  margin-bottom: 0 !important;
   font-family: 'M PLUS Rounded 1c', sans-serif !important;
 }
 
@@ -390,18 +370,19 @@
     font-size: 2rem !important;
   }
   
-  .profile-header {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-  
-  .profile-actions {
-    justify-content: center !important;
-    gap: 16px !important;
-  }
-  
   .profile-card {
     padding: 24px !important;
+  }
+
+  .profile-card-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .profile-card-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
   }
   
   .profile-form-actions, .profile-buttons-container {
@@ -412,12 +393,6 @@
   .profile-save-button, .profile-cancel-button {
     padding: 16px 24px !important;
     font-size: 1rem !important;
-  }
-  
-  .profile-action-button, .profile-secondary-button {
-    padding: 12px 20px !important;
-    font-size: 0.95rem !important;
-    min-width: auto !important;
   }
 }
 
@@ -433,29 +408,14 @@
   .profile-card {
     padding: 20px !important;
   }
-  
-  .profile-actions {
-    flex-direction: row !important;
-    justify-content: center !important;
-    gap: 8px !important;
+
+  .profile-card-header {
+    padding-bottom: 12px !important;
   }
-  
-  .profile-action-button, .profile-secondary-button {
-    min-width: 56px !important;
-    width: 56px !important;
-    height: 56px !important;
-    padding: 16px !important;
-    border-radius: 16px !important;
-  }
-  
-  .profile-action-button .MuiButton-startIcon,
-  .profile-secondary-button .MuiButton-startIcon {
-    margin: 0 !important;
-  }
-  
-  .profile-action-button .button-text,
-  .profile-secondary-button .button-text {
-    display: none !important;
+
+  .profile-icon-button {
+    width: 40px !important;
+    height: 40px !important;
   }
   
   .profile-save-button, .profile-cancel-button {

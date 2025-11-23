@@ -82,39 +82,28 @@ const UserClubsList = () => {
       case 'registered':
         return (
           <Chip
-            icon={<CheckCircleIcon />}
             label="רשום"
             color="success"
             variant="filled"
             sx={{ 
-              fontWeight: 'bold',
-              '& .MuiChip-icon': {
-                marginLeft: '2px',
-                marginRight: '0px'
-              }
+              fontWeight: 'bold'
             }}
           />
         );
       case 'waiting':
         return (
           <Chip
-            icon={<HourglassEmptyIcon />}
             label="ממתין לאישור"
             color="warning"
             variant="filled"
             sx={{ 
-              fontWeight: 'bold',
-              '& .MuiChip-icon': {
-                marginLeft: '2px',
-                marginRight: '0px'
-              }
+              fontWeight: 'bold'
             }}
           />
         );
       case 'refused':
         return (
           <Chip
-            icon={<CancelIcon />}
             label="נדחה"
             color="error"
             variant="filled"

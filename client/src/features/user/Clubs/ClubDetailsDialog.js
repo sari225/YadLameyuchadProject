@@ -42,7 +42,6 @@ const ClubDetailsDialog = ({
       case 'registered':
         return (
           <Chip
-            icon={<CheckCircleIcon />}
             label="רשום"
             color="success"
             variant="filled"
@@ -52,7 +51,6 @@ const ClubDetailsDialog = ({
       case 'waiting':
         return (
           <Chip
-            icon={<HourglassEmptyIcon />}
             label="ממתין לאישור"
             color="warning"
             variant="filled"
@@ -62,7 +60,6 @@ const ClubDetailsDialog = ({
       case 'refused':
         return (
           <Chip
-            icon={<CancelIcon />}
             label="נדחה"
             color="error"
             variant="filled"
@@ -84,7 +81,7 @@ const ClubDetailsDialog = ({
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth="md" 
+      maxWidth="sm" 
       fullWidth
       dir="rtl"
       className="club-details-dialog"

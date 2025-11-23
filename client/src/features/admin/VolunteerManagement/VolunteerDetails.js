@@ -85,8 +85,18 @@ const VolunteerDetails = ({ volunteer }) => {
 								const childId = club.child ? ` (${club.child.childId || "ללא ת.ז"})` : "";
 								
 								return (
-									<Box key={club._id || idx} sx={{ mb: 1 }}>
-										<Typography variant="body2" sx={{ mb: 0.5, fontWeight: 'bold' }}>
+									<Box 
+										key={club._id || idx} 
+										sx={{ 
+											mb: 1.5,
+											p: 1.5,
+											bgcolor: 'white',
+											borderRadius: 1,
+											border: '1px solid #e0e0e0',
+											boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+										}}
+									>
+										<Typography variant="body2" sx={{ mb: 0.5, fontWeight: 'bold', color: '#1976d2' }}>
 											{club.club?.name}
 										</Typography>
 										<Typography variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
@@ -101,6 +111,21 @@ const VolunteerDetails = ({ volunteer }) => {
 							אין מועדוניות רשומות
 						</Typography>
 					)}
+
+					{/* הודעה אינפורמטיבית */}
+					<Box 
+						sx={{ 
+							mt: 2,
+							p: 1.5,
+							bgcolor: '#e3f2fd',
+							borderRadius: 1,
+							border: '1px solid #90caf9'
+						}}
+					>
+						<Typography variant="caption" sx={{ display: 'block', fontWeight: 'bold', color: '#1976d2' }}>
+							💡 לניהול מועדוניות ועדכון ילדים, יש לעבור לדף "ניהול מועדוניות"
+						</Typography>
+					</Box>
 				</Grid>
 			</Grid>
 		</Box>

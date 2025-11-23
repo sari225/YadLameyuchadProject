@@ -131,7 +131,7 @@ const VolunteerManagement = () => {
 							<MenuItem value="name">שם</MenuItem>
 							<MenuItem value="id">ת.ז</MenuItem>
 							<MenuItem value="phone">טלפון</MenuItem>
-							<MenuItem value="school">בית ספר</MenuItem>
+							<MenuItem value="school">סמינר</MenuItem>
 						</Select>
 					</FormControl>
 
@@ -166,9 +166,14 @@ const VolunteerManagement = () => {
 						{filteredVolunteers.length === 0 && (
 							<TableRow>
 								<TableCell colSpan={8} className="volunteer-empty">
-									<Typography variant="body1" color="textSecondary">
-										לא נמצאו מתנדבות
-									</Typography>
+									<Box className="volunteer-empty-message">
+										<Typography className="volunteer-empty-text">
+											{searchQuery || searchField ? 'לא נמצאו מתנדבות מתאימות' : 'אין מתנדבות במערכת'}
+										</Typography>
+										<Typography className="volunteer-empty-subtitle">
+											{searchQuery || searchField ? 'נסי לחפש עם מילים אחרות או נקי את החיפוש' : 'התחילי בהוספת מתנדבת חדשה'}
+										</Typography>
+									</Box>
 								</TableCell>
 							</TableRow>
 						)}

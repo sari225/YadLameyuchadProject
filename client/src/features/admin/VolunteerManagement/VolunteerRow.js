@@ -13,11 +13,13 @@ import {
 	DialogActions,
 	CircularProgress,
 	Tooltip,
+	Typography,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 import { useDeleteVolunteerMutation } from "../../../api/volunteerApi";
 import { calculateAge } from "./helpers";
 import VolunteerDetails from "./VolunteerDetails";
@@ -92,27 +94,50 @@ const VolunteerRow = ({ volunteer, onDeleted }) => {
 				</TableCell>
 			</TableRow>
 
-			{/* דיאלוג אישור מחיקה */}
-			<Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} aria-labelledby="delete-volunteer-title">
-				<DialogTitle id="delete-volunteer-title" className="volunteer-dialog-title">
+		{/* דיאלוג אישור מחיקה */}
+		<Dialog 
+			open={confirmOpen} 
+			onClose={() => setConfirmOpen(false)} 
+			aria-labelledby="delete-volunteer-title"
+			PaperProps={{
+				className: "admin-management-container",
+				sx: {
+					borderRadius: '20px',
+					'@media (max-width: 768px)': {
+						width: '95%',
+						maxWidth: '450px',
+						margin: '16px',
+						borderRadius: '20px'
+					}
+				}
+			}}
+		>
+			<DialogTitle className="dialog-title">
+				<Typography variant="h5" className="dialog-title-text">
 					אישור מחיקה
-				</DialogTitle>
-				<DialogContent>
-					<DialogContentText className="volunteer-dialog-content">
-						האם אתה בטוח שברצונך למחוק את המתנדבת {volunteer.fname} {volunteer.lname}?
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions className="volunteer-dialog-actions">
-					<Button onClick={() => setConfirmOpen(false)} variant="outlined" color="primary">
-						ביטול
-					</Button>
-					<Button onClick={handleDelete} variant="contained" color="error" disabled={isDeleting}>
-						{isDeleting ? <CircularProgress size={18} color="inherit" /> : "מחיקה סופית"}
-					</Button>
-				</DialogActions>
-			</Dialog>
-
-			{/* דיאלוג עריכה */}
+				</Typography>
+				<IconButton onClick={() => setConfirmOpen(false)} className="dialog-close-button">
+					<CloseIcon />
+				</IconButton>
+			</DialogTitle>
+			<DialogContent>
+				<Typography>
+					האם אתה בטוח שברצונך למחוק את המתנדבת{" "}
+					<strong>{volunteer.fname} {volunteer.lname}</strong>?
+				</Typography>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={() => setConfirmOpen(false)}>ביטול</Button>
+				<Button
+					onClick={handleDelete}
+					variant="contained"
+					color="error"
+					disabled={isDeleting}
+				>
+					{isDeleting ? <CircularProgress size={24} /> : "מחק"}
+				</Button>
+			</DialogActions>
+		</Dialog>			{/* דיאלוג עריכה */}
 			<EditVolunteerDialog
 				open={editOpen}
 				onClose={() => setEditOpen(false)}

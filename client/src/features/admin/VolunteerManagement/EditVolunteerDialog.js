@@ -9,7 +9,10 @@ import {
 	Grid,
 	CircularProgress,
 	Alert,
+	Typography,
+	IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUpdateVolunteerMutation } from "../../../api/volunteerApi";
@@ -26,6 +29,7 @@ const EditVolunteerDialog = ({ open, onClose, volunteer, onSuccess }) => {
 		reset,
 		formState: { errors },
 	} = useForm({
+		mode: 'onSubmit',
 		resolver: zodResolver(volunteerSchema),
 		defaultValues: {
 			id: "",
@@ -96,9 +100,31 @@ const EditVolunteerDialog = ({ open, onClose, volunteer, onSuccess }) => {
 	};
 
 	return (
-		<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-			<DialogTitle sx={{ fontWeight: "bold", textAlign: "right" }}>
-				עריכת פרטי מתנדבת
+		<Dialog 
+			open={open} 
+			onClose={handleClose} 
+			maxWidth="md" 
+			fullWidth
+			dir="rtl"
+			PaperProps={{
+				className: "admin-management-container",
+				sx: {
+					borderRadius: '20px',
+					'@media (max-width: 768px)': {
+						width: '95%',
+						margin: '16px',
+						borderRadius: '20px'
+					}
+				}
+			}}
+		>
+			<DialogTitle className="dialog-title">
+				<Typography variant="h5" className="dialog-title-text">
+					עריכת פרטי מתנדבת
+				</Typography>
+				<IconButton onClick={handleClose} className="dialog-close-button">
+					<CloseIcon />
+				</IconButton>
 			</DialogTitle>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<DialogContent>
@@ -109,79 +135,72 @@ const EditVolunteerDialog = ({ open, onClose, volunteer, onSuccess }) => {
 					)}
 
 					<Grid container spacing={2}>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								fullWidth
-								label="שם פרטי"
-								{...register("fname")}
-								error={!!errors.fname}
-								helperText={errors.fname?.message}
-							/>
-						</Grid>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								fullWidth
-								label="שם משפחה"
-								{...register("lname")}
-								error={!!errors.lname}
-								helperText={errors.lname?.message}
-							/>
-						</Grid>
-
-						<Grid item xs={12} sm={6}>
-							<TextField
-								fullWidth
-								label="תעודת זהות"
-								{...register("id")}
-								error={!!errors.id}
-								helperText={errors.id?.message}
-								inputProps={{ 
-									pattern: "[0-9]*",
-									maxLength: 9
-								}}
-							/>
-						</Grid>
-
-						<Grid item xs={12} sm={6}>
-							<TextField
-								fullWidth
-								label="טלפון"
-								{...register("phone")}
-								error={!!errors.phone}
-								helperText={errors.phone?.message}
-								inputProps={{ pattern: "[0-9]*" }}
-							/>
-						</Grid>
-
-						<Grid item xs={12} sm={6}>
+					<Grid item xs={12}>
 						<TextField
 							fullWidth
-							label="סמינר"
-							{...register("school")}
-								error={!!errors.school}
-								helperText={errors.school?.message}
-							/>
-						</Grid>
-
-						<Grid item xs={12} sm={6}>
-							<TextField
-								fullWidth
-								label="אימייל"
-								type="email"
-								{...register("email")}
-								error={!!errors.email}
-								helperText={errors.email?.message}
-							/>
-						</Grid>
-
-						<Grid item xs={12} sm={6}>
+							label="שם פרטי"
+							{...register("fname")}
+							error={!!errors.fname}
+							helperText={errors.fname?.message || ''}
+							inputProps={{ maxLength: 20 }}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<TextField
+							fullWidth
+							label="שם משפחה"
+							{...register("lname")}
+							error={!!errors.lname}
+							helperText={errors.lname?.message || ''}
+							inputProps={{ maxLength: 20 }}
+						/>
+					</Grid>					<Grid item xs={12}>
+						<TextField
+							fullWidth
+							label="תעודת זהות"
+							{...register("id")}
+							error={!!errors.id}
+							helperText={errors.id?.message || ''}
+							inputProps={{ 
+								pattern: "[0-9]*",
+								maxLength: 9
+							}}
+						/>
+					</Grid>					<Grid item xs={12}>
+						<TextField
+							fullWidth
+							label="טלפון"
+							{...register("phone")}
+							error={!!errors.phone}
+							helperText={errors.phone?.message || ''}
+							inputProps={{ pattern: "[0-9]*", maxLength: 10 }}
+						/>
+					</Grid>					<Grid item xs={12}>
+					<TextField
+						fullWidth
+						label="סמינר"
+						{...register("school")}
+							error={!!errors.school}
+							helperText={errors.school?.message || ''}
+							inputProps={{ maxLength: 20 }}
+						/>
+					</Grid>					<Grid item xs={12}>
+						<TextField
+							fullWidth
+							label="אימייל (אופציונלי)"
+							type="email"
+							{...register("email")}
+							error={!!errors.email}
+							helperText={errors.email?.message || ''}
+						/>
+					</Grid>						<Grid item xs={12}>
 							<TextField
 								fullWidth
 								label="תאריך לידה"
 								type="date"
 								{...register("dateBorn")}
 								error={!!errors.dateBorn}
-								helperText={errors.dateBorn?.message}
+								helperText={errors.dateBorn?.message || ''}
 								InputLabelProps={{
 									shrink: true,
 								}}
@@ -197,38 +216,38 @@ const EditVolunteerDialog = ({ open, onClose, volunteer, onSuccess }) => {
 								label="עיר"
 								{...register("city")}
 								error={!!errors.city}
-								helperText={errors.city?.message}
+								helperText={errors.city?.message || ''}
 							/>
 						</Grid>
 
-						<Grid item xs={12} sm={8}>
+						<Grid item xs={12}>
 							<TextField
 								fullWidth
 								label="רחוב"
 								{...register("street")}
 								error={!!errors.street}
-								helperText={errors.street?.message}
+								helperText={errors.street?.message || ''}
 							/>
 						</Grid>
 
-						<Grid item xs={12} sm={4}>
+						<Grid item xs={12}>
 							<TextField
 								fullWidth
 								label="מספר בית"
 								type="number"
 								{...register("building")}
 								error={!!errors.building}
-								helperText={errors.building?.message}
+								helperText={errors.building?.message || ''}
 							/>
 						</Grid>
 					</Grid>
 				</DialogContent>
-				<DialogActions sx={{ justifyContent: "flex-start", direction: "ltr", px: 3, pb: 2 }}>
-					<Button onClick={handleClose} variant="outlined" disabled={isLoading}>
+				<DialogActions>
+					<Button onClick={handleClose} disabled={isLoading}>
 						ביטול
 					</Button>
-					<Button type="submit" variant="contained" color="primary" disabled={isLoading}>
-						{isLoading ? <CircularProgress size={24} /> : "שמור שינויים"}
+					<Button type="submit" variant="contained" disabled={isLoading}>
+						{isLoading ? <CircularProgress size={24} /> : "שמור"}
 					</Button>
 				</DialogActions>
 			</form>

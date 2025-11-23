@@ -9,140 +9,23 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	IconButton,
-	Collapse,
 	Button,
-	Stack,
 	Select,
 	MenuItem,
 	FormControl,
 	InputLabel,
 	InputAdornment,
 	TextField,
-	Dialog,
-	DialogTitle,
-	DialogContent,
-	DialogContentText,
-	DialogActions,
 	CircularProgress,
-	Tooltip,
+	Stack,
 } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import SearchIcon from "@mui/icons-material/Search";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
-import { useGetVolunteersQuery, useDeleteVolunteerMutation } from "../../../api/volunteerApi";
-import VolunteerDetails from "./VolunteerDetails";
-import EditVolunteerDialog from "./EditVolunteerDialog";
+import { useGetVolunteersQuery } from "../../../api/volunteerApi";
+import VolunteerRow from "./VolunteerRow";
 import AddVolunteerDialog from "./AddVolunteerDialog";
-import "./volunteerManagement.css";
+import "./styles/VolunteerManagement.css";
 import { parseServerError } from "../../../utils/errorHandler";
-
-// פונקציה לחישוב גיל מתאריך לידה
-function calcAge(dob) {
-	if (!dob) return "-";
-	const birth = new Date(dob);
-	const today = new Date();
-	let age = today.getFullYear() - birth.getFullYear();
-	const m = today.getMonth() - birth.getMonth();
-	if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-	return age;
-}
-
-const Row = ({ volunteer, onDeleted }) => {
-	const [open, setOpen] = useState(false);
-	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [editOpen, setEditOpen] = useState(false);
-	const [deleteVolunteer, { isLoading: isDeleting }] = useDeleteVolunteerMutation();
-
-	const handleDelete = async () => {
-		try {
-			await deleteVolunteer(volunteer._id).unwrap();
-			setConfirmOpen(false);
-			if (onDeleted) onDeleted();
-		} catch (e) {
-			console.error("Delete failed", e);
-		}
-	};
-
-	return (
-		<>
-			<TableRow hover>
-				<TableCell sx={{ width: "5%", textAlign: "right" }}>
-					<IconButton size="small" onClick={() => setOpen(!open)} aria-label="expand row">
-						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-					</IconButton>
-				</TableCell>
-				<TableCell sx={{ width: "20%", textAlign: "right" }}>
-					{volunteer.fname} {volunteer.lname}
-				</TableCell>
-				<TableCell sx={{ width: "15%", textAlign: "right" }}>{volunteer.id}</TableCell>
-				<TableCell sx={{ width: "15%", textAlign: "right" }}>{volunteer.phone}</TableCell>
-				<TableCell sx={{ width: "15%", textAlign: "right" }}>{volunteer.school}</TableCell>
-				<TableCell sx={{ width: "10%", textAlign: "right" }}>{calcAge(volunteer.dateBorn)}</TableCell>
-				<TableCell sx={{ width: "10%", textAlign: "right" }}>
-					{volunteer.clubs?.length || 0}
-				</TableCell>
-				<TableCell sx={{ width: "10%", textAlign: "center" }}>
-					<Stack direction="row" spacing={1} justifyContent="center">
-						<Tooltip title="עריכת מתנדבת" arrow>
-							<IconButton
-								color="primary"
-								onClick={() => setEditOpen(true)}
-								aria-label="edit"
-							>
-								<EditIcon />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="מחיקת מתנדבת" arrow>
-							<IconButton
-								color="error"
-								onClick={() => setConfirmOpen(true)}
-								disabled={isDeleting}
-								aria-label="delete"
-							>
-								{isDeleting ? <CircularProgress size={24} color="inherit" /> : <DeleteIcon />}
-							</IconButton>
-						</Tooltip>
-					</Stack>
-				</TableCell>
-			</TableRow>
-			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-					<Collapse in={open} timeout="auto" unmountOnExit>
-						<VolunteerDetails volunteer={volunteer} onUpdated={onDeleted} />
-					</Collapse>
-				</TableCell>
-			</TableRow>
-
-			<Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} aria-labelledby="delete-volunteer-title">
-				<DialogTitle id="delete-volunteer-title" sx={{ fontWeight: 'bold', textAlign: 'right' }}>
-					אישור מחיקה
-				</DialogTitle>
-				<DialogContent>
-					<DialogContentText sx={{ textAlign: 'right' }}>
-						האם אתה בטוח שברצונך למחוק את המתנדבת {volunteer.fname} {volunteer.lname}?
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions sx={{ justifyContent: 'flex-start', direction: 'ltr' }}>
-					<Button onClick={() => setConfirmOpen(false)} variant="outlined" color="primary">ביטול</Button>
-					<Button onClick={handleDelete} variant="contained" color="error" disabled={isDeleting}>
-						{isDeleting ? <CircularProgress size={18} color="inherit" /> : "מחיקה סופית"}
-					</Button>
-				</DialogActions>
-			</Dialog>
-
-			<EditVolunteerDialog
-				open={editOpen}
-				onClose={() => setEditOpen(false)}
-				volunteer={volunteer}
-				onSuccess={onDeleted}
-			/>
-		</>
-	);
-};
 
 const VolunteerManagement = () => {
 	const { data: volunteers = [], isLoading, isError, error, refetch } = useGetVolunteersQuery();
@@ -151,36 +34,47 @@ const VolunteerManagement = () => {
 	const [searchField, setSearchField] = useState(""); // ריק = חיפוש חופשי
 	const [addDialogOpen, setAddDialogOpen] = useState(false);
 
-	// סינון מתנדבות לפי חיפוש
+	// סינון ומיון מתנדבות
 	const filteredVolunteers = useMemo(() => {
-		if (!searchQuery.trim()) return volunteers;
-		const q = searchQuery.toLowerCase();
+		let result = volunteers;
 		
-		return volunteers.filter(vol => {
-			if (searchField === "name") {
-				return (vol.fname + " " + vol.lname).toLowerCase().includes(q);
-			} else if (searchField === "id") {
-				return vol.id.toLowerCase().includes(q);
-			} else if (searchField === "phone") {
-				return vol.phone.includes(q);
-			} else if (searchField === "school") {
-				return vol.school.toLowerCase().includes(q);
-			} else {
-				// חיפוש חופשי בכל השדות
-				return (
-					(vol.fname + " " + vol.lname).toLowerCase().includes(q) ||
-					vol.id.toLowerCase().includes(q) ||
-					vol.phone.includes(q) ||
-					vol.school.toLowerCase().includes(q) ||
-					vol.email?.toLowerCase().includes(q)
-				);
-			}
+		// סינון לפי חיפוש
+		if (searchQuery.trim()) {
+			const q = searchQuery.toLowerCase();
+			result = volunteers.filter(vol => {
+				if (searchField === "name") {
+					return (vol.fname + " " + vol.lname).toLowerCase().includes(q);
+				} else if (searchField === "id") {
+					return vol.id.toLowerCase().includes(q);
+				} else if (searchField === "phone") {
+					return vol.phone.includes(q);
+				} else if (searchField === "school") {
+					return vol.school.toLowerCase().includes(q);
+				} else {
+					// חיפוש חופשי בכל השדות
+					return (
+						(vol.fname + " " + vol.lname).toLowerCase().includes(q) ||
+						vol.id.toLowerCase().includes(q) ||
+						vol.phone.includes(q) ||
+						vol.school.toLowerCase().includes(q) ||
+						vol.email?.toLowerCase().includes(q)
+					);
+				}
+			});
+		}
+		
+		// מיון לפי שם (אלפביתי) - יוצרים עותק לפני המיון
+		return [...result].sort((a, b) => {
+			const nameA = (a.fname + " " + a.lname).toLowerCase();
+			const nameB = (b.fname + " " + b.lname).toLowerCase();
+			return nameA.localeCompare(nameB, 'he');
 		});
 	}, [volunteers, searchQuery, searchField]);
 
 	if (isLoading) {
+
 		return (
-			<Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
+			<Box className="volunteer-loading">
 				<CircularProgress size={60} />
 			</Box>
 		);
@@ -188,7 +82,7 @@ const VolunteerManagement = () => {
 
 	if (isError) {
 		return (
-			<Box sx={{ padding: 3, textAlign: "center" }}>
+			<Box className="volunteer-error">
 				<Typography color="error" variant="h6">
 					שגיאה בטעינת נתוני המתנדבות
 				</Typography>
@@ -198,61 +92,35 @@ const VolunteerManagement = () => {
 	}
 
 	return (
-		<Box sx={{ padding: 3, direction: 'rtl' }}>
-			{/* כותרת עם רקע כחול */}
-			<Paper 
-				elevation={3} 
-				sx={{ 
-					mb: 2,
-					background: 'linear-gradient(135deg, #0288d1 0%, #03a9f4 100%)',
-					boxShadow: '0 4px 20px rgba(2, 136, 209, 0.3)',
-				}}
-			>
-				<Box sx={{ 
-					display: 'flex', 
-					alignItems: 'center', 
-					justifyContent: 'center',
-					position: 'relative',
-					p: 3,
-				}}>
-					<Typography 
-						variant="h4" 
-						sx={{ 
-							fontWeight: 700,
-							color: 'white',
-							textAlign: 'center',
-							letterSpacing: '0.5px',
-						}}
-					>
-						ניהול מתנדבות
-					</Typography>
-					<Button
-						variant="contained"
-						startIcon={<AddIcon />}
-						onClick={() => setAddDialogOpen(true)}
-						sx={{
-							position: 'absolute',
-							left: 24,
-							backgroundColor: 'white',
-							color: '#0288d1',
-							fontWeight: 'bold',
-							'&:hover': {
-								backgroundColor: 'rgba(255,255,255,0.9)',
-								transform: 'translateY(-2px)',
-								boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-							},
-							transition: 'all 0.2s',
-						}}
-					>
-						הוסף מתנדבת
-					</Button>
-				</Box>
-			</Paper>
+		<Box className="volunteer-container">
+			{/* כותרת */}
+			<Typography variant="h4" className="volunteer-header-title">
+				ניהול מתנדבות
+			</Typography>
+
+			{/* מספר מתנדבות */}
+			<Typography variant="body1" className="volunteer-count">
+				מתנדבות רשומות: {volunteers.length}
+			</Typography>
 
 			{/* פילטרים וחיפוש */}
-			<Paper sx={{ p: 2, mb: 2 }}>
-				<Stack direction="row" spacing={2}>
-					<FormControl sx={{ minWidth: 150 }}>
+			<Paper className="volunteer-filter-paper">
+				<Box className="volunteer-filter-stack">
+					<TextField
+						variant="outlined"
+						placeholder="הקלד לחיפוש..."
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						InputProps={{
+							startAdornment: (
+								<InputAdornment position="start">
+									<SearchIcon />
+								</InputAdornment>
+							),
+						}}
+					/>
+
+					<FormControl className="volunteer-select">
 						<InputLabel>חיפוש לפי</InputLabel>
 						<Select
 							value={searchField}
@@ -265,51 +133,40 @@ const VolunteerManagement = () => {
 							<MenuItem value="phone">טלפון</MenuItem>
 							<MenuItem value="school">בית ספר</MenuItem>
 						</Select>
-						</FormControl>
+					</FormControl>
 
-						<TextField
-							fullWidth
-							variant="outlined"
-							placeholder="הקלד לחיפוש..."
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-							InputProps={{
-								startAdornment: (
-									<InputAdornment position="start">
-										<SearchIcon />
-									</InputAdornment>
-								),
-							}}
-						/>
-				</Stack>
+					<Button
+						variant="contained"
+						onClick={() => setAddDialogOpen(true)}
+						className="volunteer-add-button"
+					>
+						<AddIcon />
+					</Button>
+				</Box>
 			</Paper>
 
-			<Typography variant="body1" color="textSecondary" mb={1}>
-				מתנדבות רשומות: {filteredVolunteers.length}
-			</Typography>
-
-			<TableContainer component={Paper}>
-				<Table sx={{ direction: 'rtl' }}>
+			<TableContainer component={Paper} className="volunteer-table-container">
+				<Table className="volunteer-table">
 					<TableHead>
-						<TableRow sx={{ bgcolor: '#1976d2' }}>
-							<TableCell sx={{ width: "5%", textAlign: "right", fontWeight: "bold", color: 'white' }}></TableCell>
-							<TableCell sx={{ width: "20%", textAlign: "right", fontWeight: "bold", color: 'white' }}>שם מלא</TableCell>
-							<TableCell sx={{ width: "15%", textAlign: "right", fontWeight: "bold", color: 'white' }}>תעודת זהות</TableCell>
-							<TableCell sx={{ width: "15%", textAlign: "right", fontWeight: "bold", color: 'white' }}>טלפון</TableCell>
-							<TableCell sx={{ width: "15%", textAlign: "right", fontWeight: "bold", color: 'white' }}>בית ספר</TableCell>
-							<TableCell sx={{ width: "10%", textAlign: "right", fontWeight: "bold", color: 'white' }}>גיל</TableCell>
-							<TableCell sx={{ width: "10%", textAlign: "right", fontWeight: "bold", color: 'white' }}>מועדוניות</TableCell>
-							<TableCell sx={{ width: "10%", textAlign: "center", fontWeight: "bold", color: 'white' }}>פעולות</TableCell>
+						<TableRow className="volunteer-table-header">
+							<TableCell className="volunteer-table-cell"></TableCell>
+						<TableCell className="volunteer-table-cell">שם מלא</TableCell>
+						<TableCell className="volunteer-table-cell">ת"ז</TableCell>
+						<TableCell className="volunteer-table-cell">טלפון</TableCell>
+						<TableCell className="volunteer-table-cell">סמינר</TableCell>
+						<TableCell className="volunteer-table-cell">גיל</TableCell>
+							<TableCell className="volunteer-table-cell">מועדוניות</TableCell>
+							<TableCell className="volunteer-table-cell">פעולות</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{filteredVolunteers.map((volunteer) => (
-							<Row key={volunteer._id} volunteer={volunteer} onDeleted={refetch} />
+							<VolunteerRow key={volunteer._id} volunteer={volunteer} onDeleted={refetch} />
 						))}
 						{filteredVolunteers.length === 0 && (
 							<TableRow>
-								<TableCell colSpan={8} align="center">
-									<Typography variant="body1" color="textSecondary" py={3}>
+								<TableCell colSpan={8} className="volunteer-empty">
+									<Typography variant="body1" color="textSecondary">
 										לא נמצאו מתנדבות
 									</Typography>
 								</TableCell>

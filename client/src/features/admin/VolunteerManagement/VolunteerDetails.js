@@ -10,11 +10,11 @@ const VolunteerDetails = ({ volunteer }) => {
 	if (!volunteer) return null;
 
 	return (
-		<Box sx={{ margin: 2.5, p: 3, bgcolor: "#f5f5f5", borderRadius: 1, textAlign: "right" }}>
+		<Box sx={{ margin: 2.5, p: 3, bgcolor: '#f5f5f5', borderRadius: 1, textAlign: 'right' }}>
 			<Grid container spacing={5}>
 				{/* פרטים אישיים */}
 				<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
-					<Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1, color: "#1976d2" }}>
+					<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#1976d2' }}>
 						פרטים אישיים
 					</Typography>
 
@@ -32,13 +32,13 @@ const VolunteerDetails = ({ volunteer }) => {
 					</Typography>
 
 					<Typography variant="body2" sx={{ mb: 0.5 }}>
-						<strong>בית ספר:</strong> {volunteer.school || "—"}
+						<strong>סמינר:</strong> {volunteer.school || "—"}
 					</Typography>
 				</Grid>
 
 				{/* פרטי תקשורת */}
 				<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
-					<Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1, color: "#1976d2" }}>
+					<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#1976d2' }}>
 						פרטי תקשורת
 					</Typography>
 
@@ -53,7 +53,7 @@ const VolunteerDetails = ({ volunteer }) => {
 
 				{/* כתובת */}
 				<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
-					<Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1, color: "#1976d2" }}>
+					<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#1976d2' }}>
 						כתובת
 					</Typography>
 
@@ -72,12 +72,12 @@ const VolunteerDetails = ({ volunteer }) => {
 
 				{/* מועדוניות */}
 				<Grid item xs={12} md={3} sx={{ pr: 2 }}>
-					<Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1, color: "#1976d2" }}>
+					<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#1976d2' }}>
 						מועדוניות ({volunteer.clubs?.length || 0})
 					</Typography>
 
 					{volunteer.clubs && volunteer.clubs.length > 0 ? (
-						<Stack spacing={1}>
+						<Box>
 							{volunteer.clubs.map((club, idx) => {
 								const childName = club.child
 									? `${club.child.Fname || ""} ${club.child.Lname || ""}`.trim()
@@ -85,40 +85,22 @@ const VolunteerDetails = ({ volunteer }) => {
 								const childId = club.child ? ` (${club.child.childId || "ללא ת.ז"})` : "";
 								
 								return (
-									<Box
-										key={club._id || idx}
-										sx={{
-											bgcolor: "white",
-											p: 2,
-											borderRadius: 1,
-											border: "1px solid #e0e0e0",
-											boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-										}}
-									>
-									<Box>
-										<Typography variant="body2" sx={{ fontWeight: "bold", color: "#1976d2", mb: 0.5 }}>
-											📍 {club.club?.name}
+									<Box key={club._id || idx} sx={{ mb: 1 }}>
+										<Typography variant="body2" sx={{ mb: 0.5, fontWeight: 'bold' }}>
+											{club.club?.name}
 										</Typography>
-										<Typography variant="caption" color="text.secondary">
-											👶 שומרת על: {childName}{childId}
+										<Typography variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
+											שומרת על: {childName}{childId}
 										</Typography>
-									</Box>
 									</Box>
 								);
 							})}
-						</Stack>
+						</Box>
 					) : (
 						<Typography variant="body2" color="text.secondary">
 							אין מועדוניות רשומות
 						</Typography>
 					)}
-
-					{/* הודעה אינפורמטיבית */}
-					<Box sx={{ mt: 2, p: 2, bgcolor: "#e3f2fd", borderRadius: 1 }}>
-						<Typography variant="caption" color="primary" sx={{ fontWeight: "bold" }}>
-							💡 לניהול מועדוניות ועדכון ילדים, יש לעבור לדף "ניהול מועדוניות"
-						</Typography>
-					</Box>
 				</Grid>
 			</Grid>
 		</Box>

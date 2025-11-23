@@ -1,0 +1,73 @@
+/* VolunteerDetails Styles */
+
+.volunteer-details-container {
+    margin: 20px 40px;
+    padding: 32px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    text-align: right;
+    direction: rtl;
+}
+
+.volunteer-section-title {
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #87c8d2;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #87c8d2;
+    padding-bottom: 8px;
+}
+
+.volunteer-club-box {
+    background-color: white;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.volunteer-club-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.volunteer-club-name {
+    font-weight: bold;
+    color: #87c8d2;
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
+
+.volunteer-detail-text {
+    margin-bottom: 4px;
+}
+
+.volunteer-info-box {
+    margin-top: 16px;
+    padding: 16px;
+    background-color: #e3f2fd;
+    border-radius: 8px;
+}
+
+.volunteer-info-text {
+    font-weight: bold;
+    color: #1976d2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .volunteer-details-container {
+        margin: 8px 20px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .volunteer-details-container {
+        margin: 8px;
+        padding: 16px;
+    }
+}

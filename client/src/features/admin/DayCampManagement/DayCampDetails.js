@@ -25,14 +25,16 @@ import {
   Tabs,
   Tab,
   Autocomplete,
+  Grid,
 } from "@mui/material";
 import {
-  ArrowBack as ArrowBackIcon,
+  ArrowForward as ArrowForwardIcon,
   Delete as DeleteIcon,
   Add as AddIcon,
   GetApp as DownloadIcon,
   Edit as EditIcon,
   AttachFile as AttachFileIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import {
   useGetDayCampByIdQuery,
@@ -46,6 +48,7 @@ import * as XLSX from "xlsx";
 import { parseServerError } from "../../../utils/errorHandler";
 import { Document, Packer, Paragraph, Table as DocxTable, TableRow as DocxTableRow, TableCell as DocxTableCell, WidthType, AlignmentType, TextRun, BorderStyle, ShadingType, TableLayoutType } from "docx";
 import { saveAs } from "file-saver";
+import "./styles/DayCampDetails.css";
 
 const DayCampDetails = () => {
   const { id } = useParams();
@@ -402,7 +405,10 @@ const DayCampDetails = () => {
   };
 
   const availableChildren = allChildren.filter(
-    (child) => !dayCamp?.registeredChildren?.some((rc) => rc._id === child._id)
+    (child) => 
+      child.isApproved && 
+      child.isVerified && 
+      !dayCamp?.registeredChildren?.some((rc) => rc._id === child._id)
   );
 
   const childrenWithAllergies = dayCamp?.registeredChildren?.filter(
@@ -411,7 +417,7 @@ const DayCampDetails = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
+      <Box className="daycamp-details-loading-container">
         <CircularProgress />
       </Box>
     );
@@ -419,19 +425,19 @@ const DayCampDetails = () => {
 
   if (!dayCamp) {
     return (
-      <Box sx={{ p: 3 }} dir="rtl">
+      <Box className="daycamp-details-error-container">
         <Alert severity="error">קייטנה לא נמצאה</Alert>
       </Box>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }} dir="rtl">
-      <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
+    <Box className="daycamp-details-container">
+      <Box className="daycamp-details-header">
         <IconButton onClick={() => navigate("/admin/daycampsManagement")}>
-          <ArrowBackIcon />
+          <ArrowForwardIcon />
         </IconButton>
-        <Typography variant="h4" sx={{ fontWeight: 600 }}>
+        <Typography variant="h4" className="daycamp-details-title">
           {dayCamp.name}
         </Typography>
       </Box>
@@ -448,115 +454,151 @@ const DayCampDetails = () => {
         </Alert>
       )}
 
-      {/* Info Cards */}
-      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 2, mb: 3 }}>
-        <Paper sx={{ p: 2, textAlign: "center" }}>
-          <Typography variant="h6" color="primary">
-            {dayCamp.subscribersNumber || 0}
-          </Typography>
-          <Typography variant="body2">מספר נרשמים</Typography>
-        </Paper>
-        <Paper sx={{ p: 2, textAlign: "center" }}>
-          <Typography variant="body1">
-            {new Date(dayCamp.startDate).toLocaleDateString("he-IL")}
-          </Typography>
-          <Typography variant="body2">תאריך התחלה</Typography>
-        </Paper>
-        <Paper sx={{ p: 2, textAlign: "center" }}>
-          <Typography variant="body1">
-            {new Date(dayCamp.endDate).toLocaleDateString("he-IL")}
-          </Typography>
-          <Typography variant="body2">תאריך סיום</Typography>
-        </Paper>
-        <Paper sx={{ p: 2, textAlign: "center" }}>
-          <Typography variant="body1">{dayCamp.location}</Typography>
-          <Typography variant="body2">מיקום</Typography>
-        </Paper>
-        {dayCamp.file?.filename && (
-          <Paper sx={{ p: 2, textAlign: "center" }}>
-            <Button
-              variant="outlined"
-              startIcon={<AttachFileIcon />}
-              onClick={() => {
-                const fileURL = `${process.env.REACT_APP_API_URL}/${dayCamp.file.path}`;
-                window.open(fileURL, "_blank");
-              }}
+      {/* Info Summary - Single Line */}
+      <Box className="daycamp-details-info-summary">
+        <Grid container spacing={1.5} alignItems="center">
+          <Grid item>
+            <Chip 
+              label={`נרשמים: ${dayCamp.registeredChildren?.length || 0}`}
+              className="daycamp-details-info-chip"
               size="small"
-            >
-              {dayCamp.file.filename}
-            </Button>
-            <Typography variant="body2" sx={{ mt: 1 }}>קובץ מצורף</Typography>
-          </Paper>
-        )}
+            />
+          </Grid>
+          <Grid item>
+            <Chip 
+              label={`התחלה: ${new Date(dayCamp.startDate).toLocaleDateString("he-IL")}`}
+              className="daycamp-details-info-chip"
+              size="small"
+            />
+          </Grid>
+          <Grid item>
+            <Chip 
+              label={`סיום: ${new Date(dayCamp.endDate).toLocaleDateString("he-IL")}`}
+              className="daycamp-details-info-chip"
+              size="small"
+            />
+          </Grid>
+          <Grid item>
+            <Chip 
+              label={`מיקום: ${dayCamp.location}`}
+              className="daycamp-details-info-chip"
+              size="small"
+            />
+          </Grid>
+          <Grid item>
+            <Chip 
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 600 }}>רישום:</Typography>
+                  <Switch
+                    checked={registerStatus}
+                    onChange={handleToggleRegisterStatus}
+                    size="small"
+                    sx={{
+                      '& .MuiSwitch-switchBase.Mui-checked': {
+                        color: 'white',
+                      },
+                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                        backgroundColor: 'white',
+                        opacity: 0.5,
+                      },
+                    }}
+                  />
+                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 600 }}>
+                    {registerStatus ? 'פתוח' : 'סגור'}
+                  </Typography>
+                </Box>
+              }
+              className="daycamp-details-info-chip"
+              size="small"
+            />
+          </Grid>
+          {dayCamp.file?.filename && (
+            <Grid item>
+              <Chip
+                label={dayCamp.file.filename}
+                icon={<AttachFileIcon />}
+                className="daycamp-details-info-chip"
+                size="small"
+                onClick={() => {
+                  const fileURL = `${process.env.REACT_APP_API_URL}/${dayCamp.file.path}`;
+                  window.open(fileURL, "_blank");
+                }}
+                sx={{ cursor: 'pointer' }}
+              />
+            </Grid>
+          )}
+        </Grid>
       </Box>
 
-      {/* Register Status Toggle */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={registerStatus}
-              onChange={handleToggleRegisterStatus}
-              color="primary"
-            />
-          }
-          label={
-            <Typography>
-              סטטוס רישום: <strong>{registerStatus ? "פתוח" : "סגור"}</strong>
-            </Typography>
-          }
-        />
-      </Paper>
-
       {/* Tabs */}
-      <Paper sx={{ mb: 2 }}>
+      <Box className="daycamp-details-tabs-paper">
         <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} centered>
           <Tab label="רשימת ילדים" />
           <Tab label="טבלת אלרגיות" />
           <Tab label="ייצוא נתונים" />
         </Tabs>
-      </Paper>
+      </Box>
 
       {/* Tab Content */}
       {tabValue === 0 && (
-        <Paper>
-          <Box sx={{ p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={() => setOpenAddDialog(true)}
-              sx={{ backgroundColor: "#03a9f4", "&:hover": { backgroundColor: "#0288d1" } }}
-            >
-              הוסף ילד
-            </Button>
-          </Box>
-          <TableContainer>
+        <>
+          <div className="daycamp-details-controls-section">
+            <div className="daycamp-details-controls-flex">
+              <div className="daycamp-details-autocomplete-wrapper">
+                <Autocomplete
+                  fullWidth
+                  options={availableChildren}
+                  getOptionLabel={(option) => `${option.Fname} ${option.Lname} - ${option.childId}`}
+                  value={selectedChild}
+                  onChange={(event, newValue) => setSelectedChild(newValue)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="חפש ובחר ילד"
+                      placeholder="הקלד שם או ת.ז"
+                      size="medium"
+                      fullWidth
+                    />
+                  )}
+                  noOptionsText="לא נמצאו ילדים זמינים"
+                  isOptionEqualToValue={(option, value) => option._id === value._id}
+                />
+              </div>
+              <Button
+                variant="contained"
+                onClick={handleAddChild}
+                disabled={!selectedChild}
+                className="daycamp-details-add-button"
+              >
+                <AddIcon />
+              </Button>
+            </div>
+          </div>
+          <Paper>
+            <TableContainer>
             <Table>
               <TableHead>
-                <TableRow sx={{ bgcolor: "#1976d2" }}>
-                  {/* סדר עמודות נכון RTL: ת.ז, שם פרטי, שם משפחה, טלפון, אלרגיות, פעולות */}
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>ת.ז</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם פרטי</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם משפחה</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>טלפון</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>אלרגיות</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>פעולות</TableCell>
+                <TableRow className="daycamp-details-table-header">
+                  <TableCell className="daycamp-details-table-header-cell">ת.ז</TableCell>
+                  <TableCell className="daycamp-details-table-header-cell">שם פרטי</TableCell>
+                  <TableCell className="daycamp-details-table-header-cell">שם משפחה</TableCell>
+                  <TableCell className="daycamp-details-table-header-cell">טלפון</TableCell>
+                  <TableCell className="daycamp-details-table-header-cell">אלרגיות</TableCell>
+                  <TableCell className="daycamp-details-table-header-cell">פעולות</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {dayCamp.registeredChildren && dayCamp.registeredChildren.length > 0 ? (
-                  dayCamp.registeredChildren.map((child) => (
+                  [...dayCamp.registeredChildren]
+                    .sort((a, b) => a.Fname.localeCompare(b.Fname, 'he'))
+                    .map((child) => (
                     <TableRow key={child._id} hover>
-                      {/* ת.ז */}
-                      <TableCell sx={{ textAlign: "center" }}>{child.childId}</TableCell>
-                      {/* שם פרטי */}
-                      <TableCell sx={{ textAlign: "center" }}>{child.Fname}</TableCell>
-                      {/* שם משפחה */}
-                      <TableCell sx={{ textAlign: "center" }}>{child.Lname}</TableCell>
-                      {/* טלפון */}
-                      <TableCell sx={{ textAlign: "center" }}>{child.phone1}</TableCell>
-                      {/* אלרגיות */}
-                      <TableCell sx={{ textAlign: "center" }}>
+                      <TableCell className="daycamp-details-table-body-cell">{child.childId}</TableCell>
+                      <TableCell className="daycamp-details-table-body-cell">{child.Fname}</TableCell>
+                      <TableCell className="daycamp-details-table-body-cell">{child.Lname}</TableCell>
+                      <TableCell className="daycamp-details-table-body-cell">{child.phone1}</TableCell>
+                      <TableCell className="daycamp-details-table-body-cell">
                         {child.allergies && child.allergies.length > 0 ? (
                           child.allergies.map((allergy, idx) => (
                             <Chip key={idx} label={allergy} size="small" sx={{ m: 0.5 }} color="warning" />
@@ -567,9 +609,8 @@ const DayCampDetails = () => {
                           </Typography>
                         )}
                       </TableCell>
-                      {/* פעולות */}
-                      <TableCell sx={{ textAlign: "center" }}>
-                        <IconButton color="error" onClick={() => handleRemoveChildClick(child)} title="הסר">
+                      <TableCell className="daycamp-details-table-body-cell">
+                        <IconButton className="daycamp-details-delete-icon-button" onClick={() => handleRemoveChildClick(child)} title="הסר">
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
@@ -577,7 +618,7 @@ const DayCampDetails = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
+                    <TableCell colSpan={6} className="daycamp-details-empty-message">
                       <Typography variant="body1" color="text.secondary">
                         אין ילדים רשומים
                       </Typography>
@@ -588,38 +629,36 @@ const DayCampDetails = () => {
             </Table>
           </TableContainer>
         </Paper>
+        </>
       )}
 
       {tabValue === 1 && (
-        <Paper sx={{ p: 3 }}>
+        <Paper>
           <TableContainer>
             <Table>
               <TableHead>
-                <TableRow sx={{ bgcolor: "#1976d2" }}>
-                  {/* סדר עמודות נכון RTL: ת.ז, שם פרטי, שם משפחה, אלרגיות */}
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>ת.ז</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם פרטי</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם משפחה</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>אלרגיות</TableCell>
+                <TableRow className="daycamp-details-table-header">
+                  <TableCell className="daycamp-details-table-header-cell">ת.ז</TableCell>
+                  <TableCell className="daycamp-details-table-header-cell">שם פרטי</TableCell>
+                  <TableCell className="daycamp-details-table-header-cell">שם משפחה</TableCell>
+                  <TableCell className="daycamp-details-table-header-cell">אלרגיות</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {childrenWithAllergies.length > 0 ? (
-                  childrenWithAllergies.map((child) => (
+                  [...childrenWithAllergies]
+                    .sort((a, b) => a.Fname.localeCompare(b.Fname, 'he'))
+                    .map((child) => (
                     <TableRow key={child._id} hover>
-                      {/* ת.ז */}
-                      <TableCell sx={{ textAlign: "center" }}>{child.childId}</TableCell>
-                      {/* שם פרטי */}
-                      <TableCell sx={{ textAlign: "center" }}>{child.Fname}</TableCell>
-                      {/* שם משפחה */}
-                      <TableCell sx={{ textAlign: "center" }}>{child.Lname}</TableCell>
-                      {/* אלרגיות */}
-                      <TableCell sx={{ textAlign: "center" }}>{child.allergies.join(", ")}</TableCell>
+                      <TableCell className="daycamp-details-table-body-cell">{child.childId}</TableCell>
+                      <TableCell className="daycamp-details-table-body-cell">{child.Fname}</TableCell>
+                      <TableCell className="daycamp-details-table-body-cell">{child.Lname}</TableCell>
+                      <TableCell className="daycamp-details-table-body-cell">{child.allergies.join(", ")}</TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} sx={{ textAlign: "center", py: 4 }}>
+                    <TableCell colSpan={4} className="daycamp-details-empty-message">
                       <Typography variant="body1" color="text.secondary">
                         אין ילדים עם אלרגיות מדווחות
                       </Typography>
@@ -633,40 +672,96 @@ const DayCampDetails = () => {
       )}
 
       {tabValue === 2 && (
-        <Paper sx={{ p: 3 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Button
-              variant="contained"
-              startIcon={<DownloadIcon />}
-              onClick={exportAssignmentTable}
-              sx={{ backgroundColor: "#4caf50", "&:hover": { backgroundColor: "#45a049" } }}
-            >
-              ייצא טבלת שיבוץ יומי (Excel)
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<DownloadIcon />}
-              onClick={exportAllergiesTable}
-              sx={{ backgroundColor: "#ff9800", "&:hover": { backgroundColor: "#fb8c00" } }}
-            >
-              ייצא טבלת אלרגיות (Excel)
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<DownloadIcon />}
-              onClick={exportAssignmentTableDocx}
-            >
-              ייצא טבלת שיבוץ יומי (Word)
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<DownloadIcon />}
-              onClick={exportAllergiesTableDocx}
-            >
-              ייצא טבלת אלרגיות (Word)
-            </Button>
-          </Box>
-        </Paper>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: 600, margin: '0 auto', p: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<DownloadIcon />}
+            onClick={exportAssignmentTable}
+            className="daycamp-details-export-button"
+            sx={{
+              background: 'linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              padding: '12px 24px',
+              borderRadius: '12px',
+              boxShadow: '0 4px 12px rgba(135, 200, 210, 0.4)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 6px 16px rgba(135, 200, 210, 0.5)',
+              },
+            }}
+          >
+            ייצא טבלת שיבוץ יומי (Excel)
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<DownloadIcon />}
+            onClick={exportAllergiesTable}
+            className="daycamp-details-export-button"
+            sx={{
+              background: 'linear-gradient(135deg, #d687b9 0%, #9e63a9 100%)',
+              color: 'white',
+              fontWeight: 'bold',
+              padding: '12px 24px',
+              borderRadius: '12px',
+              boxShadow: '0 4px 12px rgba(158, 99, 169, 0.4)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 6px 16px rgba(158, 99, 169, 0.5)',
+              },
+            }}
+          >
+            ייצא טבלת אלרגיות (Excel)
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<DownloadIcon />}
+            onClick={exportAssignmentTableDocx}
+            className="daycamp-details-export-button-outlined"
+            sx={{
+              borderColor: '#87c8d2',
+              color: '#87c8d2',
+              fontWeight: 'bold',
+              padding: '12px 24px',
+              borderRadius: '12px',
+              borderWidth: '2px',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                borderWidth: '2px',
+                borderColor: '#6fb8c2',
+                backgroundColor: 'rgba(135, 200, 210, 0.1)',
+                transform: 'translateY(-2px)',
+              },
+            }}
+          >
+            ייצא טבלת שיבוץ יומי (Word)
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<DownloadIcon />}
+            onClick={exportAllergiesTableDocx}
+            className="daycamp-details-export-button-outlined"
+            sx={{
+              borderColor: '#9e63a9',
+              color: '#9e63a9',
+              fontWeight: 'bold',
+              padding: '12px 24px',
+              borderRadius: '12px',
+              borderWidth: '2px',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                borderWidth: '2px',
+                borderColor: '#8d5298',
+                backgroundColor: 'rgba(158, 99, 169, 0.1)',
+                transform: 'translateY(-2px)',
+              },
+            }}
+          >
+            ייצא טבלת אלרגיות (Word)
+          </Button>
+        </Box>
       )}
 
       {/* Add Child Dialog */}
@@ -699,14 +794,34 @@ const DayCampDetails = () => {
       </Dialog>
 
       {/* Delete Child Confirmation Dialog */}
-      <Dialog open={openDeleteDialog} onClose={handleRemoveChildCancel} dir="rtl">
-        <DialogTitle>אישור הסרה</DialogTitle>
+      <Dialog 
+        open={openDeleteDialog} 
+        onClose={handleRemoveChildCancel} 
+        dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
+      >
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            אישור הסרה
+          </Typography>
+          <IconButton onClick={handleRemoveChildCancel} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Typography>
-            האם אתה בטוח שברצונך להסיר את הילד {childToDelete?.Fname} {childToDelete?.Lname} מהקייטנה?
-          </Typography>
-          <Typography color="error" sx={{ mt: 1 }}>
-            פעולה זו אינה ניתנת לביטול!
+            האם אתה בטוח שברצונך להסיר את <strong>{childToDelete?.Fname} {childToDelete?.Lname}</strong> מהקייטנה?
           </Typography>
         </DialogContent>
         <DialogActions>

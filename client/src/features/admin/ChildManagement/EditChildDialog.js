@@ -439,13 +439,6 @@ const EditChildDialog = ({ open, onClose, child, onSuccess }) => {
                 fullWidth
               />
             </Grid>
-
-            <Grid item xs={4} className="medical-field-align medical-checkbox-align">
-              <FormControlLabel
-                control={<Checkbox {...register("emailConsent")} />}
-                label="אני מאשר/ת קבלת דיוור אלקטרוני"
-              />
-            </Grid>
           </Grid>
         </Box>
       </DialogContent>

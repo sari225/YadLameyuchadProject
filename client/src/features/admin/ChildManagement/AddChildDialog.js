@@ -359,23 +359,6 @@ const AddChildDialog = ({ open, onClose, onSuccess }) => {
               />
             </Grid>
 
-            {/* מופיע פעמיים בקוד המקורי – שמרתי בדיוק */}
-            <Grid item xs={12}>
-              <TextField
-                variant="standard"
-                label="רחוב *"
-                {...register("street")}
-                error={!!errors.street}
-                helperText={errors.street?.message}
-                fullWidth
-                className="register-textfield"
-                InputLabelProps={{
-                  shrink: true,
-                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
-                }}
-              />
-            </Grid>
-
             <Grid item xs={12}>
               <TextField
                 variant="standard"

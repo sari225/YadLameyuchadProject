@@ -1,0 +1,209 @@
+/* DayCampManagement Styles */
+
+.daycamp-management-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+    background-attachment: fixed;
+    padding: 40px;
+    font-family: 'Rubik', sans-serif;
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+.daycamp-management-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.daycamp-management-error {
+    padding: 24px;
+    text-align: center;
+}
+
+.daycamp-management-header-title {
+    color: #9e63a9 !important;
+    font-weight: 700 !important;
+    font-size: 3rem !important;
+    margin-bottom: 16px !important;
+    text-align: center !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.daycamp-management-button-container {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 24px;
+}
+
+.daycamp-management-add-button {
+    background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 12px !important;
+    padding: 12px 32px !important;
+    box-shadow: 0 4px 12px rgba(135, 200, 210, 0.4) !important;
+    transition: all 0.3s ease;
+	font-family: 'Rubik', sans-serif !important;
+	font-size: 1.1rem !important;
+}
+
+.daycamp-management-add-button .MuiSvgIcon-root {
+    color: white !important;
+    font-size: 24px !important;
+	margin-left: 8px;
+}
+
+.daycamp-management-add-button:hover {
+    transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(135, 200, 210, 0.5) !important;
+}
+
+.daycamp-management-table-container {
+    border-radius: 16px;
+    box-shadow: 0 3px 16px rgba(0, 0, 0, 0.1);
+}
+
+.daycamp-management-table {
+    direction: rtl;
+}
+
+.daycamp-management-table-header {
+    background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.daycamp-management-table-cell {
+    text-align: center !important;
+    font-weight: 600 !important;
+    color: white !important;
+    padding: 20px 16px !important;
+    font-size: 1rem !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.daycamp-management-empty {
+    text-align: center !important;
+    padding: 60px 20px !important;
+}
+
+.daycamp-management-empty-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.daycamp-management-empty-text {
+    color: #1976d2 !important;
+    font-weight: 600 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.5rem !important;
+}
+
+.daycamp-management-empty-subtitle {
+    color: #1976d2 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1rem !important;
+}
+
+.daycamp-management-table-body-row {
+    cursor: pointer;
+}
+
+.daycamp-management-table-body-row:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.daycamp-management-table-body-cell {
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.daycamp-management-icon-button-view {
+    color: #87c8d2 !important;
+    transition: all 0.2s ease;
+}
+
+.daycamp-management-icon-button-view:hover {
+    color: #6bb5c1 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.daycamp-management-icon-button-edit {
+    color: #87c8d2 !important;
+    transition: all 0.2s ease;
+}
+
+.daycamp-management-icon-button-edit:hover {
+    color: #6bb5c1 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.daycamp-management-icon-button-delete {
+    color: #9e63a9 !important;
+    transition: all 0.2s ease;
+}
+
+.daycamp-management-icon-button-delete:hover {
+    color: #8a4d94 !important;
+    background-color: rgba(158, 99, 169, 0.1) !important;
+}
+
+/* Chip Styles */
+.daycamp-management-table-body-cell .MuiChip-colorSuccess {
+	background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%) !important;
+	color: white !important;
+	font-weight: 600 !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.daycamp-management-table-body-cell .MuiChip-colorError {
+	background: linear-gradient(135deg, #f44336 0%, #e57373 100%) !important;
+	color: white !important;
+	font-weight: 600 !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.daycamp-management-container {
+		padding: 12px;
+	}
+
+	.daycamp-management-header-title {
+		font-size: 2rem !important;
+		margin-bottom: 12px !important;
+	}
+
+	.daycamp-management-add-button {
+		width: 100% !important;
+		padding: 10px 24px !important;
+	}
+
+	.daycamp-management-table-container {
+		overflow-x: auto;
+	}
+}
+
+@media (max-width: 600px) {
+	.daycamp-management-container {
+		padding: 8px;
+	}
+
+	.daycamp-management-header-title {
+		font-size: 1.5rem !important;
+	}
+
+	.daycamp-management-table-body-cell,
+	.daycamp-management-table-cell {
+		padding: 12px 8px !important;
+		font-size: 0.875rem !important;
+	}
+}

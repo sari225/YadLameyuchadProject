@@ -21,6 +21,7 @@ import {
   Chip,
   Switch,
   FormControlLabel,
+  Tooltip,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -29,6 +30,7 @@ import {
   Visibility as VisibilityIcon,
   GetApp as DownloadIcon,
   AttachFile as AttachFileIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import {
   useGetDayCampsQuery,
@@ -38,6 +40,8 @@ import {
 } from "../../../api/dayCampApi";
 import { useNavigate } from "react-router-dom";
 import { parseServerError } from "../../../utils/errorHandler";
+import "./styles/DayCampManagement.css";
+import "../ManagementPanel/styles/AdminManagement.css";
 
 const DayCampManagement = () => {
   const navigate = useNavigate();
@@ -211,37 +215,27 @@ const DayCampManagement = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
-        <CircularProgress />
+      <Box className="daycamp-management-loading">
+        <CircularProgress size={60} />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }} dir="rtl">
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          mb: 3,
-          position: "relative",
-        }}
-      >
-        <Typography variant="h4" sx={{ fontWeight: 600 }}>
-          ניהול קייטנות
-        </Typography>
+    <Box className="daycamp-management-container">
+      {/* כותרת */}
+      <Typography variant="h4" className="daycamp-management-header-title">
+        ניהול קייטנות
+      </Typography>
+
+      {/* כפתור הוספה */}
+      <Box className="daycamp-management-button-container">
         <Button
           variant="contained"
-          startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
-          sx={{
-            position: "absolute",
-            left: 0,
-            backgroundColor: "#03a9f4",
-            "&:hover": { backgroundColor: "#0288d1" },
-          }}
+          className="daycamp-management-add-button"
         >
+          <AddIcon />
           הוסף קייטנה חדשה
         </Button>
       </Box>
@@ -258,17 +252,17 @@ const DayCampManagement = () => {
         </Alert>
       )}
 
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} className="daycamp-management-table-container">
+        <Table className="daycamp-management-table">
           <TableHead>
-            <TableRow sx={{ bgcolor: "#1976d2" }}>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם הקייטנה</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>תאריך התחלה</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>תאריך סיום</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>מיקום</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>מספר נרשמים</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>סטטוס רישום</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>פעולות</TableCell>
+            <TableRow className="daycamp-management-table-header">
+              <TableCell className="daycamp-management-table-cell">שם הקייטנה</TableCell>
+              <TableCell className="daycamp-management-table-cell">תאריך התחלה</TableCell>
+              <TableCell className="daycamp-management-table-cell">תאריך סיום</TableCell>
+              <TableCell className="daycamp-management-table-cell">מיקום</TableCell>
+              <TableCell className="daycamp-management-table-cell">מספר נרשמים</TableCell>
+              <TableCell className="daycamp-management-table-cell">סטטוס רישום</TableCell>
+              <TableCell className="daycamp-management-table-cell">פעולות</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -277,57 +271,75 @@ const DayCampManagement = () => {
                 key={dayCamp._id}
                 hover
                 onClick={() => handleViewDayCamp(dayCamp._id)}
-                sx={{ cursor: "pointer" }}
-                role="button"
-                tabIndex={0}
+                className="daycamp-management-table-body-row"
               >
-                <TableCell sx={{ textAlign: "center" }}>{dayCamp.name}</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
+                <TableCell className="daycamp-management-table-body-cell">{dayCamp.name}</TableCell>
+                <TableCell className="daycamp-management-table-body-cell">
                   {new Date(dayCamp.startDate).toLocaleDateString("he-IL")}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
+                <TableCell className="daycamp-management-table-body-cell">
                   {new Date(dayCamp.endDate).toLocaleDateString("he-IL")}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>{dayCamp.location}</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>{dayCamp.subscribersNumber || 0}</TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
+                <TableCell className="daycamp-management-table-body-cell">{dayCamp.location}</TableCell>
+                <TableCell className="daycamp-management-table-body-cell">
+                  {dayCamp.registeredChildren?.length > 0 ? (
+                    <Chip
+                      label={dayCamp.registeredChildren.length}
+                      color="primary"
+                      size="small"
+                    />
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      0
+                    </Typography>
+                  )}
+                </TableCell>
+                <TableCell className="daycamp-management-table-body-cell">
                   <Chip
                     label={dayCamp.registerStatus ? "פתוח" : "סגור"}
                     color={dayCamp.registerStatus ? "success" : "error"}
                     size="small"
                   />
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  <IconButton
-                    color="primary"
-                    onClick={(e) => { e.stopPropagation(); handleViewDayCamp(dayCamp._id); }}
-                    title="צפה בפרטים"
-                  >
-                    <VisibilityIcon />
-                  </IconButton>
-                  <IconButton
-                    color="primary"
-                    onClick={(e) => { e.stopPropagation(); handleOpenDialog(dayCamp); }}
-                    title="ערוך"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={(e) => { e.stopPropagation(); handleDeleteClick(dayCamp); }}
-                    title="מחק"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                <TableCell className="daycamp-management-table-body-cell">
+                  <Tooltip title="צפה בפרטים" arrow>
+                    <IconButton
+                      className="daycamp-management-icon-button-view"
+                      onClick={(e) => { e.stopPropagation(); handleViewDayCamp(dayCamp._id); }}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="עריכת קייטנה" arrow>
+                    <IconButton
+                      className="daycamp-management-icon-button-edit"
+                      onClick={(e) => { e.stopPropagation(); handleOpenDialog(dayCamp); }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="מחיקת קייטנה" arrow>
+                    <IconButton
+                      className="daycamp-management-icon-button-delete"
+                      onClick={(e) => { e.stopPropagation(); handleDeleteClick(dayCamp); }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
             {dayCamps.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} sx={{ textAlign: "center", py: 4 }}>
-                  <Typography variant="body1" color="text.secondary">
-                    אין קייטנות במערכת
-                  </Typography>
+                <TableCell colSpan={7} className="daycamp-management-empty">
+                  <Box className="daycamp-management-empty-message">
+                    <Typography className="daycamp-management-empty-text">
+                      אין קייטנות במערכת
+                    </Typography>
+                    <Typography className="daycamp-management-empty-subtitle">
+                      התחל בהוספת קייטנה חדשה
+                    </Typography>
+                  </Box>
                 </TableCell>
               </TableRow>
             )}
@@ -336,9 +348,32 @@ const DayCampManagement = () => {
       </TableContainer>
 
       {/* Create/Edit Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth dir="rtl">
-        <DialogTitle sx={{ textAlign: "center", fontWeight: 600 }}>
-          {editingDayCamp ? "עריכת קייטנה" : "הוספת קייטנה חדשה"}
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog} 
+        maxWidth="sm" 
+        fullWidth 
+        dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
+      >
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            {editingDayCamp ? "עריכת קייטנה" : "הוספת קייטנה חדשה"}
+          </Typography>
+          <IconButton onClick={handleCloseDialog} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {serverError && (
@@ -479,8 +514,31 @@ const DayCampManagement = () => {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={openDeleteDialog} onClose={handleDeleteCancel} dir="rtl">
-        <DialogTitle>אישור מחיקה</DialogTitle>
+      <Dialog 
+        open={openDeleteDialog} 
+        onClose={handleDeleteCancel} 
+        dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
+      >
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            אישור מחיקה
+          </Typography>
+          <IconButton onClick={handleDeleteCancel} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Typography>
             האם אתה בטוח שברצונך למחוק את הקייטנה "{dayCampToDelete?.name}"?

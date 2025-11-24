@@ -129,13 +129,15 @@
     overflow: hidden;
 }
 
+/* כותרת טבלה */
 .table-header-row {
-    background: #9e63a9 !important;
+  background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%)
+
 }
 
 .header-cell {
-    color: white !important;
     font-weight: bold !important;
+    color: white !important;
     text-align: center !important;
 }
 

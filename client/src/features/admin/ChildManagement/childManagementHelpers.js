@@ -13,6 +13,18 @@ export const calcAge = (dob) => {
 	return age;
 };
 
+// עיצוב תאריך לחודש ולטקסט עברי
+export const formatDateHebrew = (dateString) => {
+	if (!dateString) return "—";
+	return new Date(dateString).toLocaleDateString('he-IL');
+};
+
+// עיבוד רשימת אלרגיות מטקסט למערך
+export const processAllergies = (allergiesText) => {
+	if (!allergiesText) return [];
+	return allergiesText.split(",").map((x) => x.trim()).filter(x => x.length > 0);
+};
+
 // סינון ילדים מאושרים
 export const filterApprovedChildren = (children) => {
 	if (!children) return [];
@@ -62,7 +74,7 @@ export const filterAndSortChildren = (approvedChildren, searchQuery, searchField
 					if (!child.dateOfBirth) return false;
 					// תמיכה בפורמטים שונים של תאריך
 					const dobIso = child.dateOfBirth; // YYYY-MM-DD
-					const dobLocal = new Date(child.dateOfBirth).toLocaleDateString('he-IL'); // dd/mm/yyyy
+					const dobLocal = formatDateHebrew(child.dateOfBirth); // dd/mm/yyyy  
 					const dobLocalEn = new Date(child.dateOfBirth).toLocaleDateString('en-GB'); // dd/mm/yyyy
 					return dobIso.includes(searchQuery) || 
 					       dobLocal.includes(searchQuery) || 
@@ -78,7 +90,7 @@ export const filterAndSortChildren = (approvedChildren, searchQuery, searchField
 					const fullName = `${child.Fname || ""} ${child.Lname || ""}`;
 					const age = calcAge(child.dateOfBirth);
 					const dobIso = child.dateOfBirth || "";
-					const dobLocal = child.dateOfBirth ? new Date(child.dateOfBirth).toLocaleDateString() : "";
+					const dobLocal = formatDateHebrew(child.dateOfBirth);
 					const clubs = getChildClubs(child, clubsDict);
 					const clubsJoined = clubs.map((c) => c.name).join(", ");
 					const allergiesJoined = Array.isArray(child.allergies)

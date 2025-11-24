@@ -4,7 +4,7 @@ import {
     TableCell,
     IconButton,
     Collapse,
-    Stack,
+    Box,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -55,22 +55,22 @@ const ChildRow = ({ child, childClubs, onDeleted, isPending }) => {
 
     return (
         <>
-            <TableRow hover>
-                <TableCell sx={{ width: "5%", textAlign: "center" }}>
+            <TableRow hover className="child-row">
+                <TableCell className="child-row-cell-icon">
                     <IconButton size="small" onClick={() => setOpen(!open)} aria-label="expand row">
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell sx={{ width: "23%", textAlign: "center" }}>{child.Fname} {child.Lname}</TableCell>
-                <TableCell sx={{ width: "18%", textAlign: "center" }}>{child.childId}</TableCell>
-                <TableCell sx={{ width: "27%", textAlign: "center" }}>{child.phone1}</TableCell>
-                <TableCell sx={{ width: "27%", textAlign: "center" }}>{calcAge(child.dateOfBirth) || "-"}</TableCell>
-                <TableCell sx={{ width: "12%", textAlign: "center" }}>
+                <TableCell className="child-row-cell-name">{child.Fname} {child.Lname}</TableCell>
+                <TableCell className="child-row-cell-id">{child.childId}</TableCell>
+                <TableCell className="child-row-cell-phone">{child.phone1}</TableCell>
+                <TableCell className="child-row-cell-age">{calcAge(child.dateOfBirth) || "-"}</TableCell>
+                <TableCell className="child-row-cell-actions">
                     {isPending ? (
-                        <Stack direction="row" spacing={1} justifyContent="center">
+                        <Box className="child-actions-stack">
                             <Tooltip title="אישור בקשה" arrow>
                                 <IconButton
-                                    sx={{ color: '#87c8d2' }}
+                                    className="approve-icon-button"
                                     onClick={handleApprove}
                                     disabled={isApproving || isDeleting}
                                     aria-label="approve"
@@ -80,7 +80,7 @@ const ChildRow = ({ child, childClubs, onDeleted, isPending }) => {
                             </Tooltip>
                             <Tooltip title="דחיית בקשה" arrow>
                                 <IconButton
-                                    color="error"
+                                    className="delete-icon-button"
                                     onClick={() => setConfirmOpen(true)}
                                     disabled={isDeleting || isApproving}
                                     aria-label="delete"
@@ -88,12 +88,12 @@ const ChildRow = ({ child, childClubs, onDeleted, isPending }) => {
                                     {isDeleting ? <CircularProgress size={24}  /> : <DeleteIcon />}
                                 </IconButton>
                             </Tooltip>
-                        </Stack>
+                        </Box>
                     ) : (
-                        <Stack direction="row" spacing={1} justifyContent="center">
+                        <Box className="child-actions-stack">
                             <Tooltip title="עריכת ילד" arrow>
                                 <IconButton
-                                    color="primary"
+                                    className="edit-icon-button"
                                     onClick={() => setEditOpen(true)}
                                     aria-label="edit"
                                 >
@@ -102,7 +102,7 @@ const ChildRow = ({ child, childClubs, onDeleted, isPending }) => {
                             </Tooltip>
                             <Tooltip title="מחיקת ילד" arrow>
                                 <IconButton
-                                    color="error"
+                                    className="delete-icon-button"
                                     onClick={() => setConfirmOpen(true)}
                                     disabled={isDeleting}
                                     aria-label="delete"
@@ -110,67 +110,65 @@ const ChildRow = ({ child, childClubs, onDeleted, isPending }) => {
                                     {isDeleting ? <CircularProgress size={24} color="inherit" /> : <DeleteIcon />}
                                 </IconButton>
                             </Tooltip>
-                        </Stack>
+                        </Box>
                     )}
                 </TableCell>
             </TableRow>
 
             <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                <TableCell className="child-collapse-cell" colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <ChildDetails child={child} childClubs={childClubs} />
                     </Collapse>
                 </TableCell>
             </TableRow>
 
-            <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} aria-labelledby="delete-child-title">
-                <Dialog
-                    open={confirmOpen}
-                    onClose={() => setConfirmOpen(false)}
-                    aria-labelledby="delete-child-title"
-                    PaperProps={{
-                        className: "admin-management-container",
-                        sx: {
-                            borderRadius: '20px',
-                            '@media (max-width: 768px)': {
-                                width: '95%',
-                                maxWidth: '450px',
-                                margin: '16px',
-                                borderRadius: '20px'
-                            }
+            <Dialog
+                open={confirmOpen}
+                onClose={() => setConfirmOpen(false)}
+                aria-labelledby="delete-child-title"
+                PaperProps={{
+                    className: "admin-management-container",
+                    sx: {
+                        borderRadius: '20px',
+                        '@media (max-width: 768px)': {
+                            width: '95%',
+                            maxWidth: '450px',
+                            margin: '16px',
+                            borderRadius: '20px'
                         }
-                    }}
-                >
-                    <DialogTitle className="dialog-title">
-                        <Typography variant="h5" className="dialog-title-text">
-                            {isPending ? "אישור דחיה" : "אישור מחיקה"}
-                        </Typography>
-                        <IconButton onClick={() => setConfirmOpen(false)} className="dialog-close-button">
-                            <CloseIcon />
-                        </IconButton>
-                    </DialogTitle>
-                    <DialogContent>
-                        <Typography>
-                            {isPending
-                                ? `האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של ${child.Fname} ${child.Lname}?`
-                                : <>האם אתה בטוח שברצונך למחוק את הילד <strong>{child.Fname} {child.Lname}</strong>?</>
-                            }
-                        </Typography>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setConfirmOpen(false)}>
-                            ביטול
-                        </Button>
-                        <Button
-                            onClick={handleDelete}
-                            variant="contained"
-                            color="error"
-                            disabled={isDeleting}
-                        >
-                            {isDeleting ? <CircularProgress size={24} /> : (isPending ? "דחיה סופית" : "מחק")}
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                    }
+                }}
+            >
+                <DialogTitle className="dialog-title">
+                    <Typography variant="h5" className="dialog-title-text">
+                        {isPending ? "אישור דחיה" : "אישור מחיקה"}
+                    </Typography>
+                    <IconButton onClick={() => setConfirmOpen(false)} className="dialog-close-button">
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        {isPending
+                            ? `האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של ${child.Fname} ${child.Lname}?`
+                            : <>האם אתה בטוח שברצונך למחוק את הילד <strong>{child.Fname} {child.Lname}</strong>?</>
+                        }
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConfirmOpen(false)}>
+                        ביטול
+                    </Button>
+                    <Button
+                        onClick={handleDelete}
+                        variant="contained"
+                        color="error"
+                        disabled={isDeleting}
+                    >
+                        {isDeleting ? <CircularProgress size={24} /> : (isPending ? "דחיה סופית" : "מחק")}
+                    </Button>
+                </DialogActions>
             </Dialog>
 
             <EditChildDialog

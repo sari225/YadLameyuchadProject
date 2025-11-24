@@ -87,18 +87,16 @@ const ChildManagement = () => {
 
             {!showPending && (
                 <Paper className="search-paper">
-                    <Stack direction="row" spacing={2} alignItems="center" sx={{ width: "100%" }}>
-
+                    <Box className="search-filter-stack">
                         {/* שדה חיפוש */}
                         <TextField
-                            placeholder="חיפוש..."
+                            placeholder="הקלד לחיפוש..."
                             value={searchQuery}
                             onChange={(e) => dispatch(setSearchQuery(e.target.value))}
                             className="search-input"
-                            sx={{ flex: 1 }}
                             InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
+                                startAdornment: (
+                                    <InputAdornment position="start">
                                         <SearchIcon className="search-icon" />
                                     </InputAdornment>
                                 ),
@@ -106,25 +104,14 @@ const ChildManagement = () => {
                         />
 
                         {/* סלקט */}
-                        <FormControl className="search-select-wrapper" sx={{ minWidth: 200 }}>
+                        <FormControl className="search-select-wrapper">
+                            <InputLabel>חיפוש לפי</InputLabel>
                             <Select
-                                displayEmpty
-                                id="search-field"
                                 value={searchField}
+                                label="חיפוש לפי"
                                 onChange={(e) => dispatch(setSearchField(e.target.value))}
-                                renderValue={(val) =>
-                                    val
-                                        ? {
-                                              name: "שם",
-                                              educationInstitution: "מוסד לימודי",
-                                              age: "גיל",
-                                              dateOfBirth: "תאריך לידה",
-                                              clubs: "מועדוניות",
-                                          }[val]
-                                        : "כל השדות"
-                                }
                             >
-                                <MenuItem value="">כל השדות</MenuItem>
+                                <MenuItem value="">הכל</MenuItem>
                                 <MenuItem value="name">שם</MenuItem>
                                 <MenuItem value="educationInstitution">מוסד לימודי</MenuItem>
                                 <MenuItem value="age">גיל</MenuItem>
@@ -134,13 +121,14 @@ const ChildManagement = () => {
                         </FormControl>
 
                         {/* כפתור הוספה */}
-                        <IconButton
-                            className="add-child-button"
+                        <Button
+                            variant="contained"
                             onClick={() => setAddDialogOpen(true)}
+                            className="add-child-button"
                         >
-                            <AddIcon sx={{ fontSize: "2rem" }} />
-                        </IconButton>
-                    </Stack>
+                            <AddIcon />
+                        </Button>
+                    </Box>
                 </Paper>
             )}
 

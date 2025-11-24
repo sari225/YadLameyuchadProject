@@ -64,11 +64,22 @@
     box-shadow: 0 4px 12px rgba(135, 200, 210, 0.15) !important;
 }
 
+.search-filter-stack {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 16px !important;
+    width: 100% !important;
+}
+
+.search-filter-stack .MuiTextField-root {
+    flex: 1 !important;
+}
+
 .search-input .MuiOutlinedInput-root {
-    border-radius:10px !important;
+    border-radius: 10px !important;
     height: 56px;
     background: white;
-    border: 1px solid #87c8d2 !important;
 }
 
 .search-input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
@@ -89,14 +100,18 @@
     text-align: right;
 }
 
-.search-icon {
+.search-filter-stack .MuiSvgIcon-root {
     color: #87c8d2 !important;
     font-size: 20px !important;
 }
 
+.search-select-wrapper {
+    min-width: 180px !important;
+    flex-shrink: 0 !important;
+}
+
 .search-select-wrapper .MuiOutlinedInput-root {
     border-radius: 12px !important;
-    border: 1px solid #87c8d2 !important;
     background: white !important;
     height: 56px !important;
 }
@@ -105,19 +120,23 @@
     border-color: #87c8d2 !important;
 }
 
-.search-select-wrapper .MuiInputLabel-root {
-    display: none !important;
-}
-
 /* ------------------ כפתור הוספה ------------------ */
 .add-child-button {
     background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
     color: white !important;
+    min-width: 56px !important;
     width: 56px !important;
     height: 56px !important;
+    padding: 0 !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(135, 200, 210, 0.4) !important;
+    flex-shrink: 0;
     transition: all 0.3s ease;
+}
+
+.add-child-button .MuiSvgIcon-root {
+    color: white !important;
+    font-size: 28px !important;
 }
 
 .add-child-button:hover {
@@ -132,8 +151,7 @@
 
 /* כותרת טבלה */
 .table-header-row {
-  background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%)
-
+    background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%);
 }
 
 .header-cell {
@@ -142,16 +160,190 @@
     text-align: center !important;
 }
 
-/* עמודות */
-.cell-name, .cell-id, .cell-phone, .cell-age, .cell-actions, .cell-expand {
+/* ChildRow Styles */
+.child-row:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.child-row-cell {
     text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
 }
 
-/* ------------------ פעולות ------------------ */
-.child-management-container button[aria-label="edit"] {
+.child-row-cell-icon {
+    width: 5%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.child-row-cell-name {
+    width: 20%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.child-row-cell-id {
+    width: 15%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.child-row-cell-phone {
+    width: 15%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.child-row-cell-age {
+    width: 10%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.child-row-cell-actions {
+    width: 10%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.child-actions-stack {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: center;
+}
+
+.child-actions-stack .MuiIconButton-root {
+    padding: 4px !important;
+}
+
+.edit-icon-button {
     color: #87c8d2 !important;
+    transition: all 0.2s ease;
 }
 
-.child-management-container button[aria-label="delete"] {
-    color: #d687b9 !important;
+.edit-icon-button:hover {
+    color: #6fb8c2 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.approve-icon-button {
+    color: #87c8d2 !important;
+    transition: all 0.2s ease;
+}
+
+.approve-icon-button:hover {
+    color: #6fb8c2 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.delete-icon-button {
+    color: #9e63a9 !important;
+    transition: all 0.2s ease;
+}
+
+.delete-icon-button:hover {
+    color: #8d5298 !important;
+    background-color: rgba(158, 99, 169, 0.1) !important;
+}
+
+.child-collapse-cell {
+    padding: 0 !important;
+}
+
+/* ------------------ Responsive Design ------------------ */
+@media (max-width: 768px) {
+    .child-management-container {
+        padding: 12px;
+    }
+
+    .page-title {
+        font-size: 2rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    .search-paper {
+        padding: 12px;
+    }
+
+    .search-filter-stack {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .search-filter-stack .MuiTextField-root,
+    .search-select-wrapper {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    .add-child-button {
+        width: 100% !important;
+        min-width: 100% !important;
+        border-radius: 12px !important;
+    }
+
+    /* הסתרת עמודות בטבלה במובייל */
+    .child-row-cell-id,
+    .child-row-cell-age {
+        display: none !important;
+    }
+
+    .header-cell:nth-child(3),
+    .header-cell:nth-child(5) {
+        display: none !important;
+    }
+
+    /* התאמת רוחב עמודות שנשארות */
+    .child-row-cell-icon {
+        width: 10% !important;
+    }
+
+    .child-row-cell-name {
+        width: 40% !important;
+    }
+
+    .child-row-cell-phone {
+        width: 30% !important;
+    }
+
+    .child-row-cell-actions {
+        width: 20% !important;
+    }
+
+    /* התאמת כפתורי פעולות */
+    .child-actions-stack {
+        gap: 2px !important;
+    }
+
+    .child-actions-stack .MuiIconButton-root {
+        padding: 6px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .child-management-container {
+        padding: 8px;
+    }
+
+    .page-title {
+        font-size: 1.5rem !important;
+    }
+
+    .search-filter-stack {
+        gap: 8px !important;
+    }
+
+    .child-row-cell,
+    .header-cell {
+        padding: 12px 8px !important;
+        font-size: 0.875rem !important;
+    }
 }

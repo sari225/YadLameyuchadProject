@@ -1,0 +1,152 @@
+/* Club Add/Edit Dialog Styles */
+
+.club-dialog-container {
+    direction: rtl;
+}
+
+.club-dialog-title {
+    font-weight: bold !important;
+    text-align: center !important;
+    color: white !important;
+    padding: 20px 24px !important;
+}
+
+.club-dialog-content {
+    padding: 24px !important;
+}
+
+.club-dialog-error-alert {
+    margin-bottom: 16px !important;
+}
+
+.club-dialog-error-text {
+    margin-top: 4px;
+    margin-left: 16px;
+}
+
+.club-dialog-divider {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.club-dialog-success-text {
+    text-align: center;
+}
+
+.club-dialog-grid-container {
+    width: 100%;
+}
+
+.club-dialog-text-field {
+    width: 100%;
+}
+
+.club-dialog-form-control {
+    width: 100%;
+}
+
+.club-dialog-select {
+    min-width: 200px;
+}
+
+/* Managers Section */
+.club-dialog-managers-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.club-dialog-managers-title {
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+}
+
+.club-dialog-add-manager-button {
+    text-transform: none !important;
+}
+
+.club-dialog-manager-paper {
+    padding: 16px;
+    position: relative;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+}
+
+.club-dialog-manager-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.club-dialog-manager-title {
+    color: #1976d2 !important;
+    font-weight: 600 !important;
+}
+
+.club-dialog-delete-manager-button {
+    color: #d32f2f !important;
+}
+
+/* Actions */
+.club-dialog-actions {
+    padding: 16px !important;
+    border-top: 1px solid #e0e0e0;
+}
+
+.club-dialog-cancel-button {
+    color: #666 !important;
+}
+
+.club-dialog-submit-button {
+    background-color: #1976d2 !important;
+}
+
+.club-dialog-submit-button:hover {
+    background-color: #115293 !important;
+}
+
+/* Success Dialog */
+.club-dialog-success-title {
+    text-align: center !important;
+    color: #2e7d32 !important;
+}
+
+.club-dialog-success-content {
+    text-align: center;
+}
+
+.club-dialog-success-button {
+    width: 100%;
+    background-color: #2e7d32 !important;
+}
+
+.club-dialog-success-button:hover {
+    background-color: #1b5e20 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .club-dialog-title {
+        font-size: 1.25rem !important;
+    }
+
+    .club-dialog-content {
+        padding: 16px !important;
+    }
+
+    .club-dialog-manager-paper {
+        padding: 12px;
+    }
+
+    .club-dialog-managers-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .club-dialog-add-manager-button {
+        width: 100%;
+    }
+}

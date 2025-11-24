@@ -1,0 +1,225 @@
+/* עיצוב דיאלוג פרטי מועדונית */
+
+/* דיאלוג ראשי */
+.club-details-dialog .MuiDialog-paper {
+  border-radius: 20px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%) !important;
+  backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* כותרת הדיאלוג */
+.dialog-title {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: #E8E4F3 !important;
+  color: #333 !important;
+  border-radius: 20px 20px 0 0 !important;
+}
+
+.dialog-title-text {
+  font-weight: bold !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.dialog-close-button {
+  color: #333 !important;
+}
+
+/* תוכן הדיאלוג */
+.dialog-content {
+  padding: 32px !important;
+}
+
+/* סטטוס הרשמה */
+.status-section {
+  margin-bottom: 24px !important;
+  margin-top: 32px !important;
+}
+
+.status-section-title {
+  font-weight: bold !important;
+  margin-bottom: 16px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #333 !important;
+}
+
+/* צ'יפ סטטוס */
+.status-chip-registered {
+  font-weight: bold !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.status-chip-registered .MuiChip-icon {
+  margin-left: 2px !important;
+  margin-right: 0px !important;
+}
+
+.status-chip-waiting {
+  font-weight: bold !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.status-chip-waiting .MuiChip-icon {
+  margin-left: 2px !important;
+  margin-right: 0px !important;
+}
+
+.status-chip-refused {
+  font-weight: bold !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.status-chip-registered,
+.status-chip-waiting,
+.status-chip-refused,
+.status-chip-not-registered {
+  font-weight: bold !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  min-width: 140px !important;
+  width: 140px !important;
+  border-color: #8A4CA3 !important;
+  color: #8A4CA3 !important;
+}
+
+/* מפריד */
+.dialog-divider {
+  margin: 24px 0 !important;
+  background: rgba(138, 76, 163, 0.1) !important;
+}
+
+/* פרטי מועדונית */
+.details-section {
+  margin-bottom: 24px !important;
+}
+
+.section-title {
+  font-weight: bold !important;
+  margin-bottom: 16px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #333 !important;
+}
+
+.details-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+.detail-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.detail-icon {
+  color: #8A4CA3 !important;
+}
+
+.detail-text {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #333 !important;
+}
+
+/* מנהלי מועדונית */
+.managers-section {
+  margin-bottom: 16px !important;
+}
+
+.manager-card {
+  margin-bottom: 16px !important;
+  background: rgba(248, 250, 252, 0.5) !important;
+  padding: 16px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(138, 76, 163, 0.1) !important;
+}
+
+.manager-name-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.manager-name-icon {
+  color: #8A4CA3 !important;
+  font-size: 1.2rem !important;
+}
+
+.manager-name-text {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: bold !important;
+  color: #333 !important;
+}
+
+.manager-phone-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.manager-phone-icon {
+  color: #8A4CA3 !important;
+  font-size: 1.1rem !important;
+}
+
+.manager-phone-text {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #555 !important;
+}
+
+.manager-email-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.manager-email-icon {
+  color: #8A4CA3 !important;
+  font-size: 1.1rem !important;
+}
+
+.manager-email-text {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #555 !important;
+}
+
+/* פעולות דיאלוג */
+.dialog-actions {
+  padding: 24px !important;
+  gap: 16px !important;
+}
+
+.dialog-close-btn {
+  color: #666 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  padding: 10px 20px !important;
+}
+
+.dialog-join-btn {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  padding: 12px 24px !important;
+  text-transform: none !important;
+  box-shadow: 0 2px 8px rgba(208, 217, 255, 0.4) !important;
+  gap: 8px !important;
+}
+
+.dialog-join-btn:hover {
+  background: #B8C7FF !important;
+  box-shadow: 0 4px 15px rgba(208, 217, 255, 0.6) !important;
+}
+
+.dialog-join-btn:disabled {
+  background: #f0f0f0 !important;
+  color: #999 !important;
+  box-shadow: none !important;
+}

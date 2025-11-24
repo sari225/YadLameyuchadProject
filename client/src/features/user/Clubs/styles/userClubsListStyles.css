@@ -1,0 +1,329 @@
+/* עיצוב עמוד המועדוניות - בסגנון האזור האישי */
+
+/* מיכל ראשי */
+.clubs-main-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+  background-attachment: fixed;
+  padding: 40px;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* כותרת העמוד */
+.clubs-page-title {
+  font-weight: 700 !important;
+  margin-bottom: 48px !important;
+  color: #333 !important;
+  font-size: 3rem !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  text-align: center !important;
+  position: relative;
+}
+
+.clubs-page-title::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 5px;
+  background: linear-gradient(90deg, #8A4CA3, #B76BA3, #4A90E2);
+  border-radius: 3px;
+}
+
+/* מיכל טקסט הסבר */
+.clubs-description-container {
+  max-width: 800px;
+  margin: 40px auto 40px auto;
+  text-align: center;
+  padding: 0 20px;
+  direction: rtl;
+}
+
+/* טקסט הסבר */
+.clubs-description {
+  color: #555 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+  margin: 0 !important;
+}
+
+/* תיבת חיפוש */
+.search-container {
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+  direction: rtl;
+}
+
+.search-field .MuiOutlinedInput-root {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-radius: 15px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  box-shadow: 0 4px 20px rgba(138, 76, 163, 0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.search-field .MuiOutlinedInput-root:hover {
+  box-shadow: 0 6px 30px rgba(138, 76, 163, 0.15) !important;
+}
+
+.search-field .MuiOutlinedInput-root.Mui-focused {
+  box-shadow: 0 6px 30px rgba(138, 76, 163, 0.2) !important;
+}
+
+.search-field .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(138, 76, 163, 0.3) !important;
+}
+
+.search-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #8A4CA3 !important;
+}
+
+.search-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #8A4CA3 !important;
+}
+
+.search-field .MuiInputBase-input {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.search-icon {
+  color: #8A4CA3 !important;
+  margin-right: 8px !important;
+}
+
+/* רשת כרטיסי המועדוניות */
+.clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 350px));
+  gap: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  justify-content: center;
+}
+
+/* כרטיס מועדונית בודד */
+.club-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(138, 76, 163, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(15px) !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  overflow: hidden !important;
+  cursor: default !important;
+  transition: none !important;
+}
+
+.club-card:hover {
+  transform: none !important;
+  box-shadow: 0 8px 32px rgba(138, 76, 163, 0.08) !important;
+  cursor: default !important;
+}
+
+
+
+/* תוכן כרטיס */
+.club-card-content {
+  padding: 32px !important;
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* שם המועדונית */
+.club-name {
+  font-weight: 700 !important;
+  color: #333 !important;
+  font-size: 1.5rem !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  margin-bottom: 16px !important;
+  line-height: 1.3 !important;
+}
+
+/* צ'יפ סטטוס */
+.status-chip-container {
+  margin-bottom: 20px;
+}
+
+/* קו מפריד */
+.club-divider {
+  margin: 20px 0 !important;
+  background-color: rgba(138, 76, 163, 0.1) !important;
+}
+
+/* פרטי המועדונית */
+.club-detail-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px !important;
+  gap: 8px;
+}
+
+.club-detail-icon {
+  color: #8A4CA3 !important;
+  font-size: 1.2rem !important;
+}
+
+.club-detail-text {
+  color: #333 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-size: 0.95rem !important;
+}
+
+/* אזור כפתורים */
+.club-actions {
+  margin-top: auto !important;
+  padding-top: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+/* כפתור פרטים נוספים */
+.details-button {
+  background: #D0D9FF !important;
+  border: none !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+  padding: 12px 20px !important;
+  text-transform: none !important;
+  box-shadow: 0 2px 8px rgba(208, 217, 255, 0.4) !important;
+  transition: all 0.3s ease !important;
+  gap: 8px !important;
+}
+
+.details-button:hover {
+  background: #B8C7FF !important;
+  box-shadow: 0 4px 15px rgba(208, 217, 255, 0.6) !important;
+}
+
+/* כפתור הצטרפות */
+.join-button {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+  padding: 14px 20px !important;
+  text-transform: none !important;
+  box-shadow: 0 2px 8px rgba(208, 217, 255, 0.4) !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  gap: 8px !important;
+}
+
+.join-button:hover {
+  background: #B8C7FF !important;
+  box-shadow: 0 4px 15px rgba(208, 217, 255, 0.6) !important;
+}
+
+.join-button:disabled {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%) !important;
+  color: #999 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* הודעות */
+.clubs-alert {
+  max-width: 800px;
+  margin: 0 auto 32px auto !important;
+  border-radius: 12px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* מצב אין מועדוניות - הודעה פשוטה */
+.no-clubs-message {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.no-clubs-icon-simple {
+  font-size: 4rem !important;
+  color: #333 !important;
+  margin-bottom: 24px;
+  opacity: 0.6;
+}
+
+.no-clubs-title-simple {
+  font-size: 1.8rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  margin-bottom: 12px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.no-clubs-subtitle-simple {
+  font-size: 1.2rem !important;
+  color: #555 !important;
+  line-height: 1.6 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* מצב טעינה */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+/* עיצוב צ'יפים של סטטוס במועדוניות */
+.club-status-chip {
+  font-weight: bold !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  min-width: 140px !important;
+  width: 140px !important;
+  border-color: #8A4CA3 !important;
+  color: #8A4CA3 !important;
+}
+
+.club-status-chip .MuiChip-label {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: bold !important;
+}
+
+/* רספונסיביות */
+@media (max-width: 768px) {
+  .clubs-main-container {
+    padding: 20px;
+  }
+  
+  .clubs-page-title {
+    font-size: 2.2rem !important;
+    margin-bottom: 32px !important;
+  }
+  
+  .clubs-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 0;
+    justify-content: center;
+  }
+  
+  .club-card-content {
+    padding: 24px !important;
+  }
+  
+  .no-clubs-container {
+    margin: 40px auto;
+    padding: 32px 24px;
+  }
+}

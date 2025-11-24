@@ -1,0 +1,356 @@
+/* עמוד מסמכים - עיצוב כללי */
+
+/* קונטיינר ראשי */
+.documents-main-container {
+  min-height: 100vh !important;
+  background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+  background-attachment: fixed !important;
+  padding: 40px !important;
+  direction: rtl !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  position: relative !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* כותרת עמוד */
+.documents-page-title {
+  color: #333 !important;
+  font-weight: 700 !important;
+  font-size: 3rem !important;
+  margin-bottom: 48px !important;
+  text-align: center !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  position: relative !important;
+}
+
+.documents-page-title::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 120px !important;
+  height: 5px !important;
+  background: linear-gradient(90deg, #8A4CA3, #B76BA3, #4A90E2) !important;
+  border-radius: 3px !important;
+}
+
+/* תיאור עמוד */
+.documents-description-container {
+  text-align: center !important;
+  margin-bottom: 32px !important;
+}
+
+.documents-description {
+  color: #666 !important;
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
+  margin-bottom: 0 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* תיבת חיפוש */
+.search-container {
+  max-width: 600px !important;
+  margin: 0 auto 40px auto !important;
+  direction: rtl !important;
+}
+
+.search-field {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 25px !important;
+  box-shadow: 0 4px 20px rgba(138, 76, 163, 0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.search-field .MuiOutlinedInput-root {
+  border-radius: 25px !important;
+  padding-right: 20px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-size: 1rem !important;
+  border: 2px solid transparent !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  transition: all 0.3s ease !important;
+}
+
+.search-field .MuiOutlinedInput-root:hover {
+  box-shadow: 0 6px 25px rgba(138, 76, 163, 0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+.search-field .MuiOutlinedInput-root.Mui-focused {
+  border-color: #8A4CA3 !important;
+  box-shadow: 0 8px 30px rgba(138, 76, 163, 0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+.search-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: transparent !important;
+}
+
+.search-field .MuiOutlinedInput-notchedOutline {
+  border-color: transparent !important;
+}
+
+.search-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #8A4CA3 !important;
+  border-width: 2px !important;
+}
+
+.search-field .MuiInputBase-input {
+  padding: 16px 20px 16px 0 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #333 !important;
+}
+
+.search-field .MuiInputBase-input::placeholder {
+  color: #999 !important;
+  opacity: 1 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.search-icon {
+  color: #8A4CA3 !important;
+  margin-left: 12px !important;
+  font-size: 1.4rem !important;
+}
+
+/* מצב טעינה */
+.documents-loading-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 300px !important;
+}
+
+.documents-loading {
+  color: #8A4CA3 !important;
+}
+
+/* התראות */
+.documents-alert {
+  margin-bottom: 24px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+}
+
+/* הודעת אין מסמכים - פשוטה על הרקע */
+.no-documents-message-simple {
+  text-align: center !important;
+  margin: 60px auto !important;
+  padding: 0 20px !important;
+}
+
+.no-documents-icon-simple {
+  color: #8A4CA3 !important;
+  font-size: 4rem !important;
+  margin-bottom: 16px !important;
+  opacity: 0.7 !important;
+}
+
+.no-documents-title-simple {
+  color: #333 !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  opacity: 0.8 !important;
+}
+
+/* גריד מסמכים */
+.documents-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+  gap: 24px !important;
+  width: 100% !important;
+  align-items: start !important;
+  justify-content: center !important;
+}
+
+/* כרטיס מסמך בודד - ריבועי */
+.document-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 6px 24px rgba(138, 76, 163, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(15px) !important;
+  width: 220px !important;
+  height: 220px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  overflow: hidden !important;
+  cursor: default !important;
+  transition: none !important;
+  margin: 0 auto !important;
+}
+
+.document-card:hover {
+  transform: none !important;
+  box-shadow: 0 8px 32px rgba(138, 76, 163, 0.08) !important;
+  cursor: default !important;
+}
+
+/* תוכן כרטיס */
+.document-card-content {
+  padding: 20px !important;
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  height: 100% !important;
+}
+
+/* אייקון סוג מסמך */
+.document-icon-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 12px !important;
+  padding: 8px !important;
+}
+
+.document-type-icon {
+  font-size: 2.5rem !important;
+  color: #8A4CA3 !important;
+}
+
+.document-type-icon.pdf-icon {
+  color: #d32f2f !important;
+}
+
+.document-type-icon.image-icon {
+  color: #4caf50 !important;
+}
+
+/* שם מסמך */
+.document-name {
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin-bottom: 16px !important;
+  word-break: break-word !important;
+  font-size: 1rem !important;
+  line-height: 1.4 !important;
+  color: #333 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  padding: 0 12px !important;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  line-clamp: 2 !important;
+  flex-grow: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* הסרת תאריך יצירה - לא בשימוש */
+
+/* כפתור הורדה */
+.document-actions {
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: auto !important;
+  padding-top: 16px !important;
+  border-top: 1px solid rgba(138, 76, 163, 0.1) !important;
+}
+
+.download-button {
+  background: transparent !important;
+  color: #8A4CA3 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  padding: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.download-button:hover {
+  background: transparent !important;
+  color: #6A3A7C !important;
+  transform: scale(1.1) !important;
+  box-shadow: none !important;
+}
+
+.download-button:active {
+  transform: scale(0.95) !important;
+  box-shadow: none !important;
+}
+
+.download-button .MuiButton-startIcon {
+  margin: 0 !important;
+}
+
+.download-button .MuiSvgIcon-root {
+  font-size: 1.8rem !important;
+}
+
+/* רספונסיביות */
+@media (max-width: 768px) {
+  .documents-main-container {
+    padding: 16px !important;
+  }
+  
+  .documents-page-title {
+    font-size: 2rem !important;
+  }
+  
+  .documents-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 16px !important;
+  }
+  
+  .document-card {
+    width: 100% !important;
+    height: 220px !important;
+    max-width: 400px !important;
+  }
+  
+  .document-card-content {
+    padding: 20px !important;
+  }
+  
+  .no-documents-message-simple {
+    margin: 40px auto !important;
+    padding: 0 16px !important;
+  }
+  
+  .no-documents-icon-simple {
+    font-size: 3rem !important;
+  }
+  
+  .no-documents-title-simple {
+    font-size: 1.3rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .documents-main-container {
+    padding: 12px !important;
+  }
+  
+  .documents-page-title {
+    font-size: 1.8rem !important;
+  }
+  
+  .documents-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .document-card {
+    width: 100% !important;
+    height: 220px !important;
+  }
+  
+  .document-card-content {
+    padding: 16px !important;
+  }
+}

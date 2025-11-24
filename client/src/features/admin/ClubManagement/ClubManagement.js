@@ -17,6 +17,7 @@ import {
 	DialogTitle,
 	DialogContent,
 	DialogActions,
+	Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -26,7 +27,8 @@ import { useGetClubsQuery, useDeleteClubMutation } from "../../../api/clubApi";
 import { useNavigate } from "react-router-dom";
 import AddClubDialog from "./AddClubDialog";
 import EditClubDialog from "./EditClubDialog";
-import "./clubManagement.css";
+import "./styles/ClubManagement.css";
+import { parseServerError } from "../../../utils/errorHandler";
 
 const ClubManagement = () => {
 	const navigate = useNavigate();
@@ -37,7 +39,7 @@ const ClubManagement = () => {
 	const [selectedClubForEdit, setSelectedClubForEdit] = useState(null);
 	const [deleteError, setDeleteError] = useState("");
 
-	const { data: clubs = [], isLoading, refetch } = useGetClubsQuery();
+	const { data: clubs = [], isLoading, isError, error, refetch } = useGetClubsQuery();
 	const [deleteClub, { isLoading: isDeleting }] = useDeleteClubMutation();
 
 	const handleDeleteClub = (club) => {
@@ -65,78 +67,68 @@ const ClubManagement = () => {
 
 	if (isLoading) {
 		return (
-			<Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-				<CircularProgress />
+			<Box className="club-management-loading">
+				<CircularProgress size={60} />
+			</Box>
+		);
+	}
+
+	if (isError) {
+		return (
+			<Box className="club-management-error">
+				<Typography color="error" variant="h6">
+					שגיאה בטעינת נתוני המועדוניות
+				</Typography>
+				<Typography color="error">{parseServerError(error, "שגיאה בטעינת נתוני המועדוניות")}</Typography>
 			</Box>
 		);
 	}
 
 	return (
-		<Box sx={{ p: 3 }} dir="rtl">
-			<Box
-				sx={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					mb: 3,
-					position: "relative",
-				}}
-			>
-				<Typography variant="h4" sx={{ fontWeight: 600 }}>
-					ניהול מועדוניות
-				</Typography>
+		<Box className="club-management-container">
+			{/* כותרת */}
+			<Typography variant="h4" className="club-management-header-title">
+				ניהול מועדוניות
+			</Typography>
+
+			{/* כפתור הוספה */}
+			<Box className="club-management-button-container">
 				<Button
 					variant="contained"
-					startIcon={<AddIcon />}
 					onClick={() => setAddDialogOpen(true)}
-					sx={{
-						position: "absolute",
-						left: 0,
-						backgroundColor: "#03a9f4",
-						"&:hover": { backgroundColor: "#0288d1" },
-					}}
+					className="club-management-add-button"
 				>
+					<AddIcon />
 					הוסף מועדונית חדשה
 				</Button>
 			</Box>
 
-			<TableContainer component={Paper}>
-				<Table>
+			<TableContainer component={Paper} className="club-management-table-container">
+				<Table className="club-management-table">
 					<TableHead>
-						<TableRow sx={{ bgcolor: "#1976d2" }}>
-							<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
-								שם המועדונית
-							</TableCell>
-							<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
-								יום פעילות
-							</TableCell>
-							<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
-								שעות
-							</TableCell>
-							<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
-								מיקום
-							</TableCell>
-							<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
-								ילדים רשומים
-							</TableCell>
-							<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
-								מתנדבות
-							</TableCell>
-							<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
-								בקשות ממתינות
-							</TableCell>
-							<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
-								פעולות
-							</TableCell>
+						<TableRow className="club-management-table-header">
+							<TableCell className="club-management-table-cell">שם המועדונית</TableCell>
+							<TableCell className="club-management-table-cell">יום פעילות</TableCell>
+							<TableCell className="club-management-table-cell">שעות</TableCell>
+							<TableCell className="club-management-table-cell">מיקום</TableCell>
+							<TableCell className="club-management-table-cell">ילדים</TableCell>
+							<TableCell className="club-management-table-cell">מתנדבות</TableCell>
+							<TableCell className="club-management-table-cell">בקשות ממתינות</TableCell>
+							<TableCell className="club-management-table-cell">פעולות</TableCell>
 						</TableRow>
-						</TableHead>
-						<TableBody>
-							{clubs.length === 0 ? (
+					</TableHead>
+					<TableBody>
+						{clubs.length === 0 ? (
 							<TableRow>
-								<TableCell colSpan={8} align="center">
-									<Typography variant="body1" color="text.secondary" sx={{ py: 3 }}>
-										אין מועדוניות קיימות. לחץ על 'הוסף מועדונית חדשה' כדי להתחיל
-									</Typography>
+								<TableCell colSpan={8} className="club-management-empty">
+									<Box className="club-management-empty-message">
+										<Typography className="club-management-empty-text">
+											אין מועדוניות במערכת
+										</Typography>
+										<Typography className="club-management-empty-subtitle">
+											התחל בהוספת מועדונית חדשה
+										</Typography>
+									</Box>
 								</TableCell>
 							</TableRow>
 						) : (
@@ -144,86 +136,90 @@ const ClubManagement = () => {
 								<TableRow 
 									key={club._id} 
 									hover
+									className="club-management-table-body-row"
 									onClick={() => handleViewClub(club._id)}
-									sx={{ cursor: "pointer" }}
-									role="button"
-									tabIndex={0}
 								>
-									<TableCell sx={{ textAlign: "center" }}>{club.name}</TableCell>
-									<TableCell sx={{ textAlign: "center" }}>{club.activityDay}</TableCell>
-									<TableCell sx={{ textAlign: "center" }}>
+									<TableCell className="club-management-table-body-cell">{club.name}</TableCell>
+									<TableCell className="club-management-table-body-cell">{club.activityDay}</TableCell>
+									<TableCell className="club-management-table-body-cell">
 										{club.startTime} - {club.endTime}
 									</TableCell>
-									<TableCell sx={{ textAlign: "center" }}>{club.location}</TableCell>
-									<TableCell sx={{ textAlign: "center" }}>
-										{club.registeredChildren?.length > 0 && (
+									<TableCell className="club-management-table-body-cell">{club.location}</TableCell>
+									<TableCell className="club-management-table-body-cell">
+										{club.registeredChildren?.length > 0 ? (
 											<Chip
 												label={club.registeredChildren.length}
 												color="primary"
 												size="small"
 											/>
-										)}
-										{club.registeredChildren?.length === 0 && (
+										) : (
 											<Typography variant="body2" color="text.secondary">
-												{club.registeredChildren.length}
+												0
 											</Typography>
 										)}
 									</TableCell>
-									<TableCell sx={{ textAlign: "center" }}>
-										{club.volunteers?.length > 0 && (
+									<TableCell className="club-management-table-body-cell">
+										{club.volunteers?.length > 0 ? (
 											<Chip
 												label={club.volunteers.length}
 												color="secondary"
 												size="small"
 											/>
-										)}
-										{club.volunteers?.length === 0 && (
+										) : (
 											<Typography variant="body2" color="text.secondary">
-												{club.volunteers.length}
+												0
 											</Typography>
 										)}
 									</TableCell>
-									<TableCell sx={{ textAlign: "center" }}>
-										{club.waitingChildren?.length > 0 && (
+									<TableCell className="club-management-table-body-cell">
+										{club.waitingChildren?.length > 0 ? (
 											<Chip
 												label={club.waitingChildren.length}
 												color="warning"
 												size="small"
 											/>
-										)}
-										{club.waitingChildren?.length === 0 && (
+										) : (
 											<Typography variant="body2" color="text.secondary">
-												{club.waitingChildren.length}
+												0
 											</Typography>
 										)}
 									</TableCell>
-									<TableCell sx={{ textAlign: "center" }}>
+								<TableCell className="club-management-table-body-cell">
+									<Tooltip title="צפה בפרטים" arrow>
 										<IconButton
-											color="primary"
-											onClick={(e) => { e.stopPropagation(); handleViewClub(club._id); }}
-											title="צפה בפרטים"
+											className="club-management-icon-button-view"
+											onClick={(e) => {
+												e.stopPropagation();
+												handleViewClub(club._id);
+											}}
 										>
 											<VisibilityIcon />
 										</IconButton>
+									</Tooltip>
+									<Tooltip title="עריכת מועדונית" arrow>
 										<IconButton
-											color="primary"
+											className="club-management-icon-button-edit"
 											onClick={(e) => {
 												e.stopPropagation();
 												setSelectedClubForEdit(club);
 												setEditDialogOpen(true);
 											}}
-											title="ערוך"
 										>
 											<EditIcon />
 										</IconButton>
+									</Tooltip>
+									<Tooltip title="מחיקת מועדונית" arrow>
 										<IconButton
-											color="error"
-											onClick={(e) => { e.stopPropagation(); handleDeleteClub(club); }}
-											title="מחק"
+											className="club-management-icon-button-delete"
+											onClick={(e) => {
+												e.stopPropagation();
+												handleDeleteClub(club);
+											}}
 										>
 											<DeleteIcon />
 										</IconButton>
-									</TableCell>
+									</Tooltip>
+								</TableCell>
 								</TableRow>
 							))
 						)}
@@ -231,14 +227,12 @@ const ClubManagement = () => {
 				</Table>
 			</TableContainer>
 
-			{/* דיאלוג הוספת מועדונית */}
 			<AddClubDialog
 				open={addDialogOpen}
 				onClose={() => setAddDialogOpen(false)}
 				onSuccess={refetch}
 			/>
 
-			{/* דיאלוג עריכת מועדונית */}
 			<EditClubDialog
 				open={editDialogOpen}
 				onClose={() => {
@@ -254,14 +248,14 @@ const ClubManagement = () => {
 				<DialogTitle>אישור מחיקה</DialogTitle>
 				<DialogContent>
 					{deleteError && (
-						<Typography color="error" sx={{ mb: 2 }}>
+						<Typography color="error" className="club-management-delete-error">
 							{deleteError}
 						</Typography>
 					)}
 					<Typography>
 						האם אתה בטוח שברצונך למחוק את המועדונית "{selectedClubForDelete?.name}"?
 					</Typography>
-					<Typography variant="body2" color="error" sx={{ mt: 1 }}>
+					<Typography variant="body2" color="error" className="club-management-delete-warning">
 						פעולה זו תמחק גם את כל הקשרים של המועדונית עם ילדים ומתנדבות.
 					</Typography>
 				</DialogContent>

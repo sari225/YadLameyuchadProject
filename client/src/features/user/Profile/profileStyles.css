@@ -1,0 +1,431 @@
+/* עמוד פרופיל - עיצוב כללי */
+
+/* קונטיינר ראשי */
+.profile-main-container {
+  min-height: 100vh !important;
+  background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+  background-attachment: fixed !important;
+  padding: 40px !important;
+  direction: rtl !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  position: relative !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* כותרת עמוד */
+.profile-page-title {
+  color: #333 !important;
+  font-weight: 700 !important;
+  font-size: 3rem !important;
+  margin-bottom: 48px !important;
+  text-align: center !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  position: relative !important;
+}
+
+.profile-page-title::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 120px !important;
+  height: 5px !important;
+  background: linear-gradient(90deg, #8A4CA3, #B76BA3, #4A90E2) !important;
+  border-radius: 3px !important;
+}
+
+/* תיאור עמוד */
+.profile-description-container {
+  text-align: center !important;
+  margin-bottom: 32px !important;
+}
+
+.profile-description {
+  color: #666 !important;
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
+  margin-bottom: 0 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* מצב טעינה */
+.profile-loading-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 300px !important;
+}
+
+.profile-loading {
+  color: #6B7FDE !important;
+}
+
+/* התראות */
+.profile-alert {
+  margin-bottom: 24px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.profile-alert-container {
+  min-height: 0 !important;
+  transition: none !important;
+  margin-bottom: 0 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+}
+
+.profile-alert-inside {
+  margin-bottom: 16px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+}
+
+/* כרטיס פרופיל */
+.profile-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 255, 0.92) 100%) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(208, 217, 255, 0.15) !important;
+  border: 1px solid rgba(208, 217, 255, 0.25) !important;
+  backdrop-filter: blur(15px) !important;
+  padding: 32px !important;
+  margin-bottom: 24px !important;
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.profile-card-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 24px !important;
+  padding-bottom: 16px !important;
+  border-bottom: 2px solid rgba(208, 217, 255, 0.3) !important;
+}
+
+.profile-card-actions {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.profile-icon-button {
+  background: rgba(208, 217, 255, 0.2) !important;
+  color: #6B7FDE !important;
+  width: 44px !important;
+  height: 44px !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid rgba(208, 217, 255, 0.3) !important;
+  flex-shrink: 0 !important;
+}
+
+.profile-icon-button svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.profile-icon-button:hover:not(:disabled) {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(208, 217, 255, 0.3) !important;
+}
+
+.profile-icon-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.profile-card-title {
+  color: #333 !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+  margin-bottom: 0 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* קבוצת שדות */
+.profile-form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+}
+
+/* שדה בודד */
+.profile-field {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.profile-field-label {
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  margin-bottom: 8px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  text-align: right !important;
+}
+
+/* שדות טקסט */
+.profile-text-field .MuiOutlinedInput-root {
+  border-radius: 12px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.profile-text-field .MuiOutlinedInput-root:not(.Mui-disabled) {
+  border: 2px solid rgba(208, 217, 255, 0.4) !important;
+}
+
+.profile-text-field .MuiOutlinedInput-root.Mui-disabled {
+  background: rgba(208, 217, 255, 0.1) !important;
+  border: 2px solid rgba(208, 217, 255, 0.2) !important;
+}
+
+.profile-text-field .MuiOutlinedInput-root:hover:not(.Mui-disabled) {
+  border-color: rgba(208, 217, 255, 0.6) !important;
+  box-shadow: 0 4px 12px rgba(208, 217, 255, 0.2) !important;
+}
+
+.profile-text-field .MuiOutlinedInput-root.Mui-focused {
+  border-color: #D0D9FF !important;
+  box-shadow: 0 6px 20px rgba(208, 217, 255, 0.3) !important;
+}
+
+.profile-text-field .MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+.profile-text-field .MuiInputBase-input {
+  padding: 16px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #333 !important;
+}
+
+.profile-text-field .MuiInputBase-input::placeholder {
+  color: #999 !important;
+  opacity: 1 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.profile-text-field .MuiFormHelperText-root {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  margin-right: 8px !important;
+  margin-top: 4px !important;
+}
+
+/* כפתורי שמירה וביטול */
+.profile-form-actions {
+  display: flex !important;
+  gap: 20px !important;
+  margin-top: 40px !important;
+  padding: 0 8px !important;
+}
+
+.profile-buttons-container {
+  display: flex !important;
+  gap: 20px !important;
+  margin-top: 32px !important;
+  padding: 16px !important;
+  background: rgba(248, 250, 255, 0.6) !important;
+  border-radius: 20px !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(208, 217, 255, 0.2) !important;
+}
+
+.profile-save-button {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 14px 24px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: none !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  flex: 1 !important;
+  position: relative !important;
+  overflow: visible !important;
+  min-height: 50px !important;
+  letter-spacing: normal !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+.profile-save-button:hover:not(:disabled) {
+  background: #B8C7FF !important;
+}
+
+.profile-save-button:active:not(:disabled) {
+  background: #A5B8FF !important;
+}
+
+.profile-save-button:disabled {
+  opacity: 0.5 !important;
+  transform: none !important;
+  cursor: not-allowed !important;
+  box-shadow: 0 2px 8px rgba(208, 217, 255, 0.25) !important;
+}
+
+.profile-cancel-button {
+  background: transparent !important;
+  color: #6B7FDE !important;
+  border: 2px solid #D0D9FF !important;
+  border-radius: 8px !important;
+  padding: 14px 24px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: none !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  text-transform: none !important;
+  flex: 1 !important;
+  position: relative !important;
+  overflow: visible !important;
+  min-height: 50px !important;
+  letter-spacing: normal !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+.profile-cancel-button:hover {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  border-color: #B8C7FF !important;
+}
+
+.profile-cancel-button:active {
+  background: #B8C7FF !important;
+}
+
+/* דיאלוג שינוי סיסמה - בסגנון דיאלוג קייטנות */
+.confirmation-dialog .MuiDialog-paper {
+  border-radius: 20px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.dialog-title {
+  text-align: right !important;
+  font-weight: 700 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #333 !important;
+  background: #D0D9FF !important;
+  border-radius: 20px 20px 0 0 !important;
+  margin: 0 !important;
+  padding: 20px !important;
+}
+
+.dialog-content {
+  text-align: right !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.dialog-actions {
+  justify-content: flex-end !important;
+  padding: 16px !important;
+  gap: 8px !important;
+}
+
+.dialog-button-cancel {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+}
+
+.dialog-button-confirm {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+  margin-left: 8px !important;
+}
+
+.dialog-button-confirm:hover {
+  background: #B8C7FF !important;
+}
+
+/* רספונסיביות */
+@media (max-width: 768px) {
+  .profile-main-container {
+    padding: 16px !important;
+  }
+  
+  .profile-page-title {
+    font-size: 2rem !important;
+  }
+  
+  .profile-card {
+    padding: 24px !important;
+  }
+
+  .profile-card-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .profile-card-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+  
+  .profile-form-actions, .profile-buttons-container {
+    flex-direction: row !important;
+    gap: 16px !important;
+  }
+  
+  .profile-save-button, .profile-cancel-button {
+    padding: 16px 24px !important;
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-main-container {
+    padding: 12px !important;
+  }
+  
+  .profile-page-title {
+    font-size: 1.8rem !important;
+  }
+  
+  .profile-card {
+    padding: 20px !important;
+  }
+
+  .profile-card-header {
+    padding-bottom: 12px !important;
+  }
+
+  .profile-icon-button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .profile-save-button, .profile-cancel-button {
+    padding: 16px 20px !important;
+    font-size: 0.95rem !important;
+    min-height: 50px !important;
+  }
+  
+  .profile-buttons-container {
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+}

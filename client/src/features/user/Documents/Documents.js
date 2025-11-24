@@ -1,34 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
-  Paper,
   Typography,
   CircularProgress,
   Alert,
-  IconButton,
-  Tooltip,
+  Button,
   Card,
+  TextField,
 } from "@mui/material";
 import {
+  Download as DownloadIcon,
+  FolderOpen as FolderOpenIcon,
   Description as DescriptionIcon,
   Image as ImageIcon,
   PictureAsPdf as PdfIcon,
-  Download as DownloadIcon,
+  Search as SearchIcon,
 } from "@mui/icons-material";
 import { useGetAllDocumentsQuery } from "../../../api/documentApi";
+import "./documentsStyles.css";
 
 const Documents = () => {
-  const { data: documents = [], isLoading, isError } = useGetAllDocumentsQuery();
+  const { data: allDocuments = [], isLoading, isError } = useGetAllDocumentsQuery();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // סינון מסמכים לפי שם
+  const documents = allDocuments.filter(doc => 
+    doc.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const getFileIcon = (url) => {
-    if (!url) return <DescriptionIcon sx={{ fontSize: 60, color: "#9e9e9e" }} />;
+    if (!url) return <DescriptionIcon className="document-type-icon" />;
     const ext = url.split(".").pop().toLowerCase();
     if (ext === "pdf") {
-      return <PdfIcon sx={{ fontSize: 60, color: "#d32f2f" }} />;
+      return <PdfIcon className="document-type-icon pdf-icon" />;
     } else if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) {
-      return <ImageIcon sx={{ fontSize: 60, color: "#4caf50" }} />;
+      return <ImageIcon className="document-type-icon image-icon" />;
     }
-    return <DescriptionIcon sx={{ fontSize: 60, color: "#9e9e9e" }} />;
+    return <DescriptionIcon className="document-type-icon" />;
   };
 
   const normalizePath = (path) => {
@@ -46,149 +54,97 @@ const Documents = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        background: "linear-gradient(180deg, #e3f2fd 0%, #fff 100%)",
-        p: 4,
-        direction: "rtl",
-      }}
-    >
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          mb: 4,
-          background: "linear-gradient(135deg, #d486b8 0%, #a57bad 100%)",
-          color: "white",
-          borderRadius: 3,
-          textAlign: "center",
-        }}
-      >
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 700,
-            mb: 1,
-            textShadow: "2px 2px 4px rgba(0,0,0,0.2)",
+    <Box className="documents-main-container" dir="rtl">
+      <Typography variant="h3" className="documents-page-title">
+        מסמכים להורדה
+      </Typography>
+
+      <div className="documents-description-container">
+        <Typography variant="h6" className="documents-description">
+          כאן תוכלו למצוא את כל המסמכים והטפסים הרלוונטיים להורדה
+        </Typography>
+      </div>
+
+      {/* תיבת חיפוש */}
+      <Box className="search-container">
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="חפש מסמך לפי שם..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-field"
+          InputProps={{
+            startAdornment: <SearchIcon className="search-icon" />
           }}
-        >
-          מסמכים להורדה
-        </Typography>
-        <Typography variant="h6" sx={{ fontWeight: 300, opacity: 0.95 }}>
-          כאן תוכלו למצוא את כל המסמכים והטפסים הרלוונטיים
-        </Typography>
-      </Paper>
+        />
+      </Box>
 
       {isLoading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-          <CircularProgress sx={{ color: "#d486b8" }} />
+        <Box className="documents-loading-container">
+          <CircularProgress size={60} className="documents-loading" />
         </Box>
       ) : isError ? (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" className="documents-alert">
           שגיאה בטעינת המסמכים
         </Alert>
       ) : documents.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography color="text.secondary">אין מסמכים זמינים כרגע</Typography>
-        </Paper>
+        <Box className="no-documents-message-simple">
+          <FolderOpenIcon className="no-documents-icon-simple" />
+          <Typography className="no-documents-title-simple">
+            {searchQuery ? "לא נמצאו מסמכים מתאימים" : "אין מסמכים זמינים כרגע"}
+          </Typography>
+        </Box>
       ) : (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: 2.5,
-            width: "100%",
-            alignItems: "start",
-          }}
-        >
+        <Box className="documents-grid">
           {documents.map((doc) => (
-            <Card
-              key={doc._id}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                p: 1.5,
-                transition: "transform 0.2s, box-shadow 0.2s",
-                cursor: "pointer",
-                minHeight: "180px",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                },
-              }}
-              onClick={() => window.open(getPreviewUrl(doc.url), "_blank")}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mb: 1,
-                  color: "#a57bad",
-                  "& svg": { fontSize: 40 },
-                }}
-              >
-                {getFileIcon(doc.url)}
-              </Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  mb: 1,
-                  wordBreak: "break-word",
-                  fontSize: "0.875rem",
-                  lineHeight: 1.8,
-                  maxHeight: "3.6em",
-                  overflow: "hidden",
-                }}
-              >
-                {doc.name}
-              </Typography>
-              {doc.createdAt && (
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{
-                    textAlign: "center",
-                    mb: 1.5,
-                    fontSize: "0.7rem",
-                    display: "block",
-                  }}
-                >
-                  {new Date(doc.createdAt).toLocaleDateString("he-IL")}
+            <Card key={doc._id} className="document-card">
+              <Box className="document-card-content">
+                <Box className="document-icon-container">
+                  {getFileIcon(doc.url)}
+                </Box>
+                <Typography className="document-name">
+                  {doc.name}
                 </Typography>
-              )}
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 0.5,
-                  justifyContent: "center",
-                  mt: "auto",
-                  pt: 1,
-                  borderTop: "1px solid #e0e0e0",
-                }}
-              >
-                <Tooltip title="הורדה" arrow>
-                  <IconButton
-                    size="small"
-                    sx={{
-                      color: "#d486b8",
-                      p: 0.5,
-                      "&:hover": { bgcolor: "rgba(212, 134, 184, 0.1)" },
-                    }}
+                
+                <Box className="document-actions">
+                  <Button
+                    variant="contained"
+                    className="download-button"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
-                      const link = document.createElement("a");
-                      link.href = getPreviewUrl(doc.url);
-                      link.download = doc.name;
-                      link.click();
+                      
+                      // יצירת fetch להורדה ישירה
+                      fetch(getPreviewUrl(doc.url))
+                        .then(response => response.blob())
+                        .then(blob => {
+                          const url = window.URL.createObjectURL(blob);
+                          const link = document.createElement('a');
+                          link.href = url;
+                          link.download = doc.name;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                          window.URL.revokeObjectURL(url);
+                        })
+                        .catch(error => {
+                          console.error('שגיאה בהורדת הקובץ:', error);
+                          // fallback - נסיון רגיל
+                          const link = document.createElement('a');
+                          link.href = getPreviewUrl(doc.url);
+                          link.download = doc.name;
+                          link.target = '_blank';
+                          link.rel = 'noopener noreferrer';
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        });
                     }}
                   >
-                    <DownloadIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                    <DownloadIcon />
+                  </Button>
+                </Box>
               </Box>
             </Card>
           ))}

@@ -1,0 +1,99 @@
+/* לוח ניהול - עיצוב כללי */
+
+.management-panel-container {
+  min-height: 100vh !important;
+  background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%) !important;
+  background-attachment: fixed !important;
+  padding: 40px !important;
+  direction: rtl !important;
+  font-family: 'Rubik', sans-serif !important;
+}
+
+.management-panel-title {
+  color: #333 !important;
+  font-weight: 700 !important;
+  font-size: 3rem !important;
+  margin-bottom: 16px !important;
+  text-align: center !important;
+  font-family: 'Rubik', sans-serif !important;
+}
+
+.management-panel-description {
+  text-align: center !important;
+  margin-bottom: 48px !important;
+}
+
+.management-panel-subtitle {
+  color: #666 !important;
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
+  font-family: 'Rubik', sans-serif !important;
+}
+
+.management-panel-alert {
+  margin-bottom: 32px !important;
+  font-family: 'Rubik', sans-serif !important;
+  border-radius: 12px !important;
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.stats-grid {
+  margin-bottom: 32px !important;
+}
+
+.secondary-stats-grid {
+  margin-bottom: 32px !important;
+}
+
+.info-cards-grid {
+  margin-bottom: 32px !important;
+}
+
+/* רספונסיביות */
+@media (max-width: 960px) {
+  .management-panel-container {
+    padding: 24px !important;
+  }
+
+  .management-panel-title {
+    font-size: 2.5rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .management-panel-container {
+    padding: 16px !important;
+  }
+
+  .management-panel-title {
+    font-size: 2rem !important;
+  }
+
+  .management-panel-subtitle {
+    font-size: 1rem !important;
+  }
+
+  .stats-grid,
+  .secondary-stats-grid,
+  .info-cards-grid {
+    margin-bottom: 20px !important;
+  }
+
+  .stats-grid {
+    flex-direction: column !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    align-items: flex-start !important;
+  }
+
+  .stats-grid .MuiGrid-item {
+    padding: 0 !important;
+    flex-basis: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+  }
+}

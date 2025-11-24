@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-	Box,
 	Button,
 	Typography,
 	Paper,
@@ -42,6 +41,7 @@ import {
 import { useGetChildrenQuery } from "../../../api/childApi";
 import { useGetVolunteersQuery, useAddClubToVolunteerMutation, useUpdateClubInVolunteerMutation } from "../../../api/volunteerApi";
 import { useParams, useNavigate } from "react-router-dom";
+import "./styles/ClubDetailsPage.css";
 
 const ClubDetailsPage = () => {
 	const { id } = useParams();
@@ -272,101 +272,105 @@ const ClubDetailsPage = () => {
 
 	if (isLoading) {
 		return (
-			<Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
+			<div className="club-details-loading-container">
 				<CircularProgress />
-			</Box>
+			</div>
 		);
 	}
 
 	if (!clubData) {
 		return (
-			<Box sx={{ p: 3 }} dir="rtl">
+			<div className="club-details-error-container">
 				<Alert severity="error">מועדונית לא נמצאה</Alert>
-			</Box>
+			</div>
 		);
 	}
 
 	return (
-		<Box sx={{ p: 3 }} dir="rtl">
-			<Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
+		<div className="club-details-container">
+			<div className="club-details-header">
 				<IconButton onClick={() => navigate("/admin/clubsManagement")}>
 					<ArrowBackIcon />
 				</IconButton>
-				<Typography variant="h4" sx={{ fontWeight: 600 }}>
+				<Typography variant="h4" className="club-details-title">
 					{clubData.name}
 				</Typography>
-			</Box>
+			</div>
 
 			{serverError && (
-				<Alert severity="error" sx={{ mb: 2 }}>
+				<Alert severity="error" className="club-details-error-alert">
 					{serverError}
 				</Alert>
 			)}
 
 			{successMessage && (
-				<Alert severity="success" sx={{ mb: 2 }}>
+				<Alert severity="success" className="club-details-success-alert">
 					{successMessage}
 				</Alert>
 			)}
 
-			{/* Info Cards */}
-			<Box sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 2, mb: 3 }}>
-				<Paper sx={{ p: 2, textAlign: "center" }}>
-					<Typography variant="h6" color="primary">
-						{clubData.registeredChildren?.length || 0}
-					</Typography>
-					<Typography variant="body2">ילדים רשומים</Typography>
-				</Paper>
-				<Paper sx={{ p: 2, textAlign: "center" }}>
-					<Typography variant="h6" color="secondary">
-						{clubData.volunteers?.length || 0}
-					</Typography>
-					<Typography variant="body2">מתנדבות</Typography>
-				</Paper>
-				<Paper sx={{ p: 2, textAlign: "center" }}>
-					<Typography variant="h6" color="warning.main">
-						{clubData.waitingChildren?.length || 0}
-					</Typography>
-					<Typography variant="body2">בקשות ממתינות</Typography>
-				</Paper>
-				<Paper sx={{ p: 2, textAlign: "center" }}>
-					<Typography variant="body1">{clubData.activityDay}</Typography>
-					<Typography variant="body2">יום פעילות</Typography>
-				</Paper>
-				<Paper sx={{ p: 2, textAlign: "center" }}>
-					<Typography variant="body1">
-						{clubData.startTime} - {clubData.endTime}
-					</Typography>
-					<Typography variant="body2">שעות</Typography>
-				</Paper>
-				<Paper sx={{ p: 2, textAlign: "center" }}>
-					<Typography variant="body1">{clubData.location}</Typography>
-					<Typography variant="body2">מיקום</Typography>
-				</Paper>
-			</Box>
-
-			{/* Club Managers */}
+		{/* Info Summary - Single Line */}
+		<div className="club-details-info-summary">
+			<Grid container spacing={1.5} alignItems="center">
+				<Grid item>
+					<Chip 
+						label={`${clubData.registeredChildren?.length || 0} ילדים רשומים`}
+						className="club-details-info-chip"
+						size="small"
+					/>
+				</Grid>
+				<Grid item>
+					<Chip 
+						label={`${clubData.volunteers?.length || 0} מתנדבות`}
+						className="club-details-info-chip"
+						size="small"
+					/>
+				</Grid>
+				<Grid item>
+					<Chip 
+						label={`${clubData.waitingChildren?.length || 0} בקשות ממתינות`}
+						className="club-details-info-chip"
+						size="small"
+					/>
+				</Grid>
+				<Grid item>
+					<Chip 
+						label={`יום: ${clubData.activityDay}`}
+						className="club-details-info-chip"
+						size="small"
+					/>
+				</Grid>
+				<Grid item>
+					<Chip 
+						label={`שעות: ${clubData.startTime} - ${clubData.endTime}`}
+						className="club-details-info-chip"
+						size="small"
+					/>
+				</Grid>
+				<Grid item>
+					<Chip 
+						label={`מיקום: ${clubData.location}`}
+						className="club-details-info-chip"
+						size="small"
+					/>
+				</Grid>
+			</Grid>
+		</div>
+		{/* Club Managers - Single Line */}
 			{clubData?.clubManagers?.length > 0 && (
-				<Paper sx={{ p: 2, mb: 3 }}>
-					<Typography variant="h6" gutterBottom>
-						מנהלי המועדונית
+				<Paper className="club-details-managers-summary">
+					<Typography variant="subtitle1" className="club-details-managers-title">
+						מנהלי המועדונית:
 					</Typography>
-					<Grid container spacing={2}>
+					<Grid container spacing={2} alignItems="center">
 						{clubData.clubManagers.map((manager, index) => (
-							<Grid item xs={12} sm={6} md={4} key={index}>
-								<Paper elevation={1} sx={{ p: 1.5 }}>
-									<Typography variant="body1" fontWeight="bold">
-										{manager.name}
-									</Typography>
-									<Typography variant="body2" color="text.secondary">
-										{manager.phone}
-									</Typography>
-									{manager.email && (
-										<Typography variant="body2" color="text.secondary">
-											{manager.email}
-										</Typography>
-									)}
-								</Paper>
+							<Grid item key={index}>
+								<Chip
+									label={`${manager.name} • ${manager.phone}${manager.email ? ` • ${manager.email}` : ''}`}
+									variant="outlined"
+									color="primary"
+									size="medium"
+								/>
 							</Grid>
 						))}
 					</Grid>
@@ -374,7 +378,7 @@ const ClubDetailsPage = () => {
 			)}
 
 			{/* Tabs */}
-			<Paper sx={{ mb: 2 }}>
+			<Paper className="club-details-tabs-paper">
 				<Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} centered>
 					<Tab label={`ילדים רשומים (${clubData.registeredChildren?.length || 0})`} />
 					<Tab label={`מתנדבות (${clubData.volunteers?.length || 0})`} />
@@ -385,12 +389,11 @@ const ClubDetailsPage = () => {
 			{/* Tab 0: Children */}
 			{tabValue === 0 && (
 				<Paper>
-					<Box sx={{ p: 3 }}>
-						<Grid container spacing={2} alignItems="center">
-							<Grid item xs={12} md={11}>
+					<div className="club-details-tab-content">
+						<Grid container spacing={2} alignItems="center" className="club-details-autocomplete-grid">
+							<Grid item xs={12} md={11} className="club-details-autocomplete-item">
 								<Autocomplete
 									fullWidth
-									sx={{ minWidth: '800px', width: '100%' }}
 									options={availableChildren}
 									getOptionLabel={(option) => `${option.Fname} ${option.Lname} - ${option.childId}`}
 									value={selectedChild}
@@ -402,50 +405,45 @@ const ClubDetailsPage = () => {
 											placeholder="הקלד שם או ת.ז"
 											size="medium"
 											fullWidth
-											sx={{ minWidth: '800px' }}
 										/>
 									)}
 									noOptionsText="לא נמצאו ילדים זמינים"
 									isOptionEqualToValue={(option, value) => option._id === value._id}
 								/>
 							</Grid>
-							<Grid item xs={12} md={1}>
+							<Grid item xs={12} md={1} className="club-details-button-container">
 								<Button
 									variant="contained"
 									startIcon={<AddIcon />}
 									onClick={handleAddChild}
 									disabled={!selectedChild}
 									fullWidth
-									sx={{ 
-										backgroundColor: "#03a9f4", 
-										"&:hover": { backgroundColor: "#0288d1" } 
-									}}
 								>
 									הוסף
 								</Button>
 							</Grid>
 						</Grid>
-					</Box>
+					</div>
 					<TableContainer>
 						<Table>
 							<TableHead>
-								<TableRow sx={{ bgcolor: "#1976d2" }}>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>ת.ז</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם פרטי</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם משפחה</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>טלפון</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>פעולות</TableCell>
+								<TableRow className="club-details-table-header">
+									<TableCell className="club-details-table-header-cell">ת.ז</TableCell>
+									<TableCell className="club-details-table-header-cell">שם פרטי</TableCell>
+									<TableCell className="club-details-table-header-cell">שם משפחה</TableCell>
+									<TableCell className="club-details-table-header-cell">טלפון</TableCell>
+									<TableCell className="club-details-table-header-cell">פעולות</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
 								{clubData.registeredChildren?.length > 0 ? (
 									clubData.registeredChildren.map((child) => (
 										<TableRow key={child._id} hover>
-											<TableCell sx={{ textAlign: "center" }}>{child.childId}</TableCell>
-											<TableCell sx={{ textAlign: "center" }}>{child.Fname}</TableCell>
-											<TableCell sx={{ textAlign: "center" }}>{child.Lname}</TableCell>
-											<TableCell sx={{ textAlign: "center" }}>{child.phone1}</TableCell>
-											<TableCell sx={{ textAlign: "center" }}>
+											<TableCell className="club-details-table-body-cell">{child.childId}</TableCell>
+											<TableCell className="club-details-table-body-cell">{child.Fname}</TableCell>
+											<TableCell className="club-details-table-body-cell">{child.Lname}</TableCell>
+											<TableCell className="club-details-table-body-cell">{child.phone1}</TableCell>
+											<TableCell className="club-details-table-body-cell">
 												<IconButton color="error" onClick={() => handleRemoveChild(child)} title="הסר">
 													<DeleteIcon />
 												</IconButton>
@@ -454,7 +452,7 @@ const ClubDetailsPage = () => {
 									))
 								) : (
 									<TableRow>
-										<TableCell colSpan={5} sx={{ textAlign: "center", py: 4 }}>
+										<TableCell colSpan={5} className="club-details-empty-message">
 											<Typography variant="body1" color="text.secondary">
 												אין ילדים רשומים במועדונית
 											</Typography>
@@ -470,12 +468,11 @@ const ClubDetailsPage = () => {
 			{/* Tab 1: Volunteers */}
 			{tabValue === 1 && (
 				<Paper>
-					<Box sx={{ p: 3 }}>
-						<Grid container spacing={2} alignItems="center">
-							<Grid item xs={12} md={5.5}>
+					<div className="club-details-tab-content">
+						<Grid container spacing={2} alignItems="center" className="club-details-volunteers-autocomplete-grid">
+							<Grid item xs={12} md={5.5} className="club-details-volunteers-autocomplete-item">
 								<Autocomplete
 									fullWidth
-									sx={{ minWidth: '500px', width: '100%' }}
 									options={availableVolunteers}
 									getOptionLabel={(option) => `${option.fname} ${option.lname} - ${option.phone}`}
 									value={selectedVolunteer}
@@ -487,17 +484,15 @@ const ClubDetailsPage = () => {
 											placeholder="הקלד שם או טלפון"
 											size="medium"
 											fullWidth
-											sx={{ minWidth: '500px' }}
 										/>
 									)}
 									noOptionsText="לא נמצאו מתנדבות זמינות"
 									isOptionEqualToValue={(option, value) => option._id === value._id}
 								/>
 							</Grid>
-							<Grid item xs={12} md={5.5}>
+							<Grid item xs={12} md={5.5} className="club-details-volunteers-autocomplete-item">
 								<Autocomplete
 									fullWidth
-									sx={{ minWidth: '500px', width: '100%' }}
 									options={availableChildrenForVolunteer}
 									getOptionLabel={(option) => `${option.Fname} ${option.Lname} (${option.childId})`}
 									value={selectedChildForVolunteer}
@@ -510,7 +505,6 @@ const ClubDetailsPage = () => {
 											placeholder="חפש ילד..."
 											size="medium"
 											fullWidth
-											sx={{ minWidth: '500px' }}
 										/>
 									)}
 									noOptionsText={availableChildrenForVolunteer.length === 0 ? "אין ילדים זמינים" : "לא נמצאו תוצאות"}
@@ -524,26 +518,22 @@ const ClubDetailsPage = () => {
 									onClick={handleAddVolunteer}
 									disabled={!selectedVolunteer}
 									fullWidth
-									sx={{ 
-										backgroundColor: "#03a9f4", 
-										"&:hover": { backgroundColor: "#0288d1" } 
-									}}
 								>
 									הוסף
 								</Button>
 							</Grid>
 						</Grid>
-					</Box>
-					<TableContainer>
+					</div>
+					<TableContainer className="club-details-volunteers-table-container">
 						<Table>
 							<TableHead>
-								<TableRow sx={{ bgcolor: "#1976d2" }}>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם פרטי</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם משפחה</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>טלפון</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>אימייל</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שומרת על</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>פעולות</TableCell>
+								<TableRow className="club-details-table-header">
+									<TableCell className="club-details-table-header-cell">שם פרטי</TableCell>
+									<TableCell className="club-details-table-header-cell">שם משפחה</TableCell>
+									<TableCell className="club-details-table-header-cell">טלפון</TableCell>
+									<TableCell className="club-details-table-header-cell">אימייל</TableCell>
+									<TableCell className="club-details-table-header-cell">שומרת על</TableCell>
+									<TableCell className="club-details-table-header-cell">פעולות</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -557,11 +547,11 @@ const ClubDetailsPage = () => {
 									
 									return (
 											<TableRow key={volunteer._id} hover>
-												<TableCell sx={{ textAlign: "center" }}>{volunteer.fname}</TableCell>
-												<TableCell sx={{ textAlign: "center" }}>{volunteer.lname}</TableCell>
-												<TableCell sx={{ textAlign: "center" }}>{volunteer.phone}</TableCell>
-												<TableCell sx={{ textAlign: "center" }}>{volunteer.email || '-'}</TableCell>
-												<TableCell sx={{ textAlign: "center" }}>
+												<TableCell className="club-details-table-body-cell">{volunteer.fname}</TableCell>
+												<TableCell className="club-details-table-body-cell">{volunteer.lname}</TableCell>
+												<TableCell className="club-details-table-body-cell">{volunteer.phone}</TableCell>
+												<TableCell className="club-details-table-body-cell">{volunteer.email || '-'}</TableCell>
+												<TableCell className="club-details-table-body-cell">
 													{childName !== 'ללא ילד' ? (
 														<Chip label={childName} color="primary" size="small" />
 													) : (
@@ -570,12 +560,11 @@ const ClubDetailsPage = () => {
 														</Typography>
 													)}
 												</TableCell>
-												<TableCell sx={{ textAlign: "center" }}>
+												<TableCell className="club-details-table-body-cell">
 													<Button
 														size="small"
 														variant="outlined"
 														onClick={() => handleEditVolunteerChild(fullVolunteer)}
-														sx={{ mr: 1 }}
 													>
 														עדכן ילד
 													</Button>
@@ -588,7 +577,7 @@ const ClubDetailsPage = () => {
 									})
 								) : (
 									<TableRow>
-										<TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
+										<TableCell colSpan={6} className="club-details-empty-message">
 											<Typography variant="body1" color="text.secondary">
 												אין מתנדבות במועדונית
 											</Typography>
@@ -607,23 +596,23 @@ const ClubDetailsPage = () => {
 					<TableContainer>
 						<Table>
 							<TableHead>
-								<TableRow sx={{ bgcolor: "#1976d2" }}>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>ת.ז</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם פרטי</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>שם משפחה</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>טלפון</TableCell>
-									<TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>פעולות</TableCell>
+								<TableRow className="club-details-table-header">
+									<TableCell className="club-details-table-header-cell">ת.ז</TableCell>
+									<TableCell className="club-details-table-header-cell">שם פרטי</TableCell>
+									<TableCell className="club-details-table-header-cell">שם משפחה</TableCell>
+									<TableCell className="club-details-table-header-cell">טלפון</TableCell>
+									<TableCell className="club-details-table-header-cell">פעולות</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
 								{clubData.waitingChildren?.length > 0 ? (
 									clubData.waitingChildren.map((child) => (
 										<TableRow key={child._id} hover>
-											<TableCell sx={{ textAlign: "center" }}>{child.childId}</TableCell>
-											<TableCell sx={{ textAlign: "center" }}>{child.Fname}</TableCell>
-											<TableCell sx={{ textAlign: "center" }}>{child.Lname}</TableCell>
-											<TableCell sx={{ textAlign: "center" }}>{child.phone1}</TableCell>
-											<TableCell sx={{ textAlign: "center" }}>
+											<TableCell className="club-details-table-body-cell">{child.childId}</TableCell>
+											<TableCell className="club-details-table-body-cell">{child.Fname}</TableCell>
+											<TableCell className="club-details-table-body-cell">{child.Lname}</TableCell>
+											<TableCell className="club-details-table-body-cell">{child.phone1}</TableCell>
+											<TableCell className="club-details-table-body-cell">
 												<IconButton
 													color="success"
 													onClick={() => handleApproveWaitingChild(child._id)}
@@ -643,7 +632,7 @@ const ClubDetailsPage = () => {
 									))
 								) : (
 									<TableRow>
-										<TableCell colSpan={5} sx={{ textAlign: "center", py: 4 }}>
+										<TableCell colSpan={5} className="club-details-empty-message">
 											<Typography variant="body1" color="text.secondary">
 												אין בקשות ממתינות
 											</Typography>
@@ -696,13 +685,12 @@ const ClubDetailsPage = () => {
 			<Dialog open={editVolunteerChild.open} onClose={() => setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null })} maxWidth="sm" fullWidth dir="rtl">
 				<DialogTitle>עדכון ילד למתנדבת</DialogTitle>
 				<DialogContent>
-					<Box sx={{ mt: 2 }}>
-						<Typography variant="body2" sx={{ mb: 2, fontWeight: "bold" }}>
+					<div style={{ marginTop: '16px' }}>
+						<Typography variant="body2" style={{ marginBottom: '16px', fontWeight: 'bold' }}>
 							מתנדבת: {editVolunteerChild.volunteer?.fname} {editVolunteerChild.volunteer?.lname}
 						</Typography>
 						<Autocomplete
 							fullWidth
-							sx={{ minWidth: '500px', width: '100%' }}
 						options={[
 							...availableChildrenForVolunteer,
 							...(editVolunteerChild.currentChild && 
@@ -726,13 +714,12 @@ const ClubDetailsPage = () => {
 									placeholder="הקלד שם או ת.ז (השאר ריק להסרה)"
 									size="medium"
 									fullWidth
-									sx={{ minWidth: '500px' }}
 								/>
 							)}
 							noOptionsText="לא נמצאו ילדים זמינים"
 							isOptionEqualToValue={(option, value) => option._id === value._id}
 						/>
-					</Box>
+					</div>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={() => setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null })}>
@@ -761,7 +748,7 @@ const ClubDetailsPage = () => {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</Box>
+		</div>
 	);
 };
 

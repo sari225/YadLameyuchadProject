@@ -1,0 +1,437 @@
+/* עיצוב עמוד הקייטנות - בסגנון האזור האישי */
+
+/* מיכל ראשי */
+.camps-main-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+  background-attachment: fixed;
+  padding: 40px;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* כותרת העמוד */
+.camps-page-title {
+  font-weight: 700 !important;
+  margin-bottom: 48px !important;
+  color: #333 !important;
+  font-size: 3rem !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  text-align: center !important;
+  position: relative;
+}
+
+.camps-page-title::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 5px;
+  background: linear-gradient(90deg, #8A4CA3, #B76BA3, #4A90E2);
+  border-radius: 3px;
+}
+
+/* מיכל טקסט הסבר */
+.camps-description-container {
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+  text-align: center;
+  padding: 0 20px;
+  direction: rtl;
+}
+
+/* טקסט הסבר */
+.camps-description {
+  color: #555 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+  margin: 0 !important;
+}
+
+/* רשת כרטיסי הקייטנות */
+.camps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 350px));
+  gap: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  justify-content: center;
+}
+
+/* כרטיס קייטנה בודד */
+.camp-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(138, 76, 163, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(15px) !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* תוכן כרטיס */
+.camp-card-content {
+  padding: 32px !important;
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* שם הקייטנה */
+.camp-name {
+  font-weight: 700 !important;
+  color: #333 !important;
+  font-size: 1.5rem !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  margin-bottom: 16px !important;
+  line-height: 1.3 !important;
+  min-height: 32px !important;
+}
+
+/* פרטי הקייטנה */
+.camp-details {
+  margin-bottom: 20px;
+}
+
+.camp-detail-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px !important;
+  gap: 8px;
+}
+
+.camp-detail-icon {
+  color: #8A4CA3 !important;
+  font-size: 1.2rem !important;
+}
+
+.camp-detail-text {
+  color: #333 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-size: 0.95rem !important;
+}
+
+/* קו מפריד */
+.camp-divider {
+  margin: 20px 0 !important;
+  background-color: rgba(138, 76, 163, 0.1) !important;
+}
+
+/* צ'יפ סטטוס */
+.status-chip-container {
+  margin-bottom: 20px;
+}
+
+/* עיצוב צ'יפים לפי סטטוס */
+.camp-status-chip-registered,
+.camp-status-chip-open {
+  font-weight: bold !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-color: #8A4CA3 !important;
+  color: #8A4CA3 !important;
+  min-width: 180px !important;
+  width: 180px !important;
+}
+
+.camp-status-chip-registered .MuiChip-label,
+.camp-status-chip-open .MuiChip-label {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  font-weight: bold !important;
+}
+
+/* תצוגת קובץ - שמירה על העיצוב הנוכחי */
+.file-preview-container {
+  margin-top: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fafafa;
+}
+
+.file-header {
+  padding: 12px 16px;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.file-header-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-icon {
+  margin-left: 8px !important;
+  color: #8A4CA3 !important;
+  font-size: 20px !important;
+}
+
+.file-name {
+  font-weight: 500 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.file-open-button {
+  min-width: auto !important;
+  padding: 4px 12px !important;
+  font-size: 0.75rem !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #8A4CA3 !important;
+}
+
+.file-preview-content {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* תמונה בתצוגה מקדימה */
+.preview-image {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* PDF בתצוגה מקדימה */
+.pdf-preview-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.pdf-iframe {
+  width: 120% !important;
+  height: 120% !important;
+  border: none !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  top: -10% !important;
+  left: -10% !important;
+}
+
+.pdf-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+}
+
+/* וידאו בתצוגה מקדימה */
+.preview-video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block !important;
+  background-color: #000 !important;
+}
+
+/* אייקון קובץ כללי */
+.file-icon-large {
+  font-size: 60px !important;
+  color: #8A4CA3 !important;
+  margin-bottom: 8px !important;
+}
+
+.file-type-text {
+  color: #666 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* אזור כפתורים */
+.camp-actions {
+  margin-top: auto !important;
+  padding: 24px 32px 32px 32px !important;
+}
+
+/* כפתור הרשמה בסגנון */
+.register-button-clubs-style {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+  padding: 14px 20px !important;
+  text-transform: none !important;
+  box-shadow: 0 2px 8px rgba(208, 217, 255, 0.4) !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  width: 100% !important;
+  gap: 8px !important;
+}
+
+.register-button-clubs-style:hover {
+  background: #B8C7FF !important;
+  box-shadow: 0 4px 15px rgba(208, 217, 255, 0.6) !important;
+}
+
+/* כפתור רשום - disabled */
+.register-button-clubs-style.registered {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%) !important;
+  color: #999 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  cursor: not-allowed !important;
+}
+
+.register-button-clubs-style.registered:hover {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%) !important;
+  box-shadow: none !important;
+}
+
+/* הודעות */
+.camps-alert {
+  max-width: 800px;
+  margin: 0 auto 32px auto !important;
+  border-radius: 12px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* מצב אין קייטנות  */
+.no-camps-simple-message {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.no-camps-icon-simple {
+  font-size: 4rem !important;
+  color: #333 !important;
+  margin-bottom: 24px;
+  opacity: 0.6;
+}
+
+.no-camps-simple-text {
+  font-size: 1.8rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  margin: 0 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* מצב טעינה */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+/* דיאלוג אישור */
+.confirmation-dialog .MuiDialog-paper {
+  border-radius: 20px !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.dialog-title {
+  text-align: right !important;
+  font-weight: 700 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  color: #333 !important;
+}
+
+.dialog-content {
+  text-align: right !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+.dialog-camp-name {
+  margin-bottom: 16px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+.dialog-camp-detail {
+  margin-bottom: 8px !important;
+  color: #555 !important;
+}
+
+.dialog-question {
+  margin-top: 16px !important;
+  color: #333 !important;
+}
+
+.dialog-note {
+  margin-top: 8px !important;
+  color: #666 !important;
+}
+
+.dialog-actions {
+  justify-content: flex-end !important;
+  padding: 16px !important;
+  gap: 8px !important;
+}
+
+.dialog-button-cancel {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+}
+
+.dialog-button-confirm {
+  background: #D0D9FF !important;
+  color: #333 !important;
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+  margin-left: 8px !important;
+}
+
+.dialog-button-confirm:hover {
+  background: #B8C7FF !important;
+}
+
+/* רספונסיביות */
+@media (max-width: 768px) {
+  .camps-main-container {
+    padding: 20px;
+  }
+  
+  .camps-page-title {
+    font-size: 2.2rem !important;
+    margin-bottom: 32px !important;
+  }
+  
+  .camps-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 0;
+    justify-content: center;
+  }
+  
+  .camp-card-content {
+    padding: 24px !important;
+  }
+  
+  .no-camps-message {
+    margin: 40px auto;
+    padding: 32px 24px;
+  }
+}

@@ -196,16 +196,28 @@
         margin-right: 0 !important;
     }
     
-    /* במובייל - התפריט overlay מעל התוכן */
+    /* במובייל - התפריט overlay מעל התוכן עם z-index נמוך */
     .sidebar-container {
-        z-index: 2000 !important;
+        z-index: 100 !important;
         transform: none !important; /* מבטל transform במובייל */
+        pointer-events: none !important; /* ברירת מחדל - לא חוסם */
+    }
+    
+    /* כשהתפריט פתוח - מאפשר לחיצות רק על התפריט */
+    .sidebar-container.open {
+        pointer-events: auto !important;
+    }
+    
+    /* כשהתפריט סגור - בטוח שלא חוסם לחיצות */
+    .sidebar-container.closed {
+        pointer-events: none !important;
     }
     
     .sidebar {
         width: 250px;
         box-shadow: -4px 0 15px rgba(0, 0, 0, 0.3);
         transition: transform 0.3s ease;
+        pointer-events: auto !important; /* התפריט עצמו תמיד לחיץ */
     }
     
     /* כשהתפריט סגור - רק ה-sidebar זז */
@@ -220,15 +232,16 @@
         height: 40px;
         font-size: 18px;
         transition: transform 0.3s ease;
+        pointer-events: auto !important; /* הכפתור תמיד לחיץ */
+        z-index: 101 !important; /* מעל הכל */
     }
     
     .toggle-btn.closed {
         transform: translateX(250px);
     }
     
-    /* רקע חשוך כשהתפריט פתוח */
-    .sidebar-container::after {
-        content: '';
+    /* רקע חשוך כשהתפריט פתוח - עם אפשרות לחיצה */
+    .sidebar-overlay {
         position: fixed;
         top: 0;
         left: 0;
@@ -238,12 +251,15 @@
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
-        z-index: -1;
+        z-index: 99;
+        cursor: pointer;
+        pointer-events: none; /* ברירת מחדל - לא חוסם לחיצות */
     }
     
-    .sidebar-container:not(:has(.sidebar.closed))::after {
+    .sidebar-overlay.visible {
         opacity: 1;
         visibility: visible;
+        pointer-events: auto; /* רק כשהתפריט פתוח - מאפשר לחיצות */
     }
     
     .nav-item {

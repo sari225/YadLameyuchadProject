@@ -1,15 +1,20 @@
-import React, { useMemo } from "react";
-import { Box, Typography, Paper, IconButton, CircularProgress, Alert, Button } from "@mui/material";
-import { GetApp as DownloadIcon, AttachFile as AttachFileIcon, Description as DescriptionIcon, Image as ImageIcon } from "@mui/icons-material";
+import React, { useMemo, useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
+import { Group as GroupIcon, Event as CampIcon, ContactPhone as ContactIcon, Person as PersonIcon } from "@mui/icons-material";
 import { useSelector } from "react-redux";
-import { jwtDecode } from "jwt-decode";
-import { useGetUpdatingsQuery } from "../../../api/updateApi";
-import { useGetChildByIdQuery } from "../../../api/childApi";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useGetClubsQuery } from "../../../api/clubApi";
+import { useGetDayCampsQuery } from "../../../api/dayCampApi";
+import { useGetChildByIdQuery } from "../../../api/childApi";
+import UpdatesSection from "./UpdatesSection";
+import ContactDialog from "./ContactDialog";
+import "./styles/personalAreaStyles.css";
 
 const PersonalArea = () => {
-  const navigate = useNavigate();
   const { token } = useSelector((s) => s.auth);
+  const navigate = useNavigate();
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const decoded = useMemo(() => {
     try {
       return token ? jwtDecode(token) : null;
@@ -18,199 +23,87 @@ const PersonalArea = () => {
     }
   }, [token]);
 
-  const userId = decoded?.id;
-
   const userName = decoded?.name || "משתמש";
-  const { data: updates = [], isLoading, isError } = useGetUpdatingsQuery();
+  const childId = decoded?.id;
 
-  const normalizePath = (p) => {
-    if (!p) return "";
-    const posix = p.replace(/\\/g, "/");
-    return posix.includes("/public/") ? posix.substring(posix.indexOf("/public/") + 8) : posix;
-  };
+  const { data: clubs = [], refetch: refetchClubs } = useGetClubsQuery();
+  const { data: dayCamps = [], refetch: refetchDayCamps } = useGetDayCampsQuery();
+  const { data: childData, refetch: refetchChild } = useGetChildByIdQuery(childId, { skip: !childId });
 
-  const getFileURL = (path) => {
-    const base = process.env.REACT_APP_API_URL ;
-    return `${base}/${normalizePath(path)}`;
-  };
+  useEffect(() => {
+    refetchClubs();
+    refetchDayCamps();
+    if (childId) refetchChild();
+  }, [refetchClubs, refetchDayCamps, refetchChild, childId]);
 
-  const visibleUpdates = updates
-    .filter((u) => u.updateLocation === "site" || u.updateLocation === "site_and_email")
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const myClubsCount = useMemo(() => childData?.clubs?.length || 0, [childData]);
 
-  const handleDownloadFile = (file) => {
-    if (!file?.path) return;
-    const fileURL = getFileURL(file.path);
-    fetch(fileURL)
-      .then((r) => r.blob())
-      .then((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = file.filename || "download";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(() => alert("שגיאה בהורדת הקובץ"));
-  };
-
-  const isImageFile = (name) => {
-    if (!name) return false;
-    const ext = name.toLowerCase().split(".").pop();
-    return ["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(ext);
-  };
-  const isPdfFile = (name) => !!name && name.toLowerCase().endsWith(".pdf");
-  const isVideoFile = (name) => {
-    if (!name) return false;
-    const ext = name.toLowerCase().split(".").pop();
-    return ["mp4", "webm", "ogg", "mov"].includes(ext);
-  };
+  const activeCamp = useMemo(() => {
+    if (!dayCamps.length) return null;
+    const today = new Date();
+    return dayCamps.find(camp => {
+      if (!camp.startDate || !camp.endDate) return false;
+      const startDate = new Date(camp.startDate);
+      const endDate = new Date(camp.endDate);
+      return today >= startDate && today <= endDate;
+    });
+  }, [dayCamps]);
 
   return (
-    <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #e3f2fd 0%, #fff 100%)", p: 4 }} dir="rtl">
-      <Paper elevation={3} sx={{ p: 4, mb: 4, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "white", borderRadius: 3, textAlign: "center" }}>
-        <Typography variant="h3" sx={{ fontWeight: 700, mb: 1, textShadow: "2px 2px 4px rgba(0,0,0,0.2)" }}>
-          ברוך הבא, {userName} !
+    <div className="main-container" dir="rtl">
+      <div className="welcome-container">
+        <Typography variant="h3" className="welcome-title">
+          ברוך הבא, {userName}!
         </Typography>
-        <Typography variant="h6" sx={{ fontWeight: 300, opacity: 0.95 }}>
+        <Typography variant="h6" className="welcome-subtitle">
           שמחים לראות אותך באזור האישי שלך
         </Typography>
-      </Paper>
+      </div>
 
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 600, color: "#333", textAlign: "right", mb: 3 }}>
-          עדכונים אחרונים מהעמותה
-        </Typography>
+      <div className="stats-container">
 
-        {isLoading && (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
-            <CircularProgress />
-          </Box>
-        )}
-        {isError && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            שגיאה בטעינת העדכונים
-          </Alert>
-        )}
-        {!isLoading && !isError && visibleUpdates.length === 0 && (
-          <Paper sx={{ p: 4, textAlign: "center" }}>
-            <Typography variant="h6" color="text.secondary">
-              אין עדכונים חדשים כרגע
+        <div className="stat-item">
+          <div className="content-container">
+            <Typography variant="h2" className="stat-number">
+              {myClubsCount}
             </Typography>
-          </Paper>
-        )}
+          </div>
+          <Typography className="stat-label">
+            <GroupIcon style={{ fontSize: '1.2em', verticalAlign: 'middle', marginLeft: 4 }} />
+            המועדוניות שלי
+          </Typography>
+        </div>
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "50%", ml: "auto" }}>
-          {visibleUpdates.slice(0, 4).map((update) => (
-            <Paper key={update._id} elevation={3} sx={{ display: "flex", flexDirection: "row-reverse", height: 150, overflow: "hidden", transition: "transform 0.2s, box-shadow 0.2s", "&:hover": { transform: "translateY(-4px)", boxShadow: "0 8px 16px rgba(0,0,0,0.15)" }, borderRadius: 2, borderRight: "4px solid #667eea" }}>
-              {update.file?.filename && (
-                <Box
-                  onClick={() => window.open(getFileURL(update.file.path), "_blank", "noopener")}
-                  sx={{ width: 250, minWidth: 250, height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f5f5f5", position: "relative", cursor: "pointer", "&:hover": { opacity: 0.8 } }}
-                >
-                  {isImageFile(update.file.filename) ? (
-                    <Box component="img" src={getFileURL(update.file.path)} alt={update.title} sx={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  ) : isPdfFile(update.file.filename) ? (
-                    <Box sx={{ width: "100%", height: "100%", position: "relative", pointerEvents: "none" }}>
-                      <iframe title={update.title} src={`${getFileURL(update.file.path)}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`} style={{ width: "100%", height: "100%", border: "none", pointerEvents: "none" }} />
-                    </Box>
-                  ) : isVideoFile(update.file.filename) ? (
-                    <Box
-                      component="video"
-                      src={getFileURL(update.file.path)}
-                      autoPlay
-                      muted
-                      loop
-                      controls
-                      playsInline
-                      sx={{ 
-                        width: "100%", 
-                        height: "100%", 
-                        objectFit: "contain",
-                        display: "block",
-                        backgroundColor: "#000"
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  ) : (
-                    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                      <AttachFileIcon sx={{ fontSize: 60, color: "#666" }} />
-                      <Typography variant="caption" sx={{ color: "#666" }}>
-                        קובץ
-                      </Typography>
-                    </Box>
-                  )}
-                  <IconButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDownloadFile(update.file);
-                    }}
-                    sx={{ position: "absolute", bottom: 8, right: 8, backgroundColor: "rgba(255,255,255,0.9)", "&:hover": { backgroundColor: "rgba(255,255,255,1)" } }}
-                    size="small"
-                  >
-                    <DownloadIcon />
-                  </IconButton>
-                </Box>
-              )}
-
-              <Box sx={{ flex: 1, display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
-                <Box sx={{ position: "absolute", top: 8, right: 8, zIndex: 1 }}>
-                  <Typography 
-                    variant="caption" 
-                    sx={{ 
-                      backgroundColor: "#667eea",
-                      color: "white",
-                      px: 1.5,
-                      py: 0.5,
-                      borderRadius: 2,
-                      fontWeight: 500,
-                      fontSize: "0.7rem",
-                      display: "inline-block"
-                    }}
-                  >
-                    {new Date(update.createdAt).toLocaleDateString("he-IL", { day: "numeric", month: "short", year: "numeric" })}
-                  </Typography>
-                </Box>
-                <Box sx={{ flex: 1, overflow: "auto", p: 2, pt: 5, textAlign: "right" }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: "#333" }}>
-                    {update.title}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
-                    {update.content}
-                  </Typography>
-                </Box>
-              </Box>
-            </Paper>
-          ))}
-        </Box>
-
-        {visibleUpdates.length > 4 && (
-          <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 4, width: "50%", ml: "auto" }}>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => navigate("/user/all-updates")}
-              sx={{
-                backgroundColor: "#667eea",
-                color: "white",
-                px: 4,
-                py: 1.5,
-                fontSize: "1rem",
-                fontWeight: 600,
-                borderRadius: 2,
-                "&:hover": {
-                  backgroundColor: "#764ba2"
-                }
-              }}
+        <div className="stat-item">
+          <div className="content-container">
+            <Typography
+              variant={activeCamp ? "h5" : "h6"}
+              className={activeCamp ? "active-camp-text" : "no-camp-text"}
             >
-              הצג את כל העדכונים
-            </Button>
-          </Box>
-        )}
-      </Box>
-    </Box>
+              {activeCamp ? activeCamp.name : "אין קייטנה פעילה כרגע"}
+            </Typography>
+          </div>
+          <Typography className="stat-label">
+            <CampIcon style={{ fontSize: '1.2em', verticalAlign: 'middle', marginLeft: 4 }} />
+            קייטנה פעילה
+          </Typography>
+        </div>
+
+        <div className="quick-links-column">
+          <div className="quick-link-item contact-button" onClick={() => setContactDialogOpen(true)}>
+            <ContactIcon className="icon" />
+            <Typography>יצירת קשר</Typography>
+          </div>
+          <div className="quick-link-item profile-button" onClick={() => navigate("/user/profile")}>
+            <PersonIcon className="icon" />
+            <Typography>הפרופיל שלי</Typography>
+          </div>
+        </div>
+      </div>
+
+      <ContactDialog open={contactDialogOpen} onClose={() => setContactDialogOpen(false)} />
+      <UpdatesSection />
+    </div>
   );
 };
 

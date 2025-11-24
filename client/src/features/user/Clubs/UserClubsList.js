@@ -1,31 +1,27 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   Box,
   Card,
   CardContent,
   Typography,
   Button,
-  Grid,
   Chip,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   CircularProgress,
-  IconButton,
   Divider,
+  TextField,
 } from "@mui/material";
 import {
   LocationOn as LocationIcon,
   Group as GroupIcon,
-  Close as CloseIcon,
   CheckCircle as CheckCircleIcon,
   Cancel as CancelIcon,
   HourglassEmpty as HourglassEmptyIcon,
   Info as InfoIcon,
   Send as SendIcon,
   AccessTime as AccessTimeIcon,
+  GroupWork as GroupWorkIcon,
+  Search as SearchIcon,
 } from "@mui/icons-material";
 import { 
   useGetClubsQuery, 
@@ -34,6 +30,9 @@ import {
 import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { parseServerError } from "../../../utils/errorHandler";
+import ClubDetailsDialog from "./ClubDetailsDialog";
+import { useTemporaryMessages, useDialog } from "./useClubsHooks";
+import "./styles/userClubsListStyles.css";
 
 const UserClubsList = () => {
   const { data: allClubs = [], isLoading, isError, error, refetch } = useGetClubsQuery();
@@ -49,51 +48,33 @@ const UserClubsList = () => {
     }
   }, [token]);
   
-  const [selectedClub, setSelectedClub] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const { successMessage, errorMessage, showSuccess, showError } = useTemporaryMessages();
+  const { selectedItem: selectedClub, openDialog, handleOpenDialog, handleCloseDialog } = useDialog();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // רענן נתונים כשהקומפוננט נטען
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
-  // מיון מועדוניות לפי שם
-  const clubs = [...allClubs].sort((a, b) => a.name.localeCompare(b.name, 'he'));
+  // סינון ומיון מועדוניות לפי שם
+  const clubs = [...allClubs]
+    .filter(club => 
+      club.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => a.name.localeCompare(b.name, 'he'));
 
   // פונקציה לבדוק את סטטוס הילד במועדונית
-  const getChildStatus = (club) => {
-    if (!currentUser?.id || !club) {
-      return 'not_registered';
-    }
+  const getChildStatus = useCallback((club) => {
+    if (!currentUser?.id || !club) return 'not_registered';
     
-    // בדוק אם רשום
-    if (club.registeredChildren && club.registeredChildren.some(child => {
+    const userId = currentUser.id;
+    const checkUserInList = (list) => list?.some(child => {
       const childId = typeof child === 'object' ? child._id : child;
-      return childId === currentUser.id;
-    })) {
-      return 'registered';
-    }
+      return childId === userId;
+    });
     
-    // בדוק אם ברשימת המתנה
-    if (club.waitingChildren && club.waitingChildren.some(child => {
-      const childId = typeof child === 'object' ? child._id : child;
-      return childId === currentUser.id;
-    })) {
-      return 'waiting';
-    }
-    
-    // בדוק אם נדחה
-    if (club.refusedChildren && club.refusedChildren.some(child => {
-      const childId = typeof child === 'object' ? child._id : child;
-      return childId === currentUser.id;
-    })) {
-      return 'refused';
-    }
+    if (checkUserInList(club.registeredChildren)) return 'registered';
+    if (checkUserInList(club.waitingChildren)) return 'waiting';
+    if (checkUserInList(club.refusedChildren)) return 'refused';
     
     return 'not_registered';
-  };
+  }, [currentUser?.id]);
 
   // פונקציה לקבלת צ'יפ סטטוס
   const getStatusChip = (status) => {
@@ -101,31 +82,25 @@ const UserClubsList = () => {
       case 'registered':
         return (
           <Chip
-            icon={<CheckCircleIcon />}
             label="רשום"
-            color="success"
-            variant="filled"
-            sx={{ fontWeight: 'bold' }}
+            variant="outlined"
+            className="club-status-chip"
           />
         );
       case 'waiting':
         return (
           <Chip
-            icon={<HourglassEmptyIcon />}
             label="ממתין לאישור"
-            color="warning"
-            variant="filled"
-            sx={{ fontWeight: 'bold' }}
+            variant="outlined"
+            className="club-status-chip"
           />
         );
       case 'refused':
         return (
           <Chip
-            icon={<CancelIcon />}
             label="נדחה"
-            color="error"
-            variant="filled"
-            sx={{ fontWeight: 'bold' }}
+            variant="outlined"
+            className="club-status-chip"
           />
         );
       default:
@@ -133,23 +108,12 @@ const UserClubsList = () => {
     }
   };
 
-  // פתיחת דיאלוג פרטי מועדונית
-  const handleOpenDialog = (club) => {
-    setSelectedClub(club);
-    setOpenDialog(true);
-  };
 
-  // סגירת דיאלוג
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setSelectedClub(null);
-  };
 
   // שליחת בקשה להצטרפות
-  const handleRequestJoin = async (clubId) => {
+  const handleRequestJoin = useCallback(async (clubId) => {
     if (!currentUser?.id) {
-      setErrorMessage("לא נמצא משתמש מחובר");
-      setTimeout(() => setErrorMessage(""), 3000);
+      showError("לא נמצא משתמש מחובר");
       return;
     }
 
@@ -159,30 +123,29 @@ const UserClubsList = () => {
         childId: currentUser.id
       }).unwrap();
       
-      setSuccessMessage("הבקשה נשלחה בהצלחה! המתן לאישור מנהל המערכת");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      showSuccess("הבקשה נשלחה בהצלחה! המתן לאישור מנהל המערכת");
       handleCloseDialog();
-      refetch();
     } catch (error) {
       console.error("Failed to request join:", error);
       const errorMessage = parseServerError(error, "שגיאה בשליחת הבקשה");
-      setErrorMessage(errorMessage);
-      setTimeout(() => setErrorMessage(""), 3000);
+      showError(errorMessage);
     }
-  };
+  }, [currentUser?.id, requestJoinClub, handleCloseDialog, showSuccess, showError]);
 
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-        <CircularProgress />
+      <Box className="clubs-main-container">
+        <Box className="loading-container">
+          <CircularProgress size={60} sx={{ color: "#8A4CA3" }} />
+        </Box>
       </Box>
     );
   }
 
   if (isError) {
     return (
-      <Box sx={{ p: 3 }}>
-        <Alert severity="error">
+      <Box className="clubs-main-container">
+        <Alert severity="error" className="clubs-alert">
           {parseServerError(error, "שגיאה בטעינת המועדוניות")}
         </Alert>
       </Box>
@@ -190,291 +153,142 @@ const UserClubsList = () => {
   }
 
   return (
-    <Box sx={{ p: 3, direction: "rtl" }}>
-      <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold", textAlign: "center" }}>
+    <Box className="clubs-main-container" dir="rtl">
+      <Typography variant="h3" className="clubs-page-title">
         המועדוניות שלנו
       </Typography>
 
+      <div className="clubs-description-container">
+        <Typography variant="h6" className="clubs-description">
+          כאן תוכל לראות את כל המועדוניות הזמינות שלנו ולהצטרף אליהן.
+        </Typography>
+      </div>
+
+      {/* תיבת חיפוש */}
+      <Box className="search-container">
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="חפש מועדונית לפי שם..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-field"
+          InputProps={{
+            startAdornment: <SearchIcon className="search-icon" />
+          }}
+        />
+      </Box>
+
       {successMessage && (
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert severity="success" className="clubs-alert">
           {successMessage}
         </Alert>
       )}
 
       {errorMessage && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" className="clubs-alert">
           {errorMessage}
         </Alert>
       )}
 
       {clubs.length === 0 ? (
-        <Alert severity="info" sx={{ textAlign: "center" }}>
-          אין מועדוניות זמינות כרגע
-        </Alert>
+        <Box className="no-clubs-message">
+          <GroupWorkIcon className="no-clubs-icon-simple" />
+          <Typography className="no-clubs-title-simple">
+            {searchQuery ? "לא נמצאו מועדוניות מתאימות" : "אין מועדוניות זמינות כרגע"}
+          </Typography>
+          <Typography className="no-clubs-subtitle-simple">
+            {searchQuery ? "נסה לחפש עם מילים אחרות או נקה את החיפוש" : "נעדכן כאן ברגע שיפתחו מועדוניות חדשות"}
+          </Typography>
+        </Box>
       ) : (
-        <Grid container spacing={3} sx={{ alignItems: "stretch" }}>
+        <Box className="clubs-grid">
           {clubs.map((club) => {
             const status = getChildStatus(club);
             
             return (
-              <Grid item xs={12} sm={6} md={4} key={club._id} sx={{ display: "flex", minWidth: 0 }}>
-                <Card 
-                  sx={{ 
-                    width: "100%",
-                    height: "450px",
-                    display: "flex", 
-                    flexDirection: "column",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: 4,
-                    },
-                  }}
-                >
-                  <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", p: 3, height: "100%" }}>
-                    <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-                      <Box sx={{ mb: 2 }}>
-                        <Typography 
-                          variant="h5" 
-                          component="h2" 
-                          sx={{ 
-                            fontWeight: "bold", 
-                            color: "#1976d2", 
-                            mb: 1.5,
-                            height: "60px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                          }}
-                        >
-                          {club.name}
-                        </Typography>
-                        {getStatusChip(status)}
-                      </Box>
+              <Card 
+                key={club._id} 
+                className="club-card"
+              >
+                <CardContent className="club-card-content">
+                  {/* כותרת ומועדונית */}
+                  <Box>
+                    <Typography className="club-name">
+                      {club.name}
+                    </Typography>
+                    <Box className="status-chip-container">
+                      {getStatusChip(status)}
+                    </Box>
+                  </Box>
 
-                      <Divider sx={{ my: 2 }} />
+                  <Divider className="club-divider" />
 
-                      <Box sx={{ flexGrow: 1, minHeight: "140px", maxHeight: "140px", overflow: "hidden" }}>
-                        {club.description && (
-                          <Typography 
-                            variant="body2" 
-                            color="text.secondary" 
-                            sx={{ 
-                              mb: 2,
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                            }}
-                          >
-                            {club.description}
-                          </Typography>
-                        )}
-
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                          <LocationIcon sx={{ mr: 1, color: "#1976d2", fontSize: 20 }} />
-                          <Typography variant="body2" sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            <strong>מיקום:</strong> {club.location || "לא צוין"}
-                          </Typography>
-                        </Box>
-
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                          <GroupIcon sx={{ mr: 1, color: "#1976d2", fontSize: 20 }} />
-                          <Typography variant="body2" sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            <strong>יום פעילות:</strong> {club.activityDay || "לא צוין"}
-                          </Typography>
-                        </Box>
-
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                          <AccessTimeIcon sx={{ mr: 1, color: "#1976d2", fontSize: 20 }} />
-                          <Typography variant="body2">
-                            <strong>שעות:</strong> {club.startTime} - {club.endTime}
-                          </Typography>
-                        </Box>
-                      </Box>
+                  {/* פרטים */}
+                  <Box sx={{ mb: 3 }}>
+                    <Box className="club-detail-row">
+                      <LocationIcon className="club-detail-icon" />
+                      <Typography className="club-detail-text">
+                        <strong>מיקום:</strong> {club.location || "לא צוין"}
+                      </Typography>
                     </Box>
 
-                    <Box sx={{ mt: "auto", pt: 2, display: "flex", gap: 1.5, flexDirection: "column" }}>
+                    <Box className="club-detail-row">
+                      <GroupIcon className="club-detail-icon" />
+                      <Typography className="club-detail-text">
+                        <strong>יום פעילות:</strong> {club.activityDay || "לא צוין"}
+                      </Typography>
+                    </Box>
+
+                    <Box className="club-detail-row">
+                      <AccessTimeIcon className="club-detail-icon" />
+                      <Typography className="club-detail-text">
+                        <strong>שעות:</strong> {club.startTime} - {club.endTime}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* כפתורים */}
+                  <Box className="club-actions">
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      startIcon={<InfoIcon />}
+                      onClick={() => handleOpenDialog(club)}
+                      className="details-button"
+                    >
+                      פרטים נוספים
+                    </Button>
+                    
+                    {status === 'not_registered' && (
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         fullWidth
-                        startIcon={<InfoIcon />}
-                        onClick={() => handleOpenDialog(club)}
-                        sx={{
-                          borderWidth: 2,
-                          borderColor: "#1976d2",
-                          color: "#1976d2",
-                          fontWeight: "bold",
-                          py: 1.3,
-                          borderRadius: 2,
-                          textTransform: "none",
-                          fontSize: "1rem",
-                          "&:hover": {
-                            borderWidth: 2,
-                            borderColor: "#1565c0",
-                            backgroundColor: "#e3f2fd",
-                            transform: "scale(1.02)",
-                          },
-                          transition: "all 0.2s"
-                        }}
+                        startIcon={<SendIcon />}
+                        onClick={() => handleRequestJoin(club._id)}
+                        disabled={isRequesting}
+                        className="join-button"
                       >
-                        פרטים נוספים
+                        {isRequesting ? "שולח..." : "שלח בקשת הצטרפות"}
                       </Button>
-                      
-                      {status === 'not_registered' && (
-                        <Button
-                          variant="contained"
-                          fullWidth
-                          startIcon={<SendIcon />}
-                          onClick={() => handleRequestJoin(club._id)}
-                          disabled={isRequesting}
-                          sx={{ 
-                            backgroundColor: "#4caf50",
-                            color: "white",
-                            fontWeight: "bold",
-                            py: 1.3,
-                            borderRadius: 2,
-                            textTransform: "none",
-                            fontSize: "1rem",
-                            boxShadow: 2,
-                            "&:hover": { 
-                              backgroundColor: "#45a049",
-                              boxShadow: 4,
-                              transform: "scale(1.02)",
-                            },
-                            "&:disabled": {
-                              backgroundColor: "#cccccc"
-                            },
-                            transition: "all 0.2s"
-                          }}
-                        >
-                          {isRequesting ? "שולח..." : "שלח בקשת הצטרפות"}
-                        </Button>
-                      )}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+                    )}
+                  </Box>
+                </CardContent>
+              </Card>
             );
           })}
-        </Grid>
+        </Box>
       )}
 
       {/* דיאלוג פרטי מועדונית */}
-      <Dialog 
-        open={openDialog} 
-        onClose={handleCloseDialog} 
-        maxWidth="md" 
-        fullWidth
-        dir="rtl"
-      >
-        <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-            {selectedClub?.name}
-          </Typography>
-          <IconButton onClick={handleCloseDialog}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        
-        <DialogContent dividers>
-          {selectedClub && (
-            <Box>
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                  סטטוס ההרשמה:
-                </Typography>
-                {getStatusChip(getChildStatus(selectedClub))}
-              </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              {selectedClub.description && (
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                    תיאור:
-                  </Typography>
-                  <Typography variant="body1">
-                    {selectedClub.description}
-                  </Typography>
-                </Box>
-              )}
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                  מיקום:
-                </Typography>
-                <Typography variant="body1">
-                  {selectedClub.location || "לא צוין"}
-                </Typography>
-              </Box>
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                  יום פעילות:
-                </Typography>
-                <Typography variant="body1">
-                  {selectedClub.activityDay || "לא צוין"}
-                </Typography>
-              </Box>
-
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                  שעות פעילות:
-                </Typography>
-                <Typography variant="body1">
-                  {selectedClub.startTime} - {selectedClub.endTime}
-                </Typography>
-              </Box>
-
-              {selectedClub.clubManagers && selectedClub.clubManagers.length > 0 && (
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                    מנהלי המועדונית:
-                  </Typography>
-                  {selectedClub.clubManagers.map((manager, index) => (
-                    <Box key={index} sx={{ mb: 1, pl: 2 }}>
-                      <Typography variant="body1">
-                        <strong>שם:</strong> {manager.name}
-                      </Typography>
-                      <Typography variant="body2">
-                        <strong>טלפון:</strong> {manager.phone}
-                      </Typography>
-                      {manager.email && (
-                        <Typography variant="body2">
-                          <strong>אימייל:</strong> {manager.email}
-                        </Typography>
-                      )}
-                    </Box>
-                  ))}
-                </Box>
-              )}
-            </Box>
-          )}
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>
-            סגור
-          </Button>
-          {selectedClub && getChildStatus(selectedClub) === 'not_registered' && (
-            <Button
-              variant="contained"
-              onClick={() => handleRequestJoin(selectedClub._id)}
-              disabled={isRequesting}
-              sx={{ 
-                backgroundColor: "#03a9f4", 
-                "&:hover": { backgroundColor: "#0288d1" } 
-              }}
-            >
-              {isRequesting ? "שולח..." : "שלח בקשת הצטרפות"}
-            </Button>
-          )}
-        </DialogActions>
-      </Dialog>
+      <ClubDetailsDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        club={selectedClub}
+        userStatus={selectedClub ? getChildStatus(selectedClub) : 'not_registered'}
+        onRequestJoin={handleRequestJoin}
+        isRequesting={isRequesting}
+      />
     </Box>
   );
 };

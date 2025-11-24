@@ -1,0 +1,248 @@
+/* ClubManagement Styles */
+
+.club-management-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+    background-attachment: fixed;
+    padding: 40px;
+    font-family: 'Rubik', sans-serif;
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+.club-management-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.club-management-error {
+    padding: 24px;
+    text-align: center;
+}
+
+.club-management-header-title {
+    color: #9e63a9 !important;
+    font-weight: 700 !important;
+    font-size: 3rem !important;
+    margin-bottom: 16px !important;
+    text-align: center !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.club-management-count {
+    text-align: center;
+    margin-bottom: 24px !important;
+    font-weight: 500 !important;
+    color: #666 !important;
+    font-size: 1.1rem !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.club-management-button-container {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 24px;
+}
+
+.club-management-add-button {
+    background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 12px !important;
+    padding: 12px 32px !important;
+    box-shadow: 0 4px 12px rgba(135, 200, 210, 0.4) !important;
+    transition: all 0.3s ease;
+	font-family: 'Rubik', sans-serif !important;
+	font-size: 1.1rem !important;
+}
+
+.club-management-add-button .MuiSvgIcon-root {
+    color: white !important;
+    font-size: 24px !important;
+	margin-left: 8px;
+}
+
+.club-management-add-button:hover {
+    transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(135, 200, 210, 0.5) !important;
+}
+
+.club-management-table-container {
+    border-radius: 16px;
+    box-shadow: 0 3px 16px rgba(0, 0, 0, 0.1);
+}
+
+.club-management-table {
+    direction: rtl;
+}
+
+.club-management-table-header {
+    background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.club-management-table-cell {
+    text-align: center !important;
+    font-weight: 600 !important;
+    color: white !important;
+    padding: 20px 16px !important;
+    font-size: 1rem !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.club-management-empty {
+    text-align: center !important;
+    padding: 60px 20px !important;
+}
+
+.club-management-empty-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.club-management-empty-text {
+    color: #1976d2 !important;
+    font-weight: 600 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.5rem !important;
+}
+
+.club-management-empty-subtitle {
+    color: #1976d2 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1rem !important;
+}
+
+/* ClubRow Styles */
+.club-management-table-body-row {
+    cursor: pointer;
+}
+
+.club-management-table-body-row:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.club-management-table-body-cell {
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.club-management-collapse-box {
+    margin: 16px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.club-management-details-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.club-management-icon-button-view {
+    color: #1976d2 !important;
+    transition: all 0.2s ease;
+}
+
+.club-management-icon-button-view:hover {
+    color: #0d47a1 !important;
+    background-color: rgba(25, 118, 210, 0.1) !important;
+}
+
+.club-management-icon-button-edit {
+    color: #03a9f4 !important;
+    transition: all 0.2s ease;
+}
+
+.club-management-icon-button-edit:hover {
+    color: #0288d1 !important;
+    background-color: rgba(3, 169, 244, 0.1) !important;
+}
+
+.club-management-icon-button-delete {
+    color: #d32f2f !important;
+    transition: all 0.2s ease;
+}
+
+.club-management-icon-button-delete:hover {
+    color: #b71c1c !important;
+    background-color: rgba(211, 47, 47, 0.1) !important;
+}
+
+.club-management-table-row-clickable {
+	cursor: pointer;
+}
+
+.club-management-delete-error {
+	margin-bottom: 16px;
+}
+
+.club-management-delete-warning {
+	margin-top: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.club-management-container {
+		padding: 12px;
+	}
+
+	.club-management-header-title {
+		font-size: 2rem !important;
+		margin-bottom: 12px !important;
+	}
+
+	.club-management-count {
+		font-size: 0.95rem !important;
+		margin-bottom: 16px !important;
+	}
+
+	.club-management-add-button {
+		width: 100% !important;
+		padding: 10px 24px !important;
+	}
+
+	.club-management-table-container {
+		overflow-x: auto;
+	}
+}
+
+@media (max-width: 600px) {
+	.club-management-container {
+		padding: 8px;
+	}
+
+	.club-management-header-title {
+		font-size: 1.5rem !important;
+	}
+
+	.club-management-table-body-cell,
+	.club-management-table-cell {
+		padding: 12px 8px !important;
+		font-size: 0.875rem !important;
+	}
+
+	/* דיאלוגים */
+	.club-management-container .MuiDialog-paper {
+		margin: 8px !important;
+		width: calc(100% - 16px) !important;
+		max-width: 100% !important;
+	}
+
+	/* שדות ברוחב מלא בדיאלוגים */
+	.club-management-container .MuiDialog-paper .MuiGrid-item {
+		flex-basis: 100% !important;
+		max-width: 100% !important;
+	}
+}

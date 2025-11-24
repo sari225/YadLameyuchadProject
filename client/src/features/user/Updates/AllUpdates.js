@@ -3,6 +3,7 @@ import { Box, Typography, Paper, IconButton, CircularProgress, Alert, Button } f
 import { GetApp as DownloadIcon, AttachFile as AttachFileIcon, ArrowForward as ArrowForwardIcon } from "@mui/icons-material";
 import { useGetUpdatingsQuery } from "../../../api/updateApi";
 import { useNavigate } from "react-router-dom";
+import "./allUpdatesStyles.css";
 
 const AllUpdates = () => {
   const navigate = useNavigate();
@@ -58,12 +59,10 @@ const AllUpdates = () => {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #e3f2fd 0%, #fff 100%)", p: 4 }} dir="rtl">
-      <Paper elevation={3} sx={{ p: 4, mb: 4, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "white", borderRadius: 3, textAlign: "center" }}>
-        <Typography variant="h3" sx={{ fontWeight: 700, textShadow: "2px 2px 4px rgba(0,0,0,0.2)" }}>
-          כל העדכונים
-        </Typography>
-      </Paper>
+    <Box className="all-updates-main-container" sx={{ minHeight: "100vh", p: 4 }} dir="rtl">
+      <Typography variant="h3" className="updates-title" sx={{ fontWeight: 700, textShadow: "2px 2px 4px rgba(0,0,0,0.2)", mb: 4 }}>
+        כל העדכונים
+      </Typography>
 
       {isLoading && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
@@ -76,26 +75,27 @@ const AllUpdates = () => {
         </Alert>
       )}
       {!isLoading && !isError && visibleUpdates.length === 0 && (
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography variant="h6" color="text.secondary">
-            אין עדכונים כרגע
-          </Typography>
+        <Paper className="no-updates-container">
+          <Typography className="no-updates-title">אין עדכונים כרגע</Typography>
+          <Typography className="no-updates-subtext">נעדכן כשתפורסמו הודעות חדשות</Typography>
         </Paper>
       )}
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
+      <Box className="updates-list" sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
         {visibleUpdates.map((update) => (
-          <Paper key={update._id} elevation={3} sx={{ display: "flex", flexDirection: "row-reverse", minHeight: 150, overflow: "hidden", transition: "transform 0.2s, box-shadow 0.2s", "&:hover": { transform: "translateY(-4px)", boxShadow: "0 8px 16px rgba(0,0,0,0.15)" }, borderRadius: 2, borderRight: "4px solid #667eea" }}>
+          <Paper key={update._id} className="update-card-horizontal" elevation={3}>
             {update.file?.filename && (
               <Box
                 onClick={() => window.open(getFileURL(update.file.path), "_blank", "noopener")}
-                sx={{ width: 250, minWidth: 250, minHeight: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f5f5f5", position: "relative", cursor: "pointer", "&:hover": { opacity: 0.8 } }}
+                className="update-media-container"
+                sx={{ "&:hover": { opacity: 0.8 } }}
               >
                 {isImageFile(update.file.filename) ? (
-                  <Box component="img" src={getFileURL(update.file.path)} alt={update.title} sx={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <Box component="img" src={getFileURL(update.file.path)} alt={update.title} className="update-image" sx={{ display: "block" }} />
                 ) : isPdfFile(update.file.filename) ? (
-                  <Box sx={{ width: "100%", height: "100%", position: "relative", pointerEvents: "none" }}>
-                    <iframe title={update.title} src={`${getFileURL(update.file.path)}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`} style={{ width: "100%", height: "100%", border: "none", pointerEvents: "none" }} />
+                  <Box className="update-pdf-container">
+                    <iframe title={update.title} src={`${getFileURL(update.file.path)}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`} className="update-pdf-iframe" scrolling="no" />
+                    <Box className="pdf-overlay" />
                   </Box>
                 ) : isVideoFile(update.file.filename) ? (
                   <Box
@@ -106,19 +106,13 @@ const AllUpdates = () => {
                     loop
                     controls
                     playsInline
-                    sx={{ 
-                      width: "100%", 
-                      minHeight: "100%", 
-                      objectFit: "contain",
-                      display: "block",
-                      backgroundColor: "#000"
-                    }}
+                    className="update-video"
                     onClick={(e) => e.stopPropagation()}
                   />
                 ) : (
-                  <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                    <AttachFileIcon sx={{ fontSize: 60, color: "#666" }} />
-                    <Typography variant="caption" sx={{ color: "#666" }}>
+                  <Box className="update-file-icon">
+                    <AttachFileIcon className="file-icon" />
+                    <Typography variant="caption" className="file-caption">
                       קובץ
                     </Typography>
                   </Box>
@@ -128,7 +122,7 @@ const AllUpdates = () => {
                     e.stopPropagation();
                     handleDownloadFile(update.file);
                   }}
-                  sx={{ position: "absolute", bottom: 8, right: 8, backgroundColor: "rgba(255,255,255,0.9)", "&:hover": { backgroundColor: "rgba(255,255,255,1)" } }}
+                  className="download-button-overlay"
                   size="small"
                 >
                   <DownloadIcon />
@@ -136,29 +130,17 @@ const AllUpdates = () => {
               </Box>
             )}
 
-            <Box sx={{ flex: 1, display: "flex", flexDirection: "column", minHeight: "100%", position: "relative" }}>
-              <Box sx={{ position: "absolute", top: 8, right: 8, zIndex: 1 }}>
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    backgroundColor: "#667eea",
-                    color: "white",
-                    px: 1.5,
-                    py: 0.5,
-                    borderRadius: 2,
-                    fontWeight: 500,
-                    fontSize: "0.7rem",
-                    display: "inline-block"
-                  }}
-                >
+            <Box className="update-content-container">
+              <Box className="update-date-badge">
+                <Typography className="date-text">
                   {new Date(update.createdAt).toLocaleDateString("he-IL", { day: "numeric", month: "short", year: "numeric" })}
                 </Typography>
               </Box>
-              <Box sx={{ flex: 1, p: 2, pt: 5, textAlign: "right" }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: "#333" }}>
+              <Box className="update-text-content">
+                <Typography variant="h6" className="update-title-text">
                   {update.title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                <Typography variant="body2" className="update-description">
                   {update.content}
                 </Typography>
               </Box>

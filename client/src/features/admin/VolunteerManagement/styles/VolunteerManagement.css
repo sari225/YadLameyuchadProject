@@ -1,0 +1,433 @@
+/* VolunteerManagement Styles */
+
+.volunteer-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+    background-attachment: fixed;
+    padding: 40px;
+    font-family: 'Rubik', sans-serif;
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+.volunteer-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.volunteer-error {
+    padding: 24px;
+    text-align: center;
+}
+
+.volunteer-header-title {
+    color: #9e63a9 !important;
+    font-weight: 700 !important;
+    font-size: 3rem !important;
+    margin-bottom: 16px !important;
+    text-align: center !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-count {
+    text-align: center;
+    margin-bottom: 24px !important;
+    font-weight: 500 !important;
+    color: #666 !important;
+    font-size: 1.1rem !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-filter-paper {
+    border: 1px solid #b5e2ec !important;
+    background: white !important;
+    border-radius: 15px !important;
+    padding: 10px 16px !important;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(135, 200, 210, 0.15) !important;
+}
+
+.volunteer-filter-stack {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 16px !important;
+    width: 100% !important;
+}
+
+.volunteer-filter-stack .MuiTextField-root {
+    flex: 1 !important;
+}
+
+.volunteer-filter-stack .MuiOutlinedInput-root {
+    border-radius: 10px !important;
+    height: 56px;
+    background: white;
+}
+
+.volunteer-filter-stack .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #87c8d2 !important;
+    border-width: 2px !important;
+}
+
+.volunteer-filter-stack .MuiOutlinedInput-notchedOutline {
+    border-color: #87c8d2 !important;
+}
+
+.volunteer-filter-stack .MuiOutlinedInput-input {
+    padding: 12px 16px !important;
+}
+
+.volunteer-filter-stack input::placeholder {
+    color: #87c8d2 !important;
+    text-align: right;
+}
+
+.volunteer-filter-stack .MuiSvgIcon-root {
+    color: #87c8d2 !important;
+    font-size: 20px !important;
+}
+
+.volunteer-select {
+    min-width: 180px !important;
+    flex-shrink: 0 !important;
+}
+
+.volunteer-select .MuiOutlinedInput-root {
+    border-radius: 12px !important;
+    background: white !important;
+    height: 56px !important;
+}
+
+.volunteer-select .MuiOutlinedInput-notchedOutline {
+    border-color: #87c8d2 !important;
+}
+
+.volunteer-add-button {
+    background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    min-width: 56px !important;
+    width: 56px !important;
+    height: 56px !important;
+    padding: 0 !important;
+    box-shadow: 0 4px 12px rgba(135, 200, 210, 0.4) !important;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.volunteer-add-button .MuiSvgIcon-root {
+    color: white !important;
+    font-size: 28px !important;
+}
+
+.volunteer-add-button:hover {
+    transform: translateY(-2px);
+}
+
+.volunteer-count {
+    margin-bottom: 12px;
+    font-weight: 500;
+    color: #555;
+}
+
+.volunteer-table-container {
+    border-radius: 16px;
+    box-shadow: 0 3px 16px rgba(0, 0, 0, 0.1);
+}
+
+.volunteer-table {
+    direction: rtl;
+}
+
+.volunteer-table-header {
+    background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.volunteer-table-cell {
+    text-align: center !important;
+    font-weight: 600 !important;
+    color: white !important;
+    padding: 20px 16px !important;
+    font-size: 1rem !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-empty {
+    text-align: center !important;
+    padding: 60px 20px !important;
+}
+
+.volunteer-empty-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.volunteer-empty-text {
+    color: #9e63a9 !important;
+    font-weight: 600 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.5rem !important;
+}
+
+.volunteer-empty-subtitle {
+    color: #9e63a9 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1rem !important;
+}
+
+/* VolunteerRow Styles */
+.volunteer-row:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.volunteer-row-cell {
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-row-cell-icon {
+    width: 5%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-row-cell-name {
+    width: 20%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-row-cell-id {
+    width: 15%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-row-cell-phone {
+    width: 15%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-row-cell-school {
+    width: 15%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-row-cell-age {
+    width: 10%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-row-cell-clubs {
+    width: 10%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-row-cell-actions {
+    width: 10%;
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.volunteer-actions-stack {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: center;
+}
+
+.volunteer-actions-stack .MuiIconButton-root {
+    padding: 4px !important;
+}
+
+.edit-icon-button {
+    color: #87c8d2 !important;
+    transition: all 0.2s ease;
+}
+
+.edit-icon-button:hover {
+    color: #6fb8c2 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.delete-icon-button {
+    color: #9e63a9 !important;
+    transition: all 0.2s ease;
+}
+
+.delete-icon-button:hover {
+    color: #8d5298 !important;
+    background-color: rgba(158, 99, 169, 0.1) !important;
+}
+
+.volunteer-collapse-cell {
+    padding: 0 !important;
+}
+
+/* Dialog Styles */
+.volunteer-dialog-title {
+	font-weight: bold;
+	text-align: right;
+}
+
+.volunteer-dialog-content {
+	text-align: right;
+}
+
+.volunteer-dialog-actions {
+	justify-content: flex-start;
+	direction: ltr;
+}
+
+/* Sticky dialog header */
+.volunteer-container .MuiDialog-paper .MuiDialogTitle-root {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}/* Responsive Design */
+@media (max-width: 768px) {
+	.volunteer-container {
+		padding: 12px;
+	}
+
+	.volunteer-header-title {
+		font-size: 2rem !important;
+		margin-bottom: 12px !important;
+	}
+
+	.volunteer-count {
+		font-size: 0.95rem !important;
+		margin-bottom: 16px !important;
+	}
+
+	.volunteer-filter-paper {
+		padding: 12px;
+	}
+
+	.volunteer-filter-stack {
+		flex-direction: column !important;
+		gap: 12px !important;
+	}
+
+	.volunteer-filter-stack .MuiTextField-root,
+	.volunteer-select {
+		width: 100% !important;
+		min-width: 100% !important;
+	}
+
+	.volunteer-add-button {
+		width: 100% !important;
+		min-width: 100% !important;
+		border-radius: 12px !important;
+	}
+
+	/* הסתרת עמודות בטבלה במובייל */
+	.volunteer-row-cell-id,
+	.volunteer-row-cell-school,
+	.volunteer-row-cell-age,
+	.volunteer-row-cell-clubs {
+		display: none !important;
+	}
+
+	.volunteer-table-cell:nth-child(3),
+	.volunteer-table-cell:nth-child(5),
+	.volunteer-table-cell:nth-child(6),
+	.volunteer-table-cell:nth-child(7) {
+		display: none !important;
+	}
+
+	/* התאמת רוחב עמודות שנשארות */
+	.volunteer-row-cell-icon {
+		width: 10% !important;
+	}
+
+	.volunteer-row-cell-name {
+		width: 40% !important;
+	}
+
+	.volunteer-row-cell-phone {
+		width: 30% !important;
+	}
+
+	.volunteer-row-cell-actions {
+		width: 20% !important;
+	}
+
+	/* התאמת כפתורי פעולות */
+	.volunteer-actions-stack {
+		gap: 2px !important;
+	}
+
+	.volunteer-actions-stack .MuiIconButton-root {
+		padding: 6px !important;
+	}
+
+	/* התאמת פרטים מורחבים */
+	.volunteer-details-container {
+		margin: 8px !important;
+		padding: 16px !important;
+	}
+}
+
+@media (max-width: 600px) {
+	.volunteer-container {
+		padding: 8px;
+	}
+
+	.volunteer-header-title {
+		font-size: 1.5rem !important;
+	}
+
+	.volunteer-filter-stack {
+		gap: 8px !important;
+	}
+
+	.volunteer-table-container {
+		overflow-x: auto;
+	}
+
+	.volunteer-row-cell,
+	.volunteer-table-cell {
+		padding: 12px 8px !important;
+		font-size: 0.875rem !important;
+	}
+
+	/* דיאלוגים */
+	.volunteer-container .MuiDialog-paper {
+		margin: 8px !important;
+		width: calc(100% - 16px) !important;
+		max-width: 100% !important;
+	}
+
+	/* שדות ברוחב מלא בדיאלוגים */
+	.volunteer-container .MuiDialog-paper .MuiGrid-item {
+		flex-basis: 100% !important;
+		max-width: 100% !important;
+	}
+}

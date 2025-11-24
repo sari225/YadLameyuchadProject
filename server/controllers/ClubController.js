@@ -207,9 +207,15 @@ const removeChildFromClub = async (req, res) => {
       await child.save();
     }
 
-    res.json({ message: "Child removed successfully"
+    // הסרת הילד מכל המתנדבות שמשוייכות אליו במועדונית הזו
+    const Volunteer = require("../models/Volunteer");
+    await Volunteer.updateMany(
+      { "clubs.club": id, "clubs.child": childId },
+      { $set: { "clubs.$[elem].child": null } },
+      { arrayFilters: [{ "elem.club": id, "elem.child": childId }] }
+    );
 
-     });
+    res.json({ message: "Child removed successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error removing child from club", error: error.message });
   }

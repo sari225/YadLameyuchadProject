@@ -4,21 +4,13 @@ const messageReplyEmailTemplate = require('../templates/emails/messageReplyEmail
 // יצירת הודעה חדשה
 const createMessage = async (req, res) => {
   try {
-    let senderName, senderEmail;
 
-    // משתמש רשום (יש req.user מהטוקן)
-    if (req.user) {
-      senderName = req.user.name;
-      senderEmail = req.user.email;
-    } 
-    // משתמש אורח
-    else {
-      senderName = req.body.senderName;
-      senderEmail = req.body.senderEmail;
+    const senderName = req.body.senderName;
+    const senderEmail = req.body.senderEmail;
 
       if (!senderName || !senderEmail)
         return res.status(400).json({ message: "Guest must provide name and email" });
-    }
+    
 
     const { topic, content } = req.body;
     if (!topic || !content)

@@ -1,498 +1,469 @@
 import React, { useState } from "react";
 import {
-	Dialog,
-	DialogTitle,
-	DialogContent,
-	DialogActions,
-	TextField,
-	Button,
-	Grid,
-	Alert,
-	CircularProgress,
-	Box,
-	Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Grid,
+  Alert,
+  CircularProgress,
+  Box,
+  Typography,
 } from "@mui/material";
-
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateChildMutation } from "../../../api/childApi";
 import { parseServerError } from "../../../utils/errorHandler";
+import { childValidationSchema, defaultChildValues } from "./childValidationSchema";
+import { processAllergies } from "./childManagementHelpers";
+import "./style/AddChildDialog.css";
 
-// =============================
-//     סכמת Zod מלאה להוספה
-// =============================
-const addSchema = z.object({
-	childId: z
-		.string()
-		.nonempty("יש להזין מספר ילד")
-		.regex(/^[0-9]+$/, "מספר ילד חייב להכיל רק ספרות")
-		.min(5, "מספר ילד חייב להכיל לפחות 5 ספרות")
-		.max(9, "מספר ילד יכול להכיל עד 9 ספרות"),
-
-	parentName: z.string().nonempty("יש להזין שם הורה"),
-	Fname: z.string().nonempty("יש להזין שם פרטי"),
-	Lname: z.string().nonempty("יש להזין שם משפחה"),
-
-	dateOfBirth: z
-		.string()
-		.nonempty("יש להזין תאריך לידה")
-		.refine((val) => !isNaN(Date.parse(val)), "תאריך לידה לא תקין")
-		.refine(
-			(val) => new Date(val) <= new Date(),
-			"תאריך לידה לא יכול להיות עתידי"
-		),
-
-	city: z.string().nonempty("יש להזין עיר"),
-	street: z.string().nonempty("יש להזין רחוב"),
-	building: z
-		.string()
-		.nonempty("יש להזין מספר בית")
-		.regex(/^[0-9]+$/, "מספר בית חייב להיות מספר")
-		.refine((val) => parseInt(val) >= 1 && parseInt(val) <= 300, "מספר בית חייב להיות בין 1 ל-300"),
-
-	educationInstitution: z
-		.string()
-		.nonempty("יש להזין שם מוסד לימודי")
-		.max(100, "שם המוסד יכול להכיל עד 100 תווים"),
-
-	phone1: z
-		.string()
-		.nonempty("יש להזין מספר טלפון")
-		.regex(/^[0-9]+$/, "טלפון חייב להכיל רק ספרות")
-		.min(9, "טלפון חייב להיות לפחות 9 ספרות")
-		.max(10, "טלפון יכול להיות עד 10 ספרות"),
-
-	phone2: z
-		.string()
-		.nonempty("יש להזין מספר טלפון נוסף")
-		.regex(/^[0-9]+$/, "טלפון חייב להכיל רק ספרות")
-		.min(9, "טלפון חייב להיות לפחות 9 ספרות")
-		.max(10, "טלפון יכול להיות עד 10 ספרות"),
-
-	email: z
-		.string()
-		.nonempty("יש להזין אימייל")
-		.email("כתובת אימייל לא תקינה"),
-
-	specialNeeds: z.string().optional(), // definition במודל
-	allergies: z.string().optional(), // במודל: מערך מחרוזות
-	emailConsent: z.boolean().optional(),
-});
-
-// =============================
-//      קומפוננטת הוספה מלאה
-// =============================
+// ------ COMPONENT ------
 const AddChildDialog = ({ open, onClose, onSuccess }) => {
-	const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState("");
 
-	const {
-		register,
-		handleSubmit,
-		reset,
-		formState: { errors, isValid },
-	} = useForm({
-		resolver: zodResolver(addSchema),
-		defaultValues: {
-			childId: "",
-			parentName: "",
-			Fname: "",
-			Lname: "",
-			dateOfBirth: "",
-			city: "",
-			street: "",
-			building: "",
-			educationInstitution: "",
-			phone1: "",
-			phone2: "",
-			email: "",
-			specialNeeds: "",
-			allergies: "",
-			// emailConsent: false, // הוסר
-		},
-	});
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: zodResolver(childValidationSchema),
+    defaultValues: defaultChildValues,
+  });
 
-	const [createChild, { isLoading: isSaving }] = useCreateChildMutation();
+  const [createChild, { isLoading: isSaving }] = useCreateChildMutation();
 
-	// שליחת יצירה לשרת
-	const onSubmit = async (data) => {
-		setServerError("");
+  // ------ SUBMIT ------
+  const onSubmit = async (data) => {
+    setServerError("");
 
-		const childData = {
-			childId: data.childId,
-			parentName: data.parentName,
-			Fname: data.Fname,
-			Lname: data.Lname,
-			dateOfBirth: data.dateOfBirth,
-			phone1: data.phone1,
-			phone2: data.phone2,
-			email: data.email || "",
-			educationInstitution: data.educationInstitution,
-			address: {
-				city: data.city,
-				street: data.street,
-				building: data.building,
-			},
-			allergies: data.allergies
-				? data.allergies.split(",").map((x) => x.trim())
-				: [],
-			definition: data.specialNeeds || "",
-			emailConsent: false,
-			isApproved: true,
-			isVerified: true,
-		};
+    const childData = {
+      childId: data.childId,
+      parentName: data.parentName,
+      Fname: data.Fname,
+      Lname: data.Lname,
+      dateOfBirth: data.dateOfBirth,
+      phone1: data.phone1,
+      phone2: data.phone2,
+      email: data.email || "",
+      educationInstitution: data.educationInstitution,
 
-		try {
-			await createChild(childData).unwrap();
-			if (onSuccess) onSuccess();
-			// נקה טופס וסגור
-			reset();
-			onClose();
-		} catch (error) {
-			const errorMessage = parseServerError(error, "❌ שגיאה ביצירת ילד. אנא בדקי את הנתונים ונסי שוב.");
-			setServerError(errorMessage);
-		}
-	};
+      address: {
+        city: data.city,
+        street: data.street,
+        building: data.building,
+      },
 
-	// סגירה מאפסת ערכים
-	const handleClose = () => {
-		setServerError("");
-		reset();
-		onClose();
-	};
+      allergies: processAllergies(data.allergies),
 
-	return (
-		<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth dir="rtl">
-			<DialogTitle sx={{ fontWeight: "bold", textAlign: "center" }}>
-				הוספת ילד חדש
-			</DialogTitle>
+      definition: data.specialNeeds || "",
+      emailConsent: false,
+      isApproved: true,
+      isVerified: true,
+    };
 
-			<DialogContent>
-				<Typography
-					sx={{
-						mb: 2,
-						textAlign: "center",
-						color: "text.secondary",
-						fontSize: "0.95rem",
-					}}
-				>
-					מלאי את פרטי הילד. שדות עם * הם שדות חובה.
-				</Typography>
+    try {
+      await createChild(childData).unwrap();
 
-				{serverError && (
-					<Alert severity="error" sx={{ mb: 2 }}>
-						{serverError}
-					</Alert>
-				)}
+      if (onSuccess) onSuccess();
 
-				<Box component="form" onSubmit={handleSubmit(onSubmit)}>
-					<Grid container spacing={3}>
-						{/* מס' זהות */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="מספר זהות *"
-								{...register("childId")}
-								error={!!errors.childId}
-								helperText={errors.childId?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+      reset();
+      onClose();
+    } catch (error) {
+      const errorMessage = parseServerError(
+        error,
+        "❌ שגיאה ביצירת ילד. אנא בדקי את הנתונים ונסי שוב."
+      );
+      setServerError(errorMessage);
+    }
+  };
 
-						{/* שם הורה */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="שם הורה *"
-								{...register("parentName")}
-								error={!!errors.parentName}
-								helperText={errors.parentName?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+  // ------ CLOSE ------
+  const handleClose = () => {
+    setServerError("");
+    reset();
+    onClose();
+  };
 
-						{/* שם פרטי */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="שם פרטי *"
-								{...register("Fname")}
-								error={!!errors.Fname}
-								helperText={errors.Fname?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+  // ------ UI ------
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
+      fullWidth
+      dir="rtl"
+      className="add-child-dialog"
+      PaperProps={{
+        sx: {
+          background:
+            "linear-gradient(135deg, rgb(243, 230, 240) 0%, rgb(237, 247, 250) 100%)",
+          borderRadius: "16px",
+        },
+      }}
+    >
+      <DialogTitle> הוספת ילד חדש </DialogTitle>
 
-						{/* שם משפחה */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="שם משפחה *"
-								{...register("Lname")}
-								error={!!errors.Lname}
-								helperText={errors.Lname?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+      <DialogContent>
+        <Typography className="dialog-subtitle">
+          מלאי את פרטי הילד. שדות עם * הם שדות חובה.
+        </Typography>
 
-						{/* תאריך לידה */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								type="date"
-								label="תאריך לידה *"
-								{...register("dateOfBirth")}
-								error={!!errors.dateOfBirth}
-								helperText={errors.dateOfBirth?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+        {serverError && <Alert severity="error">{serverError}</Alert>}
 
-						{/* אימייל */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="אימייל *"
-								{...register("email")}
-								error={!!errors.email}
-								helperText={errors.email?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+          {/* ------- פרטים אישיים ------- */}
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#2C5282",
+              fontWeight: "bold",
+              textAlign: "right",
+              borderBottom: "3px solid #2C5282",
+              paddingBottom: "12px",
+              marginBottom: "24px",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+              fontFamily: "'M PLUS Rounded 1c', sans-serif",
+            }}
+          >
+            פרטים אישיים
+          </Typography>
 
-						{/* עיר */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="עיר *"
-								{...register("city")}
-								error={!!errors.city}
-								helperText={errors.city?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+          <Grid container spacing={3} sx={{ mb: 5 }} className="mobile-full-width">
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="שם הורה *"
+                {...register("parentName")}
+                error={!!errors.parentName}
+                helperText={errors.parentName?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
 
-						{/* רחוב */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="רחוב *"
-								{...register("street")}
-								error={!!errors.street}
-								helperText={errors.street?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="שם פרטי *"
+                {...register("Fname")}
+                error={!!errors.Fname}
+                helperText={errors.Fname?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
 
-						{/* מספר בית */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="מספר בית *"
-								{...register("building")}
-								error={!!errors.building}
-								helperText={errors.building?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="שם משפחה *"
+                {...register("Lname")}
+                error={!!errors.Lname}
+                helperText={errors.Lname?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
 
-						{/* מוסד לימודי */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="מוסד לימודי *"
-								{...register("educationInstitution")}
-								error={!!errors.educationInstitution}
-								helperText={errors.educationInstitution?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="מספר זהות *"
+                {...register("childId")}
+                error={!!errors.childId}
+                helperText={errors.childId?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
 
-						{/* טלפון אבא */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="טלפון אבא *"
-								{...register("phone1")}
-								error={!!errors.phone1}
-								helperText={errors.phone1?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                type="date"
+                label="תאריך לידה *"
+                {...register("dateOfBirth")}
+                error={!!errors.dateOfBirth}
+                helperText={errors.dateOfBirth?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+                InputProps={{
+                  inputProps: {
+                    max: new Date().toISOString().split("T")[0],
+                  },
+                }}
+              />
+            </Grid>
 
-						{/* טלפון אמא */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="טלפון אמא *"
-								{...register("phone2")}
-								error={!!errors.phone2}
-								helperText={errors.phone2?.message}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="מוסד לימודי *"
+                {...register("educationInstitution")}
+                error={!!errors.educationInstitution}
+                helperText={errors.educationInstitution?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
+          </Grid>
 
-						{/* הגדרת הילד */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="פירוט הגדרה של הילד"
-								{...register("specialNeeds")}
-								error={!!errors.specialNeeds}
-								helperText={errors.specialNeeds?.message}
-								multiline
-								rows={2}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+          {/* ------- פרטי תקשורת ------- */}
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#2C5282",
+              fontWeight: "bold",
+              textAlign: "right",
+              borderBottom: "3px solid #2C5282",
+              paddingBottom: "12px",
+              marginBottom: "24px",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+              fontFamily: "'M PLUS Rounded 1c', sans-serif",
+            }}
+          >
+            פרטי תקשורת
+          </Typography>
 
-						{/* אלרגיות */}
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="standard"
-								label="פירוט אלרגיות (מופרד בפסיקים)"
-								{...register("allergies")}
-								error={!!errors.allergies}
-								helperText={errors.allergies?.message}
-								multiline
-								rows={2}
-								fullWidth
-								InputLabelProps={{
-									shrink: true,
-									sx: {
-										right: 0,
-										left: "auto",
-										transformOrigin: "top right",
-									},
-								}}
-							/>
-						</Grid>
+          <Grid container spacing={3} sx={{ mb: 5 }} className="mobile-full-width">
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="אימייל *"
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
 
-						{/* שדה דיוור הוסר מהטופס */}
-					</Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="טלפון אבא *"
+                {...register("phone1")}
+                error={!!errors.phone1}
+                helperText={errors.phone1?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
 
-					<DialogActions sx={{ mt: 3 }}>
-						<Button onClick={handleClose} variant="outlined">
-							ביטול
-						</Button>
-						<Button
-							type="submit"
-							variant="contained"
-							color="success"
-							disabled={isSaving || !isValid}
-						>
-							{isSaving ? <CircularProgress size={22} /> : "הוספת ילד"}
-						</Button>
-					</DialogActions>
-				</Box>
-			</DialogContent>
-		</Dialog>
-	);
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="טלפון אמא *"
+                {...register("phone2")}
+                error={!!errors.phone2}
+                helperText={errors.phone2?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* ------- כתובת ------- */}
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#2C5282",
+              fontWeight: "bold",
+              textAlign: "right",
+              borderBottom: "3px solid #2C5282",
+              paddingBottom: "12px",
+              marginBottom: "24px",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+              fontFamily: "'M PLUS Rounded 1c', sans-serif",
+            }}
+          >
+            כתובת
+          </Typography>
+
+          <Grid container spacing={3} sx={{ mb: 5 }} className="mobile-full-width">
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="עיר *"
+                {...register("city")}
+                error={!!errors.city}
+                helperText={errors.city?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="רחוב *"
+                {...register("street")}
+                error={!!errors.street}
+                helperText={errors.street?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
+
+            {/* מופיע פעמיים בקוד המקורי – שמרתי בדיוק */}
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="רחוב *"
+                {...register("street")}
+                error={!!errors.street}
+                helperText={errors.street?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="מספר בית *"
+                {...register("building")}
+                error={!!errors.building}
+                helperText={errors.building?.message}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* ------- מידע רפואי ------- */}
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#2C5282",
+              fontWeight: "bold",
+              textAlign: "right",
+              borderBottom: "3px solid #2C5282",
+              paddingBottom: "12px",
+              marginBottom: "24px",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+              fontFamily: "'M PLUS Rounded 1c', sans-serif",
+            }}
+          >
+            מידע רפואי
+          </Typography>
+
+          <Grid container spacing={3} sx={{ mb: 5 }} className="mobile-full-width">
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="פירוט הגדרה של הילד"
+                {...register("specialNeeds")}
+                error={!!errors.specialNeeds}
+                helperText={errors.specialNeeds?.message}
+                multiline
+                rows={2}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                variant="standard"
+                label="פירוט אלרגיות"
+                {...register("allergies")}
+                error={!!errors.allergies}
+                helperText={errors.allergies?.message}
+                multiline
+                rows={2}
+                fullWidth
+                className="register-textfield"
+                InputLabelProps={{
+                  shrink: true,
+                  sx: { right: 0, left: "auto", transformOrigin: "top right" },
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* ------- כפתורים ------- */}
+          <DialogActions>
+            <Button type="submit" className="submit-button" disabled={isSaving}>
+              {isSaving ? <CircularProgress size={22} /> : "הוספת ילד"}
+            </Button>
+
+            <Button onClick={handleClose} className="cancel-button">
+              ביטול
+            </Button>
+          </DialogActions>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export default AddChildDialog;
-

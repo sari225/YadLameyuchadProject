@@ -1,0 +1,351 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
+
+/* Apply font to dialog elements */
+.edit-child-dialog * {
+  font-family: 'M PLUS Rounded 1c', sans-serif !important;
+}
+
+/* Dialog Paper Styling */
+.edit-child-dialog .MuiDialog-paper {
+  background: linear-gradient(135deg, rgb(243, 230, 240) 0%, rgb(237, 247, 250) 100%) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  direction: rtl;
+  max-height: 90vh;
+}
+
+/* Dialog Title Styling */
+.edit-child-dialog .MuiDialogTitle-root {
+  text-align: center;
+  color: #000;
+  font-weight: 700;
+  font-size: 28px;
+  padding: 24px 24px 16px;
+  background: transparent;
+}
+
+/* Dialog Content Styling */
+.edit-child-dialog .MuiDialogContent-root {
+  padding: 16px 24px 24px;
+  overflow-y: auto;
+}
+
+.edit-child-dialog .MuiDialogContent-root::-webkit-scrollbar {
+  width: 8px;
+}
+
+.edit-child-dialog .MuiDialogContent-root::-webkit-scrollbar-track {
+  background: rgba(135, 200, 210, 0.2);
+  border-radius: 10px;
+}
+
+.edit-child-dialog .MuiDialogContent-root::-webkit-scrollbar-thumb {
+  background: rgba(135, 200, 210, 0.6);
+  border-radius: 10px;
+}
+
+.edit-child-dialog .MuiDialogContent-root::-webkit-scrollbar-thumb:hover {
+  background: rgba(135, 200, 210, 0.8);
+}
+
+/* Subtitle Typography */
+.edit-child-dialog .dialog-subtitle {
+  margin-bottom: 16px;
+  text-align: center;
+  color: #000;
+  font-size: 15px;
+}
+
+/* Alert Styling */
+.edit-child-dialog .MuiAlert-root {
+  margin-bottom: 16px;
+  background-color: rgba(253, 237, 237, 0.95);
+  color: #5f2120;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  direction: rtl;
+}
+
+.edit-child-dialog .MuiAlert-icon {
+  color: #ef5350;
+}
+
+/* TextField Styling */
+.edit-child-dialog .MuiTextField-root {
+  width: 100%;
+}
+
+.edit-child-dialog .MuiInputBase-input {
+  color: #000;
+  background-color: transparent;
+  text-align: right;
+}
+
+.edit-child-dialog .MuiInputLabel-root {
+  color: #000;
+  font-weight: 500;
+  right: 0;
+  left: auto;
+  transform-origin: top right;
+}
+
+.edit-child-dialog .MuiInputLabel-root.Mui-focused {
+  color: #000;
+}
+
+.edit-child-dialog .MuiInputLabel-root.Mui-error {
+  color: #d32f2f !important;
+}
+
+.edit-child-dialog .MuiInput-underline:before {
+  border-bottom-color: #000;
+}
+
+.edit-child-dialog .MuiInput-underline:hover:not(.Mui-disabled):before {
+  border-bottom-color: #000;
+}
+
+.edit-child-dialog .MuiInput-underline:after {
+  border-bottom-color: #000;
+}
+
+.edit-child-dialog .MuiInput-underline.Mui-error:after {
+  border-bottom-color: #d32f2f !important;
+}
+
+.edit-child-dialog .MuiInput-underline.Mui-error:before {
+  border-bottom-color: #d32f2f !important;
+}
+
+.edit-child-dialog .MuiFormHelperText-root {
+  color: #000;
+  text-align: right;
+  margin-top: 4px;
+  background-color: transparent;
+}
+
+.edit-child-dialog .MuiFormHelperText-root.Mui-error {
+  color: #d32f2f !important;
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  margin-top: 4px;
+}
+
+/* Grid Spacing */
+.edit-child-dialog .MuiGrid-container {
+  margin-top: 8px;
+}
+
+.edit-child-dialog .MuiGrid-item {
+  padding: 8px !important;
+}
+
+/* Mobile-first full width */
+@media (max-width: 768px) {
+  .edit-child-dialog .mobile-full-width {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .edit-child-dialog .mobile-field {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-basis: 100% !important;
+    flex-grow: 1 !important;
+    margin: 0 !important;
+    padding: 8px 0 !important;
+  }
+}
+
+/* Dialog Actions Styling */
+.edit-child-dialog .MuiDialogActions-root {
+  padding: 16px 24px 24px;
+  gap: 12px;
+  justify-content: flex-start;
+  background: transparent;
+  direction: ltr;
+}
+
+/* Cancel Button */
+.edit-child-dialog .cancel-button {
+  padding: 10px 32px;
+  background-color: transparent;
+  color: #d687b9;
+  border: 2px solid #d687b9;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-transform: none;
+}
+
+.edit-child-dialog .cancel-button:hover {
+  background-color: rgba(214, 135, 185, 0.1);
+  border-color: #d687b9;
+  transform: translateY(-2px);
+}
+
+/* Submit Button */
+.edit-child-dialog .submit-button {
+  padding: 10px 32px;
+  background-color: #87c8d2;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(135, 200, 210, 0.3);
+  transition: all 0.3s ease;
+  text-transform: none;
+  border: none;
+}
+
+.edit-child-dialog .submit-button:hover:not(:disabled) {
+  background-color: #6bb5c1;
+  box-shadow: 0 6px 20px rgba(135, 200, 210, 0.4);
+  transform: translateY(-2px);
+}
+
+.edit-child-dialog .submit-button:disabled {
+  background-color: #CCCCCC;
+  color: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+}
+
+/* Multiline */
+.edit-child-dialog .MuiInputBase-multiline {
+  padding: 8px 0;
+}
+
+.edit-child-dialog textarea {
+  color: #000 !important;
+  text-align: right;
+}
+
+/* Section title spacing: make next title closer to previous */
+.edit-child-dialog .section-title {
+  margin-top: 10px;
+  margin-bottom: 14px;
+}
+
+/* Add more space above section titles */
+.edit-child-dialog .MuiTypography-h5,
+.edit-child-dialog .section-title {
+  margin-top: 32px !important;
+}
+
+/* Existing section title style */
+.edit-child-dialog .MuiTypography-h5 {
+  color: #2C5282;
+  font-weight: bold;
+  text-align: right;
+  border-bottom: 3px solid #2C5282;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+/* Align medical fields and checkbox to same height */
+.edit-child-dialog .medical-field-align {
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+}
+
+.edit-child-dialog .medical-field-align .MuiInputBase-root,
+.edit-child-dialog .medical-field-align textarea {
+  min-height: 40px !important;
+  height: 40px !important;
+  max-height: 40px !important;
+  resize: none;
+  align-items: center;
+}
+
+.edit-child-dialog .medical-checkbox-align {
+  justify-content: center;
+}
+
+/* Mobile Responsive Enhancements */
+@media (max-width: 768px) {
+  .edit-child-dialog .MuiDialog-paper {
+    margin: 16px;
+    max-height: calc(100vh - 32px);
+    width: calc(100% - 32px);
+  }
+
+  .edit-child-dialog .MuiDialogTitle-root {
+    font-size: 22px;
+    padding: 20px 16px 12px;
+  }
+
+  .edit-child-dialog .MuiDialogContent-root {
+    padding: 12px 16px 16px;
+  }
+
+  .edit-child-dialog .dialog-subtitle {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .edit-child-dialog .MuiGrid-item {
+    padding: 6px !important;
+  }
+
+  .edit-child-dialog .MuiDialogActions-root {
+    padding: 12px 16px 16px;
+    flex-direction: column-reverse;
+  }
+
+  .edit-child-dialog .cancel-button,
+  .edit-child-dialog .submit-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .edit-child-dialog .MuiInputBase-input {
+    font-size: 15px;
+  }
+
+  .edit-child-dialog .MuiInputLabel-root {
+    font-size: 13px;
+  }
+
+  .edit-child-dialog .MuiFormHelperText-root {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-child-dialog .MuiDialog-paper {
+    margin: 12px;
+    max-height: calc(100vh - 24px);
+    width: calc(100% - 24px);
+    border-radius: 12px !important;
+  }
+
+  .edit-child-dialog .MuiDialogTitle-root {
+    font-size: 20px;
+    padding: 16px 12px 10px;
+  }
+
+  .edit-child-dialog .MuiDialogContent-root {
+    padding: 10px 12px 12px;
+  }
+
+  .edit-child-dialog .dialog-subtitle {
+    font-size: 13px;
+  }
+
+  .edit-child-dialog .cancel-button,
+  .edit-child-dialog .submit-button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

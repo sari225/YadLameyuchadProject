@@ -107,6 +107,7 @@ const updateUpdating = async (req, res) => {
 
     if (req.body.title) updating.title = req.body.title;
     if (req.body.content) updating.content = req.body.content;
+    if (req.body.updateLocation) updating.updateLocation = req.body.updateLocation;
     
     // אם המשתמש ביקש להסיר את הקובץ
     if (req.body.removeFile === "true") {
@@ -117,6 +118,7 @@ const updateUpdating = async (req, res) => {
         try { 
           if (fs.existsSync(oldFilePath)) {
             fs.unlinkSync(oldFilePath);
+            console.log('Old file deleted successfully:', oldFilePath);
           }
         } catch (e) {
           console.error('Error deleting old file:', e);
@@ -132,6 +134,7 @@ const updateUpdating = async (req, res) => {
         try { 
           if (fs.existsSync(oldFilePath)) {
             fs.unlinkSync(oldFilePath);
+            console.log('Old file deleted successfully:', oldFilePath);
           }
         } catch (e) {
           console.error('Error deleting old file:', e);
@@ -144,11 +147,21 @@ const updateUpdating = async (req, res) => {
         filename: req.file.originalname,
         path: filePath,
       };
+      console.log('New file uploaded:', filePath);
     }
 
     await updating.save();
     res.status(200).json({ message: "Updating updated successfully" });
   } catch (error) {
+    // במקרה של שגיאה מוחקים את הקובץ החדש שהועלה
+    if (req.file && req.file.path) {
+      try { 
+        fs.unlinkSync(req.file.path);
+        console.log('Cleanup: deleted uploaded file due to error');
+      } catch (e) {
+        console.error('Error cleaning up file:', e);
+      }
+    }
     res.status(500).json({ message: "Error updating updating", error: error.message });
   }
 };

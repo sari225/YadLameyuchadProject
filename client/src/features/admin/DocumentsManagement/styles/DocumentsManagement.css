@@ -1,0 +1,219 @@
+/* DocumentsManagement Styles */
+
+.documents-management-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+    background-attachment: fixed;
+    padding: 40px;
+    font-family: 'Rubik', sans-serif;
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+.documents-management-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.documents-management-header-title {
+    color: #9e63a9 !important;
+    font-weight: 700 !important;
+    font-size: 3rem !important;
+    margin-bottom: 16px !important;
+    text-align: center !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.documents-management-button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.documents-management-add-button {
+    background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 12px !important;
+    padding: 12px 32px !important;
+    box-shadow: 0 4px 12px rgba(135, 200, 210, 0.4) !important;
+    transition: all 0.3s ease;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.1rem !important;
+}
+
+.documents-management-add-button .MuiSvgIcon-root {
+    color: white !important;
+    font-size: 24px !important;
+    margin-left: 8px;
+}
+
+.documents-management-add-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(135, 200, 210, 0.5) !important;
+}
+
+.documents-management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+    width: 100%;
+    align-items: start;
+}
+
+.documents-management-card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 220px;
+    border-radius: 16px !important;
+    background: white !important;
+    border: 1px solid #b5e2ec !important;
+    box-shadow: 0 2px 8px rgba(135, 200, 210, 0.1) !important;
+}
+
+.documents-management-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(135, 200, 210, 0.25) !important;
+    border-color: #87c8d2 !important;
+}
+
+.documents-management-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(135, 200, 210, 0.1) 0%, rgba(181, 226, 236, 0.1) 100%);
+}
+
+.documents-management-icon-pdf {
+    color: #9e63a9 !important;
+    font-size: 48px !important;
+}
+
+.documents-management-icon-image {
+    color: #87c8d2 !important;
+    font-size: 48px !important;
+}
+
+.documents-management-icon-default {
+    color: #999 !important;
+    font-size: 48px !important;
+}
+
+.documents-management-doc-name {
+    font-weight: 600 !important;
+    text-align: center;
+    margin-bottom: 8px !important;
+    word-break: break-word;
+    font-size: 0.95rem !important;
+    line-height: 1.8 !important;
+    max-height: 3.6em;
+    overflow: hidden;
+    font-family: 'Rubik', sans-serif !important;
+    color: #333 !important;
+}
+
+.documents-management-doc-date {
+    text-align: center;
+    margin-bottom: 16px !important;
+    font-size: 0.75rem !important;
+    color: #999 !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.documents-management-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(135, 200, 210, 0.2);
+}
+
+.documents-management-download-button {
+    color: #87c8d2 !important;
+    padding: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.documents-management-download-button:hover {
+    background-color: rgba(135, 200, 210, 0.1) !important;
+    color: #6fb8c2 !important;
+}
+
+.documents-management-delete-button {
+    color: #9e63a9 !important;
+    padding: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.documents-management-delete-button:hover {
+    background-color: rgba(158, 99, 169, 0.1) !important;
+    color: #8d5298 !important;
+}
+
+.documents-management-empty {
+    text-align: center !important;
+    padding: 60px 20px !important;
+    border-radius: 16px !important;
+    background: white !important;
+    border: 1px solid #b5e2ec !important;
+}
+
+.documents-management-empty-text {
+    color: #999 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+}
+
+.documents-management-empty-subtitle {
+    color: #bbb !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1rem !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .documents-management-container {
+        padding: 20px;
+    }
+
+    .documents-management-header-title {
+        font-size: 2rem !important;
+    }
+
+    .documents-management-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+    }
+
+    .documents-management-card {
+        min-height: 180px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .documents-management-container {
+        padding: 12px;
+    }
+
+    .documents-management-header-title {
+        font-size: 1.5rem !important;
+    }
+
+    .documents-management-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+}

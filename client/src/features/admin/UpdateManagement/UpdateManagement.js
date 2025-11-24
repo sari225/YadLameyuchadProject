@@ -27,6 +27,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   AttachFile as AttachFileIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import {
   useGetUpdatingsQuery,
@@ -34,6 +35,7 @@ import {
   useUpdateUpdatingMutation,
   useDeleteUpdatingMutation,
 } from "../../../api/updateApi";
+import "./styles/UpdateManagement.css";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -113,6 +115,7 @@ const UpdateManagement = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file || null);
+    setRemoveFile(false); // Reset removeFile flag when selecting new file
   };
 
   // Submit form (create or update)
@@ -180,36 +183,24 @@ const UpdateManagement = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
+      <Box className="update-management-loading">
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }} dir="rtl">
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          mb: 3,
-          position: "relative",
-        }}
-      >
-        <Typography variant="h4" sx={{ fontWeight: 600 }}>
-          ניהול עדכונים
-        </Typography>
+    <Box className="update-management-container">
+      <Typography variant="h4" className="update-management-header-title">
+        ניהול עדכונים
+      </Typography>
+
+      <Box className="update-management-button-container">
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
-          sx={{
-            position: "absolute",
-            left: 0,
-            backgroundColor: "#03a9f4",
-            "&:hover": { backgroundColor: "#0288d1" },
-          }}
+          className="update-management-add-button"
         >
           הוסף עדכון חדש
         </Button>
@@ -230,13 +221,13 @@ const UpdateManagement = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ bgcolor: "#1976d2" }}>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>כותרת</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>תוכן</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>מיקום</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>קובץ מצורף</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>תאריך יצירה</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white", textAlign: "center" }}>
+            <TableRow className="update-management-table-header">
+              <TableCell className="update-management-table-header-cell">כותרת</TableCell>
+              <TableCell className="update-management-table-header-cell">תוכן</TableCell>
+              <TableCell className="update-management-table-header-cell">מיקום</TableCell>
+              <TableCell className="update-management-table-header-cell">קובץ מצורף</TableCell>
+              <TableCell className="update-management-table-header-cell">תאריך יצירה</TableCell>
+              <TableCell className="update-management-table-header-cell">
                 פעולות
               </TableCell>
             </TableRow>
@@ -244,22 +235,27 @@ const UpdateManagement = () => {
           <TableBody>
             {updates.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} sx={{ textAlign: "center", py: 3 }}>
-                  <Typography variant="body1" color="text.secondary">
-                    אין עדכונים להצגה
-                  </Typography>
+                <TableCell colSpan={6} className="update-management-empty">
+                  <Box className="update-management-empty-message">
+                    <Typography className="update-management-empty-text">
+                      אין עדכונים במערכת
+                    </Typography>
+                    <Typography className="update-management-empty-subtitle">
+                      התחל בהוספת עדכון חדש
+                    </Typography>
+                  </Box>
                 </TableCell>
               </TableRow>
             ) : (
               updates.map((update) => (
                 <TableRow key={update._id} hover>
-                  <TableCell sx={{ textAlign: "center" }}>{update.title}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
+                  <TableCell className="update-management-table-body-cell">{update.title}</TableCell>
+                  <TableCell className="update-management-table-body-cell">
                     {update.content.length > 50
                       ? `${update.content.substring(0, 50)}...`
                       : update.content}
                   </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
+                  <TableCell className="update-management-table-body-cell">
                     <Chip
                       label={
                         update.updateLocation === "site"
@@ -272,7 +268,7 @@ const UpdateManagement = () => {
                       size="small"
                     />
                   </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
+                  <TableCell className="update-management-table-body-cell">
                     {update.file?.filename ? (
                       <Chip
                         icon={<AttachFileIcon />}
@@ -284,13 +280,13 @@ const UpdateManagement = () => {
                       "-"
                     )}
                   </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
+                  <TableCell className="update-management-table-body-cell">
                     {new Date(update.createdAt).toLocaleDateString("he-IL")}
                   </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
+                  <TableCell className="update-management-table-body-cell">
                     <Tooltip title="עריכת עדכון" arrow>
                       <IconButton
-                        color="primary"
+                        className="update-management-icon-button-edit"
                         onClick={() => handleOpenDialog(update)}
                         size="small"
                       >
@@ -299,7 +295,7 @@ const UpdateManagement = () => {
                     </Tooltip>
                     <Tooltip title="מחיקת עדכון" arrow>
                       <IconButton
-                        color="error"
+                        className="update-management-icon-button-delete"
                         onClick={() => handleDeleteClick(update)}
                         size="small"
                         disabled={isDeleting}
@@ -322,9 +318,26 @@ const UpdateManagement = () => {
         maxWidth="md"
         fullWidth
         dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
       >
-        <DialogTitle>
-          {editingUpdate ? "עריכת עדכון" : "הוספת עדכון חדש"}
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            {editingUpdate ? "עריכת עדכון" : "הוספת עדכון חדש"}
+          </Typography>
+          <IconButton onClick={handleCloseDialog} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {serverError && (
@@ -453,18 +466,34 @@ const UpdateManagement = () => {
         maxWidth="xs"
         fullWidth
         dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
       >
-        <DialogTitle>אישור מחיקה</DialogTitle>
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            אישור מחיקה
+          </Typography>
+          <IconButton onClick={handleDeleteCancel} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
-          <Typography>
+          <Typography sx={{ textAlign: "center" }}>
             האם אתה בטוח שברצונך למחוק את העדכון{" "}
             <strong>"{updateToDelete?.title}"</strong>?
           </Typography>
-          <Typography sx={{ mt: 2, color: "text.secondary", fontSize: "14px" }}>
-            פעולה זו אינה ניתנת לביטול.
-          </Typography>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
           <Button onClick={handleDeleteCancel} disabled={isDeleting}>
             ביטול
           </Button>

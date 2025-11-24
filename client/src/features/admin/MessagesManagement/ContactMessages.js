@@ -22,11 +22,13 @@ import {
   Snackbar,
   Tooltip,
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ReplyIcon from "@mui/icons-material/Reply";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
+import './styles/ContactMessages.css';
 import {
   useGetAllMessagesQuery,
   useMarkAsReadMutation,
@@ -44,6 +46,8 @@ export default function ContactMessages() {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState(null);
   const [replyContent, setReplyContent] = useState("");
 
   const [snackbar, setSnackbar] = useState({
@@ -117,25 +121,39 @@ export default function ContactMessages() {
     }
   };
 
-  const handleDeleteMessage = async (id) => {
-    if (window.confirm("האם אתה בטוח שברצונך למחוק הודעה זו?")) {
-      try {
-        await deleteMessage(id).unwrap();
-        setSnackbar({
-          open: true,
-          message: "ההודעה נמחקה בהצלחה",
-          severity: "success",
-        });
-        refetch();
-      } catch (error) {
-        const errorMessage = parseServerError(error, "שגיאה במחיקת ההודעה");
-        setSnackbar({
-          open: true,
-          message: errorMessage,
-          severity: "error",
-        });
-      }
+  const handleDeleteClick = (message) => {
+    setMessageToDelete(message);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!messageToDelete) return;
+
+    try {
+      await deleteMessage(messageToDelete._id).unwrap();
+      setSnackbar({
+        open: true,
+        message: "ההודעה נמחקה בהצלחה",
+        severity: "success",
+      });
+      refetch();
+      setDeleteDialogOpen(false);
+      setMessageToDelete(null);
+    } catch (error) {
+      const errorMessage = parseServerError(error, "שגיאה במחיקת ההודעה");
+      setSnackbar({
+        open: true,
+        message: errorMessage,
+        severity: "error",
+      });
+      setDeleteDialogOpen(false);
+      setMessageToDelete(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setMessageToDelete(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -168,38 +186,38 @@ export default function ContactMessages() {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Box className="messages-management-loading">
         <Typography>טוען הודעות...</Typography>
       </Box>
     );
   }
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4, direction: "rtl" }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", mb: 3 }}>
+    <div className="messages-management-container">
+      <Typography className="messages-management-header-title">
         הודעות יצירת קשר
       </Typography>
 
       <TableContainer component={Paper} elevation={3}>
         <Table>
-          <TableHead>
-            <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+          <TableHead className="messages-management-table-header">
+            <TableRow>
+              <TableCell className="messages-management-table-header-cell">
                 סטטוס
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell className="messages-management-table-header-cell">
                 שם השולח
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell className="messages-management-table-header-cell">
                 אימייל
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell className="messages-management-table-header-cell">
                 נושא
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell className="messages-management-table-header-cell">
                 תאריך
               </TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold" }}>
+              <TableCell className="messages-management-table-header-cell">
                 פעולות
               </TableCell>
             </TableRow>
@@ -208,41 +226,43 @@ export default function ContactMessages() {
             {messages.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} align="center">
-                  אין הודעות
+                  <Box className="messages-management-empty">
+                    <Typography className="messages-management-empty-text">
+                      אין הודעות להצגה
+                    </Typography>
+                  </Box>
                 </TableCell>
               </TableRow>
             ) : (
               messages.map((message) => (
                 <TableRow
                   key={message._id}
-                  sx={{
-                    bgcolor: message.readen ? "inherit" : "#e3f2fd",
-                    "&:hover": { bgcolor: "#f5f5f5" },
-                  }}
+                  className={message.readen ? "messages-management-row-read" : "messages-management-row-unread"}
+                  hover
                 >
-                  <TableCell align="right">
+                  <TableCell className="messages-management-table-body-cell">
                     <Chip
                       label={message.readen ? "נקרא" : "חדש"}
                       color={message.readen ? "default" : "primary"}
                       size="small"
                     />
                   </TableCell>
-                  <TableCell align="right">{message.senderName}</TableCell>
-                  <TableCell align="right">{message.senderEmail}</TableCell>
-                  <TableCell align="right">
+                  <TableCell className="messages-management-table-body-cell">{message.senderName}</TableCell>
+                  <TableCell className="messages-management-table-body-cell">{message.senderEmail}</TableCell>
+                  <TableCell className="messages-management-table-body-cell">
                     <Chip
                       label={message.topic}
                       color={getTopicColor(message.topic)}
                       size="small"
                     />
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell className="messages-management-table-body-cell">
                     {formatDate(message.createdAt)}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell className="messages-management-table-body-cell">
                     <Tooltip title="צפה בהודעה">
                       <IconButton
-                        color="primary"
+                        className="messages-management-icon-button-view"
                         onClick={() => handleViewMessage(message)}
                       >
                         <VisibilityIcon />
@@ -250,7 +270,7 @@ export default function ContactMessages() {
                     </Tooltip>
                     <Tooltip title="השב להודעה">
                       <IconButton
-                        color="success"
+                        className="messages-management-icon-button-reply"
                         onClick={() => handleOpenReplyDialog(message)}
                       >
                         <ReplyIcon />
@@ -258,7 +278,7 @@ export default function ContactMessages() {
                     </Tooltip>
                     <Tooltip title={message.readen ? "סמן כלא נקרא" : "סמן כנקרא"}>
                       <IconButton
-                        color="info"
+                        className="messages-management-icon-button-mark"
                         onClick={async () => {
                           await markAsRead(message._id);
                           refetch();
@@ -273,8 +293,8 @@ export default function ContactMessages() {
                     </Tooltip>
                     <Tooltip title="מחק הודעה">
                       <IconButton
-                        color="error"
-                        onClick={() => handleDeleteMessage(message._id)}
+                        className="messages-management-icon-button-delete"
+                        onClick={() => handleDeleteClick(message)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -294,8 +314,27 @@ export default function ContactMessages() {
         maxWidth="sm"
         fullWidth
         dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
       >
-        <DialogTitle>פרטי ההודעה</DialogTitle>
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            פרטי ההודעה
+          </Typography>
+          <IconButton onClick={handleCloseViewDialog} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent dividers>
           {selectedMessage && (
             <Box>
@@ -352,8 +391,27 @@ export default function ContactMessages() {
         maxWidth="sm"
         fullWidth
         dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
       >
-        <DialogTitle>תשובה להודעה</DialogTitle>
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            תשובה להודעה
+          </Typography>
+          <IconButton onClick={handleCloseReplyDialog} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent dividers>
           {selectedMessage && (
             <Box>
@@ -380,6 +438,53 @@ export default function ContactMessages() {
         </DialogActions>
       </Dialog>
 
+      {/* Delete Confirmation Dialog */}
+      <Dialog 
+        open={deleteDialogOpen} 
+        onClose={handleDeleteCancel}
+        maxWidth="xs"
+        fullWidth
+        dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
+      >
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            אישור מחיקה
+          </Typography>
+          <IconButton onClick={handleDeleteCancel} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ textAlign: "center" }}>
+            האם אתה בטוח שברצונך למחוק את ההודעה מ<strong>"{messageToDelete?.senderName}"</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
+          <Button onClick={handleDeleteCancel}>
+            ביטול
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleDeleteConfirm}
+          >
+            מחק
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -394,6 +499,6 @@ export default function ContactMessages() {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </Container>
+    </div>
   );
 }

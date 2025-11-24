@@ -25,12 +25,14 @@ import {
   Image as ImageIcon,
   PictureAsPdf as PdfIcon,
   Download as DownloadIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import {
   useGetAllDocumentsQuery,
   useCreateDocumentMutation,
   useDeleteDocumentMutation,
 } from "../../../api/documentApi";
+import "./styles/DocumentsManagement.css";
 
 const DocumentsManagement = () => {
   const { data: documents = [], isLoading, refetch } = useGetAllDocumentsQuery();
@@ -107,14 +109,14 @@ const DocumentsManagement = () => {
   };
 
   const getFileIcon = (url) => {
-    if (!url) return <DescriptionIcon sx={{ fontSize: 60, color: "#9e9e9e" }} />;
+    if (!url) return <DescriptionIcon className="documents-management-icon-default" />;
     const ext = url.split(".").pop().toLowerCase();
     if (ext === "pdf") {
-      return <PdfIcon sx={{ fontSize: 60, color: "#d32f2f" }} />;
+      return <PdfIcon className="documents-management-icon-pdf" />;
     } else if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) {
-      return <ImageIcon sx={{ fontSize: 60, color: "#4caf50" }} />;
+      return <ImageIcon className="documents-management-icon-image" />;
     }
-    return <DescriptionIcon sx={{ fontSize: 60, color: "#9e9e9e" }} />;
+    return <DescriptionIcon className="documents-management-icon-default" />;
   };
 
   const normalizePath = (path) => {
@@ -133,33 +135,20 @@ const DocumentsManagement = () => {
   };
 
   return (
-    <Box sx={{ p: 3, direction: "rtl" }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <Box sx={{ flex: 1 }} />
-        <Typography variant="h4" sx={{ fontWeight: "bold", textAlign: "center", flex: 1 }}>
-          ניהול מסמכים
-        </Typography>
-        <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setAddDialogOpen(true)}
-            sx={{
-              bgcolor: "#d486b8",
-              "&:hover": { bgcolor: "#a57bad" },
-              fontWeight: "bold",
-            }}
-          >
-            הוספת מסמך
-          </Button>
-        </Box>
+    <Box className="documents-management-container">
+      <Typography variant="h4" className="documents-management-header-title">
+        ניהול מסמכים
+      </Typography>
+
+      <Box className="documents-management-button-container">
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setAddDialogOpen(true)}
+          className="documents-management-add-button"
+        >
+          הוספת מסמך
+        </Button>
       </Box>
 
       {error && (
@@ -174,105 +163,66 @@ const DocumentsManagement = () => {
       )}
 
       {isLoading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+        <Box className="documents-management-loading">
           <CircularProgress />
         </Box>
       ) : documents.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography color="text.secondary">אין מסמכים במערכת</Typography>
+        <Paper className="documents-management-empty">
+          <Typography className="documents-management-empty-text">אין מסמכים במערכת</Typography>
+          <Typography className="documents-management-empty-subtitle">התחל בהוספת מסמך חדש</Typography>
         </Paper>
       ) : (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: 2.5,
-            width: "100%",
-            alignItems: "start",
-          }}
-        >
+        <Box className="documents-management-grid">
           {documents.map((doc) => (
             <Card
               key={doc._id}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                p: 1.5,
-                transition: "transform 0.2s, box-shadow 0.2s",
-                cursor: "pointer",
-                minHeight: "180px",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                },
-              }}
+              className="documents-management-card"
               onClick={() => window.open(getPreviewUrl(doc.url), "_blank")}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mb: 1,
-                  color: "#a57bad",
-                  "& svg": { fontSize: 40 },
-                }}
-              >
+              <Box className="documents-management-icon-container">
                 {getFileIcon(doc.url)}
               </Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  mb: 1,
-                  wordBreak: "break-word",
-                  fontSize: "0.875rem",
-                  lineHeight: 1.8,
-                  maxHeight: "3.6em",
-                  overflow: "hidden",
-                }}
-              >
+              <Typography className="documents-management-doc-name">
                 {doc.name}
               </Typography>
               {doc.createdAt && (
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ 
-                    textAlign: "center", 
-                    mb: 1.5, 
-                    fontSize: "0.7rem",
-                    display: "block",
-                  }}
-                >
+                <Typography className="documents-management-doc-date">
                   {new Date(doc.createdAt).toLocaleDateString("he-IL")}
                 </Typography>
               )}
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 0.5,
-                  justifyContent: "center",
-                  mt: "auto",
-                  pt: 1,
-                  borderTop: "1px solid #e0e0e0",
-                }}
-              >
+              <Box className="documents-management-actions">
                 <Tooltip title="הורדה" arrow>
                   <IconButton
-                    size="small"
-                    sx={{
-                      color: "#d486b8",
-                      p: 0.5,
-                      "&:hover": { bgcolor: "rgba(212, 134, 184, 0.1)" },
-                    }}
+                    className="documents-management-download-button"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
-                      const link = document.createElement("a");
-                      link.href = getPreviewUrl(doc.url);
-                      link.download = doc.name;
-                      link.click();
+                      
+                      // יצירת fetch להורדה ישירה
+                      fetch(getPreviewUrl(doc.url))
+                        .then(response => response.blob())
+                        .then(blob => {
+                          const url = window.URL.createObjectURL(blob);
+                          const link = document.createElement('a');
+                          link.href = url;
+                          link.download = doc.name;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                          window.URL.revokeObjectURL(url);
+                        })
+                        .catch(error => {
+                          console.error('שגיאה בהורדת הקובץ:', error);
+                          // fallback - נסיון רגיל
+                          const link = document.createElement('a');
+                          link.href = getPreviewUrl(doc.url);
+                          link.download = doc.name;
+                          link.target = '_blank';
+                          link.rel = 'noopener noreferrer';
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        });
                     }}
                   >
                     <DownloadIcon fontSize="small" />
@@ -280,12 +230,7 @@ const DocumentsManagement = () => {
                 </Tooltip>
                 <Tooltip title="מחיקה" arrow>
                   <IconButton
-                    size="small"
-                    sx={{
-                      color: "#f44336",
-                      p: 0.5,
-                      "&:hover": { bgcolor: "rgba(244, 67, 54, 0.1)" },
-                    }}
+                    className="documents-management-delete-button"
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedDoc(doc);
@@ -302,9 +247,32 @@ const DocumentsManagement = () => {
       )}
 
       {/* דיאלוג הוספת מסמך */}
-      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)} maxWidth="sm" fullWidth dir="rtl">
-        <DialogTitle sx={{ fontWeight: "bold", textAlign: "center" }}>
-          הוספת מסמך חדש
+      <Dialog 
+        open={addDialogOpen} 
+        onClose={() => setAddDialogOpen(false)} 
+        maxWidth="sm" 
+        fullWidth 
+        dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
+      >
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            הוספת מסמך חדש
+          </Typography>
+          <IconButton onClick={() => setAddDialogOpen(false)} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2 }}>
@@ -359,13 +327,34 @@ const DocumentsManagement = () => {
       </Dialog>
 
       {/* דיאלוג מחיקת מסמך */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} dir="rtl">
-        <DialogTitle sx={{ fontWeight: "bold", textAlign: "center" }}>
-          אישור מחיקה
+      <Dialog 
+        open={deleteDialogOpen} 
+        onClose={() => setDeleteDialogOpen(false)} 
+        dir="rtl"
+        PaperProps={{
+          className: "admin-management-container",
+          sx: {
+            borderRadius: '20px',
+            '@media (max-width: 768px)': {
+              width: '95%',
+              maxWidth: '450px',
+              margin: '16px',
+              borderRadius: '20px'
+            }
+          }
+        }}
+      >
+        <DialogTitle className="dialog-title">
+          <Typography variant="h5" className="dialog-title-text">
+            אישור מחיקה
+          </Typography>
+          <IconButton onClick={() => setDeleteDialogOpen(false)} className="dialog-close-button">
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           <Typography sx={{ textAlign: "center" }}>
-            האם אתה בטוח שברצונך למחוק את המסמך "{selectedDoc?.name}"?
+            האם אתה בטוח שברצונך למחוק את המסמך <strong>"{selectedDoc?.name}"</strong>?
           </Typography>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", pb: 2 }}>

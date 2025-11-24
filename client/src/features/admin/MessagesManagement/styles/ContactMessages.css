@@ -1,0 +1,168 @@
+/* ContactMessages Styles */
+
+.messages-management-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+    background-attachment: fixed;
+    padding: 40px;
+    font-family: 'Rubik', sans-serif;
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+.messages-management-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.messages-management-header-title {
+    color: #9e63a9 !important;
+    font-weight: 700 !important;
+    font-size: 3rem !important;
+    margin-bottom: 24px !important;
+    text-align: center !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.messages-management-table-header {
+    background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%) !important;
+}
+
+.messages-management-table-header-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+    color: white !important;
+    padding: 20px 16px !important;
+    font-size: 1rem !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.messages-management-table-body-cell {
+    text-align: center !important;
+    padding: 16px !important;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.messages-management-row-unread {
+    background-color: rgba(135, 200, 210, 0.15) !important;
+}
+
+.messages-management-row-read {
+    background-color: white !important;
+}
+
+.messages-management-table-body-cell .MuiIconButton-root {
+    transition: all 0.3s ease !important;
+}
+
+.messages-management-table-body-cell .MuiIconButton-root:hover {
+    transform: scale(1.1);
+}
+
+.messages-management-icon-button-view {
+    color: #87c8d2 !important;
+    transition: all 0.2s ease;
+    padding: 8px !important;
+}
+
+.messages-management-icon-button-view:hover {
+    color: #6fb8c2 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.messages-management-icon-button-reply {
+    color: #4caf50 !important;
+    transition: all 0.2s ease;
+    padding: 8px !important;
+}
+
+.messages-management-icon-button-reply:hover {
+    color: #45a049 !important;
+    background-color: rgba(76, 175, 80, 0.1) !important;
+}
+
+.messages-management-icon-button-mark {
+    color: #87c8d2 !important;
+    transition: all 0.2s ease;
+    padding: 8px !important;
+}
+
+.messages-management-icon-button-mark:hover {
+    color: #6fb8c2 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.messages-management-icon-button-delete {
+    color: #9e63a9 !important;
+    transition: all 0.2s ease;
+    padding: 8px !important;
+}
+
+.messages-management-icon-button-delete:hover {
+    color: #8d5298 !important;
+    background-color: rgba(158, 99, 169, 0.1) !important;
+}
+
+.messages-management-empty {
+    text-align: center !important;
+    padding: 60px 20px !important;
+}
+
+.messages-management-empty-text {
+    color: #999 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+}
+
+.messages-management-container .MuiPaper-root {
+    border-radius: 16px !important;
+    box-shadow: 0 4px 12px rgba(135, 200, 210, 0.15) !important;
+    border: 1px solid #b5e2ec !important;
+    overflow: hidden !important;
+}
+
+.messages-management-container .MuiTableRow-root.MuiTableRow-hover:hover {
+    background-color: rgba(135, 200, 210, 0.08) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .messages-management-container {
+        padding: 20px;
+    }
+
+    .messages-management-header-title {
+        font-size: 2rem !important;
+    }
+
+    .messages-management-table-header-cell,
+    .messages-management-table-body-cell {
+        padding: 12px 8px !important;
+        font-size: 0.875rem !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .messages-management-container {
+        padding: 12px;
+    }
+
+    .messages-management-header-title {
+        font-size: 1.5rem !important;
+    }
+
+    /* הסתר עמודות במובייל - הצג רק שם שולח, מייל ופעולות */
+    .messages-management-table-header-cell:nth-child(1),
+    .messages-management-table-body-cell:nth-child(1),
+    .messages-management-table-header-cell:nth-child(4),
+    .messages-management-table-body-cell:nth-child(4),
+    .messages-management-table-header-cell:nth-child(5),
+    .messages-management-table-body-cell:nth-child(5) {
+        display: none;
+    }
+}

@@ -69,7 +69,7 @@ export const clubApi = apiSlice.injectEndpoints({
         method: "PUT",
         body: { childId },
       }),
-      invalidatesTags: ['Club', 'Child'],
+      invalidatesTags: ['Club', 'Child', 'Volunteer'],
     }),
     addVolunteerToClub: builder.mutation({
       query: (data) => ({

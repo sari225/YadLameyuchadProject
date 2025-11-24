@@ -1,0 +1,323 @@
+/* Club Details Page Styles */
+
+.club-details-loading-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 80vh;
+	background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+}
+
+.club-details-error-container {
+	padding: 40px;
+	direction: rtl;
+	background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+	min-height: 100vh;
+}
+
+.club-details-container {
+	min-height: 100vh;
+	background: linear-gradient(135deg, rgba(210, 135, 193, 0.15) 0%, rgba(181, 226, 236, 0.15) 100%);
+	background-attachment: fixed;
+	padding: 40px;
+	font-family: 'Rubik', sans-serif;
+	direction: rtl;
+}
+
+.club-details-header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 32px;
+	gap: 16px;
+	position: relative;
+}
+
+.club-details-header .MuiIconButton-root {
+	background: white;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+	position: absolute;
+	right: 20px;
+}
+
+.club-details-header .MuiIconButton-root:hover {
+	background: #f5f5f5;
+	transform: translateX(4px);
+}
+
+.club-details-title {
+	font-weight: 700 !important;
+	font-size: 2.5rem !important;
+	color: #9e63a9 !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-details-error-alert,
+.club-details-success-alert {
+	margin-bottom: 24px !important;
+	border-radius: 12px !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+/* Info Summary - Single Line */
+.club-details-info-summary {
+	padding: 0 !important;
+	margin-bottom: 16px !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	border: none !important;
+}
+
+.club-details-info-summary .MuiGrid-container {
+	flex-wrap: wrap !important;
+	justify-content: center !important;
+}
+
+.club-details-info-chip {
+	background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+	color: white !important;
+	font-weight: 600 !important;
+	font-family: 'Rubik', sans-serif !important;
+	font-size: 0.875rem !important;
+	padding: 6px 12px !important;
+	height: 32px !important;
+	border-radius: 16px !important;
+	box-shadow: 0 2px 6px rgba(135, 200, 210, 0.25) !important;
+	transition: all 0.3s ease !important;
+}
+
+.club-details-info-chip:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 3px 10px rgba(135, 200, 210, 0.35) !important;
+}
+
+.club-details-info-chip .MuiChip-label {
+	padding: 0 8px !important;
+}
+
+/* Managers Summary - Single Line */
+.club-details-managers-summary {
+	padding: 16px 20px;
+	margin: 0 auto 24px auto;
+	max-width: 900px;
+	border-radius: 16px;
+	background: rgba(255,255,255,0.5);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 2px 8px rgba(135, 200, 210, 0.1);
+	border: 1px solid rgba(181, 226, 236, 0.3);
+}
+
+.club-details-managers-title {
+	color: #87c8d2 !important;
+	font-weight: 700 !important;
+	margin-bottom: 12px !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-details-managers-summary .MuiChip-root {
+	font-family: 'Rubik', sans-serif !important;
+	font-size: 0.9rem !important;
+}
+
+.club-details-tabs-paper {
+	margin-bottom: 24px !important;
+	border-radius: 16px !important;
+	background: white !important;
+	box-shadow: 0 4px 12px rgba(135, 200, 210, 0.15) !important;
+	border: 1px solid #b5e2ec !important;
+	overflow: hidden !important;
+}
+
+.club-details-tabs-paper .MuiTabs-root {
+	border-bottom: 2px solid #87c8d2;
+}
+
+.club-details-tabs-paper .MuiTab-root {
+	font-weight: 600 !important;
+	font-family: 'Rubik', sans-serif !important;
+	font-size: 1rem !important;
+	color: #666 !important;
+	transition: all 0.3s ease !important;
+}
+
+.club-details-tabs-paper .MuiTab-root.Mui-selected {
+	color: #87c8d2 !important;
+	font-weight: 700 !important;
+}
+
+.club-details-tabs-paper .MuiTabs-indicator {
+	background-color: #87c8d2 !important;
+	height: 3px !important;
+}
+
+.club-details-tab-content {
+	padding: 24px !important;
+}
+
+.club-details-autocomplete-grid,
+.club-details-volunteers-autocomplete-grid {
+	margin-bottom: 24px !important;
+}
+
+.club-details-autocomplete-grid .MuiButton-root,
+.club-details-volunteers-autocomplete-grid .MuiButton-root {
+	background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+	color: white !important;
+	font-weight: bold !important;
+	border-radius: 12px !important;
+	padding: 12px 24px !important;
+	box-shadow: 0 4px 12px rgba(135, 200, 210, 0.4) !important;
+	transition: all 0.3s ease !important;
+	font-family: 'Rubik', sans-serif !important;
+	height: 56px !important;
+}
+
+.club-details-autocomplete-grid .MuiButton-root:hover,
+.club-details-volunteers-autocomplete-grid .MuiButton-root:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(135, 200, 210, 0.5) !important;
+}
+
+.club-details-autocomplete-grid .MuiButton-root:disabled,
+.club-details-volunteers-autocomplete-grid .MuiButton-root:disabled {
+	background: #e0e0e0 !important;
+	color: #999 !important;
+}
+
+.club-details-autocomplete-grid .MuiTextField-root,
+.club-details-volunteers-autocomplete-grid .MuiTextField-root {
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-details-autocomplete-grid .MuiOutlinedInput-root,
+.club-details-volunteers-autocomplete-grid .MuiOutlinedInput-root {
+	border-radius: 12px !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-details-autocomplete-grid .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.club-details-volunteers-autocomplete-grid .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+	border-color: #87c8d2 !important;
+	border-width: 2px !important;
+}
+
+/* Table Styles */
+.club-details-table-header {
+	background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%) !important;
+}
+
+.club-details-table-header-cell {
+	font-weight: 700 !important;
+	color: white !important;
+	text-align: center !important;
+	padding: 20px 16px !important;
+	font-size: 1rem !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-details-table-body-cell {
+	text-align: center !important;
+	padding: 16px !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-details-table-body-cell .MuiIconButton-root {
+	transition: all 0.3s ease !important;
+}
+
+.club-details-table-body-cell .MuiIconButton-root:hover {
+	transform: scale(1.1);
+}
+
+.club-details-table-body-cell .MuiButton-root {
+	margin-left: 8px !important;
+	border-radius: 8px !important;
+	font-family: 'Rubik', sans-serif !important;
+	transition: all 0.3s ease !important;
+}
+
+.club-details-table-body-cell .MuiButton-root:hover {
+	transform: translateY(-2px);
+}
+
+.club-details-empty-message {
+	text-align: center !important;
+	padding: 60px 20px !important;
+}
+
+.club-details-empty-message .MuiTypography-root {
+	color: #999 !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+/* Paper Containers for Tables */
+.club-details-container > .MuiPaper-root {
+	border-radius: 16px !important;
+	box-shadow: 0 4px 12px rgba(135, 200, 210, 0.15) !important;
+	border: 1px solid #b5e2ec !important;
+	overflow: hidden !important;
+	margin-bottom: 24px !important;
+	background: white !important;
+}
+
+/* TableRow Hover Effect */
+.club-details-container .MuiTableRow-root.MuiTableRow-hover:hover {
+	background-color: rgba(135, 200, 210, 0.08) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.club-details-container {
+		padding: 20px;
+	}
+
+	.club-details-title {
+		font-size: 2rem !important;
+	}
+
+	.club-details-info-summary,
+	.club-details-managers-summary {
+		padding: 16px !important;
+	}
+
+	.club-details-info-summary .MuiGrid-container,
+	.club-details-managers-summary .MuiGrid-container {
+		justify-content: center !important;
+	}
+
+	.club-details-tab-content {
+		padding: 16px !important;
+	}
+
+	.club-details-autocomplete-grid,
+	.club-details-volunteers-autocomplete-grid {
+		flex-direction: column !important;
+	}
+
+	.club-details-table-header-cell,
+	.club-details-table-body-cell {
+		padding: 12px 8px !important;
+		font-size: 0.875rem !important;
+	}
+}
+
+@media (max-width: 600px) {
+	.club-details-container {
+		padding: 12px;
+	}
+
+	.club-details-title {
+		font-size: 1.5rem !important;
+	}
+
+	.club-details-info-summary,
+	.club-details-managers-summary {
+		padding: 12px !important;
+	}
+
+	.club-details-managers-paper,
+	.club-details-tabs-paper {
+		border-radius: 12px !important;
+	}
+}

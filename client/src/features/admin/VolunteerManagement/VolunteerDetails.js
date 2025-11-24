@@ -13,12 +13,10 @@ const VolunteerDetails = ({ volunteer }) => {
 		<Box sx={{ margin: 2.5, p: 3, bgcolor: '#f5f5f5', borderRadius: 1, textAlign: 'right' }}>
 			<Grid container spacing={5}>
 				{/* פרטים אישיים */}
-				<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
-					<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#1976d2' }}>
-						פרטים אישיים
-					</Typography>
-
-					<Typography variant="body2" sx={{ mb: 0.5 }}>
+			<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
+				<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#87c8d2' }}>
+					פרטים אישיים
+				</Typography>					<Typography variant="body2" sx={{ mb: 0.5 }}>
 						<strong>תעודת זהות:</strong> {volunteer.id}
 					</Typography>
 
@@ -37,12 +35,10 @@ const VolunteerDetails = ({ volunteer }) => {
 				</Grid>
 
 				{/* פרטי תקשורת */}
-				<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
-					<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#1976d2' }}>
-						פרטי תקשורת
-					</Typography>
-
-					<Typography variant="body2" sx={{ mb: 0.5 }}>
+			<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
+				<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#87c8d2' }}>
+					פרטי תקשורת
+				</Typography>					<Typography variant="body2" sx={{ mb: 0.5 }}>
 						<strong>טלפון:</strong> {volunteer.phone}
 					</Typography>
 
@@ -52,12 +48,10 @@ const VolunteerDetails = ({ volunteer }) => {
 				</Grid>
 
 				{/* כתובת */}
-				<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
-					<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#1976d2' }}>
-						כתובת
-					</Typography>
-
-					<Typography variant="body2" sx={{ mb: 0.5 }}>
+			<Grid item xs={12} sm={6} md={3} sx={{ pr: 2 }}>
+				<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#87c8d2' }}>
+					כתובת
+				</Typography>					<Typography variant="body2" sx={{ mb: 0.5 }}>
 						<strong>עיר:</strong> {volunteer.address?.city || "—"}
 					</Typography>
 
@@ -71,12 +65,10 @@ const VolunteerDetails = ({ volunteer }) => {
 				</Grid>
 
 				{/* מועדוניות */}
-				<Grid item xs={12} md={3} sx={{ pr: 2 }}>
-					<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#1976d2' }}>
-						מועדוניות ({volunteer.clubs?.length || 0})
-					</Typography>
-
-					{volunteer.clubs && volunteer.clubs.length > 0 ? (
+			<Grid item xs={12} md={3} sx={{ pr: 2 }}>
+				<Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1, color: '#87c8d2' }}>
+					מועדוניות ({volunteer.clubs?.length || 0})
+				</Typography>					{volunteer.clubs && volunteer.clubs.length > 0 ? (
 						<Box>
 							{volunteer.clubs.map((club, idx) => {
 								const childName = club.child
@@ -85,18 +77,18 @@ const VolunteerDetails = ({ volunteer }) => {
 								const childId = club.child ? ` (${club.child.childId || "ללא ת.ז"})` : "";
 								
 								return (
-									<Box 
-										key={club._id || idx} 
-										sx={{ 
-											mb: 1.5,
-											p: 1.5,
-											bgcolor: 'white',
-											borderRadius: 1,
-											border: '1px solid #e0e0e0',
-											boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-										}}
-									>
-										<Typography variant="body2" sx={{ mb: 0.5, fontWeight: 'bold', color: '#1976d2' }}>
+								<Box 
+									key={club._id || idx} 
+									sx={{ 
+										mb: 1.5,
+										p: 1.5,
+										bgcolor: 'white',
+										borderRadius: 1,
+										border: '1px solid #87c8d2',
+										boxShadow: '0 1px 3px rgba(135, 200, 210, 0.15)'
+									}}
+								>
+									<Typography variant="body2" sx={{ mb: 0.5, fontWeight: 'bold', color: '#87c8d2' }}>
 											{club.club?.name}
 										</Typography>
 										<Typography variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
@@ -117,12 +109,12 @@ const VolunteerDetails = ({ volunteer }) => {
 						sx={{ 
 							mt: 2,
 							p: 1.5,
-							bgcolor: '#e3f2fd',
+							bgcolor: 'rgba(135, 200, 210, 0.1)',
 							borderRadius: 1,
-							border: '1px solid #90caf9'
+							border: '1px solid #87c8d2'
 						}}
 					>
-						<Typography variant="caption" sx={{ display: 'block', fontWeight: 'bold', color: '#1976d2' }}>
+						<Typography variant="caption" sx={{ display: 'block', fontWeight: 'bold', color: '#87c8d2' }}>
 							💡 לניהול מועדוניות ועדכון ילדים, יש לעבור לדף "ניהול מועדוניות"
 						</Typography>
 					</Box>

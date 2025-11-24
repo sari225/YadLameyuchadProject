@@ -26,6 +26,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateClubMutation } from "../../../api/clubApi";
 import { parseServerError } from "../../../utils/errorHandler";
+import "./styles/ClubDialog.css";
 
 // =============================
 //     סכמת Zod מלאה להוספה
@@ -118,17 +119,15 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 		onClose();
 	};
 
-	return (
-		<>
-			<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth dir="rtl">
-				<DialogTitle sx={{ fontWeight: "bold", textAlign: "center" }}>
-					הוסף מועדונית חדשה
-				</DialogTitle>
-
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<DialogContent dividers>
-						{serverError && (
-							<Alert severity="error" sx={{ mb: 2 }} onClose={() => setServerError("")}>
+		return (
+			<>
+				<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth dir="rtl" className="club-dialog-container">
+					<DialogTitle className="club-dialog-title">
+						הוסף מועדונית חדשה
+					</DialogTitle>					<form onSubmit={handleSubmit(onSubmit)}>
+						<DialogContent dividers className="club-dialog-content">
+							{serverError && (
+								<Alert severity="error" className="club-dialog-error-alert" onClose={() => setServerError("")}>
 								{serverError}
 							</Alert>
 						)}
@@ -153,7 +152,7 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 									name="activityDay"
 									control={control}
 									render={({ field }) => (
-										<Select {...field} label="יום פעילות *" sx={{ minWidth: 200 }}>
+										<Select {...field} label="יום פעילות *">
 												<MenuItem value="ראשון">ראשון</MenuItem>
 												<MenuItem value="שני">שני</MenuItem>
 												<MenuItem value="שלישי">שלישי</MenuItem>
@@ -163,13 +162,13 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 												<MenuItem value="שבת">שבת</MenuItem>
 											</Select>
 										)}
-									/>
-									{errors.activityDay && (
-										<Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
-											{errors.activityDay.message}
-										</Typography>
-									)}
-								</FormControl>
+								/>
+								{errors.activityDay && (
+									<Typography variant="caption" color="error" className="club-dialog-error-text">
+										{errors.activityDay.message}
+									</Typography>
+								)}
+							</FormControl>
 							</Grid>
 
 							{/* שעת התחלה */}
@@ -211,7 +210,7 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 
 					{/* מנהלי מועדונית */}
 					<Grid item xs={12}>
-						<Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 2 }}>
+						<Box className="club-dialog-managers-header">
 							<Typography variant="h6">מנהלי המועדונית *</Typography>
 							<Button
 								variant="outlined"
@@ -223,7 +222,7 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 							</Button>
 					</Box>
 					{errors.clubManagers && typeof errors.clubManagers.message === "string" && (
-						<Alert severity="error" sx={{ mb: 2 }}>
+						<Alert severity="error" className="club-dialog-error-alert">
 							{errors.clubManagers.message}
 						</Alert>
 					)}
@@ -231,8 +230,8 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 
 				{fields.map((field, index) => (
 								<Grid item xs={12} key={field.id}>
-									<Paper elevation={2} sx={{ p: 2, position: "relative" }}>
-										<Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+									<Paper elevation={2} className="club-dialog-manager-paper">
+										<Box className="club-dialog-manager-header">
 											<Typography variant="subtitle2" color="primary">
 												מנהל {index + 1}
 											</Typography>
@@ -282,7 +281,7 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 						</Grid>
 					</DialogContent>
 
-					<DialogActions sx={{ p: 2 }}>
+					<DialogActions className="club-dialog-actions">
 						<Button onClick={handleClose} disabled={isSaving}>
 							ביטול
 						</Button>
@@ -298,16 +297,16 @@ const AddClubDialog = ({ open, onClose, onSuccess }) => {
 				</form>
 			</Dialog>
 
-			{/* דיאלוג הצלחה */}
-			<Dialog open={successDialog} onClose={handleSuccessClose}>
-				<DialogTitle sx={{ textAlign: "center", color: "success.main" }}>
-					✅ המועדונית נוספה בהצלחה!
-				</DialogTitle>
-				<DialogContent>
-					<Typography textAlign="center">
-						המועדונית נוספה למערכת בהצלחה
-					</Typography>
-				</DialogContent>
+		{/* דיאלוג הצלחה */}
+		<Dialog open={successDialog} onClose={handleSuccessClose}>
+			<DialogTitle className="club-dialog-success-title">
+				✅ המועדונית נוספה בהצלחה!
+			</DialogTitle>
+			<DialogContent>
+				<Typography className="club-dialog-success-text">
+					המועדונית נוספה למערכת בהצלחה
+				</Typography>
+			</DialogContent>
 				<DialogActions>
 					<Button onClick={handleSuccessClose} variant="contained" fullWidth>
 						סגור

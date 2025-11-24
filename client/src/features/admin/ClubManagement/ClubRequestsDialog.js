@@ -21,17 +21,14 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useDispatch, useSelector } from "react-redux";
-import { closeClubRequestsDialog } from "./ClubManagementSlice";
 import {
 	useGetAllClubRequestsQuery,
 	useDeleteClubRequestMutation,
 } from "../../../api/clubRequestApi";
 import { useAddChildToClubMutation, useRefuseChildFromClubMutation } from "../../../api/clubApi";
+import "./styles/ClubRequestsDialog.css";
 
-const ClubRequestsDialog = ({ onUpdate }) => {
-	const dispatch = useDispatch();
-	const open = useSelector((state) => state.clubManagement?.clubRequestsDialogOpen || false);
+const ClubRequestsDialog = ({ open, onClose, onUpdate }) => {
 	const [errorDialog, setErrorDialog] = useState({ open: false, message: "" });
 	const [confirmRejectDialog, setConfirmRejectDialog] = useState({ open: false, request: null });
 
@@ -41,7 +38,7 @@ const ClubRequestsDialog = ({ onUpdate }) => {
 	const [refuseChildFromClub] = useRefuseChildFromClubMutation();
 
 	const handleClose = () => {
-		dispatch(closeClubRequestsDialog());
+		onClose();
 	};
 
 	const handleApprove = async (request) => {
@@ -102,7 +99,7 @@ const ClubRequestsDialog = ({ onUpdate }) => {
 
 			<DialogContent dividers>
 				{clubRequests.length === 0 ? (
-					<Box sx={{ py: 4, textAlign: "center" }}>
+					<Box className="club-requests-empty-message">
 						<Typography variant="body1" color="text.secondary">
 							אין בקשות ממתינות
 						</Typography>
@@ -110,41 +107,41 @@ const ClubRequestsDialog = ({ onUpdate }) => {
 				) : (
 					<TableContainer component={Paper} variant="outlined">
 						<Table>
-							<TableHead>
-								<TableRow>
-									<TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-										שם הילד
-									</TableCell>
-									<TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-										ת.ז ילד
-									</TableCell>
-									<TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-										מועדונית
-									</TableCell>
-									<TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-										תאריך בקשה
-									</TableCell>
-									<TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-										פעולות
-									</TableCell>
-								</TableRow>
-							</TableHead>
+						<TableHead>
+							<TableRow>
+								<TableCell className="club-requests-table-header-cell">
+									שם הילד
+				תבח				</TableCell>
+								<TableCell className="club-requests-table-header-cell">
+									ת.ז ילד
+								</TableCell>
+								<TableCell className="club-requests-table-header-cell">
+									מועדונית
+								</TableCell>
+								<TableCell className="club-requests-table-header-cell">
+									תאריך בקשה
+								</TableCell>
+								<TableCell className="club-requests-table-header-cell">
+									פעולות
+								</TableCell>
+							</TableRow>
+						</TableHead>
 							<TableBody>
-								{clubRequests.map((request) => (
-									<TableRow key={request._id} hover>
-										<TableCell sx={{ textAlign: "center" }}>
-											{request.childId?.Fname} {request.childId?.Lname}
-										</TableCell>
-										<TableCell sx={{ textAlign: "center" }}>
-											{request.childId?.childId}
-										</TableCell>
-										<TableCell sx={{ textAlign: "center" }}>
-											{request.clubId?.name}
-										</TableCell>
-										<TableCell sx={{ textAlign: "center" }}>
-											{new Date(request.createdAt).toLocaleDateString("he-IL")}
-										</TableCell>
-										<TableCell sx={{ textAlign: "center" }}>
+							{clubRequests.map((request) => (
+								<TableRow key={request._id} hover>
+									<TableCell className="club-requests-table-body-cell">
+										{request.childId?.Fname} {request.childId?.Lname}
+									</TableCell>
+									<TableCell className="club-requests-table-body-cell">
+										{request.childId?.childId}
+									</TableCell>
+									<TableCell className="club-requests-table-body-cell">
+										{request.clubId?.name}
+									</TableCell>
+									<TableCell className="club-requests-table-body-cell">
+										{new Date(request.createdAt).toLocaleDateString("he-IL")}
+									</TableCell>
+									<TableCell className="club-requests-table-body-cell">
 											<Stack direction="row" spacing={1} justifyContent="center">
 												<IconButton
 													color="success"
@@ -190,7 +187,7 @@ const ClubRequestsDialog = ({ onUpdate }) => {
 
 			{/* דיאלוג שגיאה */}
 			<Dialog open={errorDialog.open} onClose={() => setErrorDialog({ open: false, message: "" })} dir="rtl">
-				<DialogTitle sx={{ color: "error.main" }}>שגיאה</DialogTitle>
+				<DialogTitle className="club-requests-error-title">שגיאה</DialogTitle>
 				<DialogContent>
 					<Typography>{errorDialog.message}</Typography>
 				</DialogContent>

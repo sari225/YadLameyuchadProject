@@ -304,7 +304,7 @@
 }
 
 /* Sticky dialog header */
-.MuiDialog-paper .MuiDialogTitle-root {
+.volunteer-container .MuiDialog-paper .MuiDialogTitle-root {
 	position: sticky;
 	top: 0;
 	z-index: 10;
@@ -419,14 +419,14 @@
 	}
 
 	/* דיאלוגים */
-	.MuiDialog-paper {
+	.volunteer-container .MuiDialog-paper {
 		margin: 8px !important;
 		width: calc(100% - 16px) !important;
 		max-width: 100% !important;
 	}
 
 	/* שדות ברוחב מלא בדיאלוגים */
-	.MuiDialog-paper .MuiGrid-item {
+	.volunteer-container .MuiDialog-paper .MuiGrid-item {
 		flex-basis: 100% !important;
 		max-width: 100% !important;
 	}

@@ -292,7 +292,7 @@ const UserCampsList = () => {
                       onClick={() => handleRegisterClick(camp)}
                       className="register-button-clubs-style"
                     >
-                      שלח בקשת הרשמה
+הרשם לקייטנה               
                     </Button>
                   )}
                 </div>

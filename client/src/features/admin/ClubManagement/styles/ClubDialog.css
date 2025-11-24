@@ -2,51 +2,77 @@
 
 .club-dialog-container {
     direction: rtl;
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.club-dialog-container .MuiDialog-paper {
+    border-radius: 20px !important;
+    max-width: 800px !important;
 }
 
 .club-dialog-title {
-    font-weight: bold !important;
+    background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%) !important;
+    font-weight: 700 !important;
     text-align: center !important;
     color: white !important;
-    padding: 20px 24px !important;
+    padding: 24px !important;
+    font-size: 1.75rem !important;
+    font-family: 'Rubik', sans-serif !important;
 }
 
 .club-dialog-content {
-    padding: 24px !important;
+    padding: 32px 24px !important;
+    background-color: #fafafa !important;
+}
+
+.club-dialog-container .MuiTextField-root {
+    font-family: 'Rubik', sans-serif !important;
+}
+
+.club-dialog-container .MuiInputLabel-root {
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+}
+
+.club-dialog-container .MuiInputBase-input {
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.05rem !important;
+    padding: 14px !important;
+}
+
+.club-dialog-container .MuiSelect-select {
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.05rem !important;
+    padding: 14px !important;
+}
+
+.club-dialog-container .MuiMenuItem-root {
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.05rem !important;
 }
 
 .club-dialog-error-alert {
-    margin-bottom: 16px !important;
+    margin-bottom: 20px !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1rem !important;
 }
 
 .club-dialog-error-text {
     margin-top: 4px;
     margin-left: 16px;
+    font-family: 'Rubik', sans-serif !important;
 }
 
 .club-dialog-divider {
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
 }
 
 .club-dialog-success-text {
     text-align: center;
-}
-
-.club-dialog-grid-container {
-    width: 100%;
-}
-
-.club-dialog-text-field {
-    width: 100%;
-}
-
-.club-dialog-form-control {
-    width: 100%;
-}
-
-.club-dialog-select {
-    min-width: 200px;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.1rem !important;
 }
 
 /* Managers Section */
@@ -54,76 +80,106 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: 8px;
+    margin-bottom: 20px;
 }
 
-.club-dialog-managers-title {
-    font-size: 1.25rem !important;
+.club-dialog-managers-header h6 {
+    color: #9e63a9 !important;
     font-weight: 600 !important;
+    font-size: 1.3rem !important;
+    font-family: 'Rubik', sans-serif !important;
 }
 
-.club-dialog-add-manager-button {
-    text-transform: none !important;
+.club-dialog-managers-header .MuiButton-outlined {
+    color: #87c8d2 !important;
+    border-color: #87c8d2 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    padding: 8px 20px !important;
+    border-radius: 8px !important;
+}
+
+.club-dialog-managers-header .MuiButton-outlined:hover {
+    background-color: rgba(135, 200, 210, 0.1) !important;
+    border-color: #6bb5c1 !important;
 }
 
 .club-dialog-manager-paper {
-    padding: 16px;
+    padding: 20px;
     position: relative;
     margin-bottom: 16px;
-    border: 1px solid #e0e0e0;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px !important;
+    background-color: white !important;
 }
 
 .club-dialog-manager-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 16px;
 }
 
-.club-dialog-manager-title {
-    color: #1976d2 !important;
+.club-dialog-manager-header .MuiTypography-root {
+    color: #87c8d2 !important;
     font-weight: 600 !important;
+    font-size: 1.1rem !important;
+    font-family: 'Rubik', sans-serif !important;
 }
 
-.club-dialog-delete-manager-button {
-    color: #d32f2f !important;
+.club-dialog-manager-header .MuiIconButton-root {
+    color: #9e63a9 !important;
 }
 
 /* Actions */
 .club-dialog-actions {
-    padding: 16px !important;
-    border-top: 1px solid #e0e0e0;
+    padding: 20px 24px !important;
+    background-color: transparent !important;
+    border-top: none;
 }
 
-.club-dialog-cancel-button {
-    color: #666 !important;
+.club-dialog-actions .MuiButton-root {
+    font-family: 'Rubik', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 1.05rem !important;
+    padding: 10px 24px !important;
+    border-radius: 8px !important;
 }
 
-.club-dialog-submit-button {
-    background-color: #1976d2 !important;
+.club-dialog-actions .MuiButton-contained {
+    background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+    box-shadow: 0 4px 12px rgba(135, 200, 210, 0.4) !important;
 }
 
-.club-dialog-submit-button:hover {
-    background-color: #115293 !important;
+.club-dialog-actions .MuiButton-contained:hover {
+    box-shadow: 0 6px 16px rgba(135, 200, 210, 0.5) !important;
 }
 
 /* Success Dialog */
 .club-dialog-success-title {
     text-align: center !important;
     color: #2e7d32 !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
 }
 
 .club-dialog-success-content {
-    text-align: center;
+    padding: 20px !important;
 }
 
-.club-dialog-success-button {
-    width: 100%;
-    background-color: #2e7d32 !important;
+.club-dialog-success-content .MuiTypography-root {
+    font-family: 'Rubik', sans-serif !important;
+    font-size: 1.1rem !important;
 }
 
-.club-dialog-success-button:hover {
-    background-color: #1b5e20 !important;
+.club-dialog-success-content .MuiButton-root {
+    background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+    font-family: 'Rubik', sans-serif !important;
+    font-weight: 600 !important;
+    color: white !important;
 }
 
 /* Responsive */

@@ -22,13 +22,16 @@ import {
 	Grid,
 	Autocomplete,
 	TextField,
+	Tooltip,
 } from "@mui/material";
 import {
-	ArrowBack as ArrowBackIcon,
+	ArrowForward as ArrowForwardIcon,
 	Delete as DeleteIcon,
 	Add as AddIcon,
 	Check as CheckIcon,
 	Clear as ClearIcon,
+	Edit as EditIcon,
+	Close as CloseIcon,
 } from "@mui/icons-material";
 import {
 	useGetClubByIdQuery,
@@ -204,10 +207,10 @@ const ClubDetailsPage = () => {
 		}
 	};
 
-	const handleApproveWaitingChild = async (childId) => {
+	const handleApproveWaitingChild = async (child) => {
 		try {
 			await addChildToClub({
-				childId: childId,
+				childId: child._id,
 				clubId: id,
 			}).unwrap();
 			setSuccessMessage("הילד אושר בהצלחה");
@@ -286,53 +289,26 @@ const ClubDetailsPage = () => {
 		);
 	}
 
-	return (
-		<div className="club-details-container">
-			<div className="club-details-header">
-				<IconButton onClick={() => navigate("/admin/clubsManagement")}>
-					<ArrowBackIcon />
-				</IconButton>
-				<Typography variant="h4" className="club-details-title">
-					{clubData.name}
-				</Typography>
-			</div>
-
-			{serverError && (
-				<Alert severity="error" className="club-details-error-alert">
-					{serverError}
-				</Alert>
-			)}
-
-			{successMessage && (
-				<Alert severity="success" className="club-details-success-alert">
-					{successMessage}
-				</Alert>
-			)}
-
-		{/* Info Summary - Single Line */}
+		return (
+			<div className="club-details-container">
+				<div className="club-details-header">
+					<IconButton onClick={() => navigate("/admin/clubsManagement")}>
+						<ArrowForwardIcon />
+					</IconButton>
+					<Typography variant="h4" className="club-details-title">
+						{clubData.name}
+					</Typography>
+				</div>		{serverError && (
+			<Alert severity="error" sx={{ mb: 2 }}>
+				{serverError}
+			</Alert>
+		)}		{successMessage && (
+			<Alert severity="success" sx={{ mb: 2 }}>
+				{successMessage}
+			</Alert>
+		)}		{/* Info Summary - Single Line */}
 		<div className="club-details-info-summary">
 			<Grid container spacing={1.5} alignItems="center">
-				<Grid item>
-					<Chip 
-						label={`${clubData.registeredChildren?.length || 0} ילדים רשומים`}
-						className="club-details-info-chip"
-						size="small"
-					/>
-				</Grid>
-				<Grid item>
-					<Chip 
-						label={`${clubData.volunteers?.length || 0} מתנדבות`}
-						className="club-details-info-chip"
-						size="small"
-					/>
-				</Grid>
-				<Grid item>
-					<Chip 
-						label={`${clubData.waitingChildren?.length || 0} בקשות ממתינות`}
-						className="club-details-info-chip"
-						size="small"
-					/>
-				</Grid>
 				<Grid item>
 					<Chip 
 						label={`יום: ${clubData.activityDay}`}
@@ -358,7 +334,7 @@ const ClubDetailsPage = () => {
 		</div>
 		{/* Club Managers - Single Line */}
 			{clubData?.clubManagers?.length > 0 && (
-				<Paper className="club-details-managers-summary">
+				<div className="club-details-managers-summary">
 					<Typography variant="subtitle1" className="club-details-managers-title">
 						מנהלי המועדונית:
 					</Typography>
@@ -368,30 +344,30 @@ const ClubDetailsPage = () => {
 								<Chip
 									label={`${manager.name} • ${manager.phone}${manager.email ? ` • ${manager.email}` : ''}`}
 									variant="outlined"
-									color="primary"
+									className="club-details-manager-chip"
 									size="medium"
 								/>
 							</Grid>
 						))}
 					</Grid>
-				</Paper>
+				</div>
 			)}
 
 			{/* Tabs */}
-			<Paper className="club-details-tabs-paper">
+			<div className="club-details-tabs-paper">
 				<Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} centered>
 					<Tab label={`ילדים רשומים (${clubData.registeredChildren?.length || 0})`} />
 					<Tab label={`מתנדבות (${clubData.volunteers?.length || 0})`} />
 					<Tab label={`בקשות ממתינות (${clubData.waitingChildren?.length || 0})`} />
 				</Tabs>
-			</Paper>
+			</div>
 
 			{/* Tab 0: Children */}
 			{tabValue === 0 && (
-				<Paper>
-					<div className="club-details-tab-content">
-						<Grid container spacing={2} alignItems="center" className="club-details-autocomplete-grid">
-							<Grid item xs={12} md={11} className="club-details-autocomplete-item">
+				<>
+					<div className="club-details-controls-section">
+						<div className="club-details-controls-flex">
+							<div className="club-details-autocomplete-wrapper">
 								<Autocomplete
 									fullWidth
 									options={availableChildren}
@@ -410,22 +386,20 @@ const ClubDetailsPage = () => {
 									noOptionsText="לא נמצאו ילדים זמינים"
 									isOptionEqualToValue={(option, value) => option._id === value._id}
 								/>
-							</Grid>
-							<Grid item xs={12} md={1} className="club-details-button-container">
-								<Button
-									variant="contained"
-									startIcon={<AddIcon />}
-									onClick={handleAddChild}
-									disabled={!selectedChild}
-									fullWidth
-								>
-									הוסף
-								</Button>
-							</Grid>
-						</Grid>
+							</div>
+							<Button
+								variant="contained"
+								onClick={handleAddChild}
+								disabled={!selectedChild}
+								className="club-details-add-button"
+							>
+								<AddIcon />
+							</Button>
+						</div>
 					</div>
-					<TableContainer>
-						<Table>
+					<Paper>
+						<TableContainer>
+							<Table>
 							<TableHead>
 								<TableRow className="club-details-table-header">
 									<TableCell className="club-details-table-header-cell">ת.ז</TableCell>
@@ -437,19 +411,23 @@ const ClubDetailsPage = () => {
 							</TableHead>
 							<TableBody>
 								{clubData.registeredChildren?.length > 0 ? (
-									clubData.registeredChildren.map((child) => (
-										<TableRow key={child._id} hover>
-											<TableCell className="club-details-table-body-cell">{child.childId}</TableCell>
-											<TableCell className="club-details-table-body-cell">{child.Fname}</TableCell>
-											<TableCell className="club-details-table-body-cell">{child.Lname}</TableCell>
-											<TableCell className="club-details-table-body-cell">{child.phone1}</TableCell>
-											<TableCell className="club-details-table-body-cell">
-												<IconButton color="error" onClick={() => handleRemoveChild(child)} title="הסר">
-													<DeleteIcon />
-												</IconButton>
-											</TableCell>
-										</TableRow>
-									))
+									[...clubData.registeredChildren]
+										.sort((a, b) => a.Fname.localeCompare(b.Fname, 'he'))
+										.map((child) => (
+											<TableRow key={child._id} hover>
+												<TableCell className="club-details-table-body-cell">{child.childId}</TableCell>
+												<TableCell className="club-details-table-body-cell">{child.Fname}</TableCell>
+												<TableCell className="club-details-table-body-cell">{child.Lname}</TableCell>
+												<TableCell className="club-details-table-body-cell">{child.phone1}</TableCell>
+												<TableCell className="club-details-table-body-cell">
+													<Tooltip title="הסרת ילד" arrow>
+														<IconButton className="club-details-delete-icon-button" onClick={() => handleRemoveChild(child)}>
+															<DeleteIcon />
+														</IconButton>
+													</Tooltip>
+												</TableCell>
+											</TableRow>
+										))
 								) : (
 									<TableRow>
 										<TableCell colSpan={5} className="club-details-empty-message">
@@ -461,16 +439,17 @@ const ClubDetailsPage = () => {
 								)}
 							</TableBody>
 						</Table>
-					</TableContainer>
-				</Paper>
+						</TableContainer>
+					</Paper>
+				</>
 			)}
 
 			{/* Tab 1: Volunteers */}
 			{tabValue === 1 && (
-				<Paper>
-					<div className="club-details-tab-content">
-						<Grid container spacing={2} alignItems="center" className="club-details-volunteers-autocomplete-grid">
-							<Grid item xs={12} md={5.5} className="club-details-volunteers-autocomplete-item">
+				<>
+					<div className="club-details-controls-section">
+						<div className="club-details-controls-flex">
+							<div className="club-details-autocomplete-wrapper">
 								<Autocomplete
 									fullWidth
 									options={availableVolunteers}
@@ -489,8 +468,8 @@ const ClubDetailsPage = () => {
 									noOptionsText="לא נמצאו מתנדבות זמינות"
 									isOptionEqualToValue={(option, value) => option._id === value._id}
 								/>
-							</Grid>
-							<Grid item xs={12} md={5.5} className="club-details-volunteers-autocomplete-item">
+							</div>
+							<div className="club-details-autocomplete-wrapper">
 								<Autocomplete
 									fullWidth
 									options={availableChildrenForVolunteer}
@@ -510,21 +489,19 @@ const ClubDetailsPage = () => {
 									noOptionsText={availableChildrenForVolunteer.length === 0 ? "אין ילדים זמינים" : "לא נמצאו תוצאות"}
 									isOptionEqualToValue={(option, value) => option._id === value._id}
 								/>
-							</Grid>
-							<Grid item xs={12} md={1}>
-								<Button
-									variant="contained"
-									startIcon={<AddIcon />}
-									onClick={handleAddVolunteer}
-									disabled={!selectedVolunteer}
-									fullWidth
-								>
-									הוסף
-								</Button>
-							</Grid>
-						</Grid>
+							</div>
+							<Button
+								variant="contained"
+								onClick={handleAddVolunteer}
+								disabled={!selectedVolunteer}
+								className="club-details-add-button"
+							>
+								<AddIcon />
+							</Button>
+						</div>
 					</div>
-					<TableContainer className="club-details-volunteers-table-container">
+					<Paper>
+						<TableContainer className="club-details-volunteers-table-container">
 						<Table>
 							<TableHead>
 								<TableRow className="club-details-table-header">
@@ -538,40 +515,45 @@ const ClubDetailsPage = () => {
 							</TableHead>
 							<TableBody>
 							{clubData.volunteers?.length > 0 ? (
-								clubData.volunteers.map((volunteer) => {
-									const fullVolunteer = allVolunteers.find(v => v._id === volunteer._id) || volunteer;
-									const clubEntry = fullVolunteer.clubs?.find(c => c.club?._id === id || c.club === id);
-									const childName = clubEntry?.child 
-										? `${clubEntry.child.Fname || ''} ${clubEntry.child.Lname || ''}`.trim()
-										: 'ללא ילד';
-									
-									return (
+								[...clubData.volunteers]
+									.sort((a, b) => a.fname.localeCompare(b.fname, 'he'))
+									.map((volunteer) => {
+										const fullVolunteer = allVolunteers.find(v => v._id === volunteer._id) || volunteer;
+										const clubEntry = fullVolunteer.clubs?.find(c => c.club?._id === id || c.club === id);
+										const childName = clubEntry?.child 
+											? `${clubEntry.child.Fname || ''} ${clubEntry.child.Lname || ''}`.trim()
+											: 'ללא ילד';
+										
+										return (
 											<TableRow key={volunteer._id} hover>
 												<TableCell className="club-details-table-body-cell">{volunteer.fname}</TableCell>
 												<TableCell className="club-details-table-body-cell">{volunteer.lname}</TableCell>
 												<TableCell className="club-details-table-body-cell">{volunteer.phone}</TableCell>
 												<TableCell className="club-details-table-body-cell">{volunteer.email || '-'}</TableCell>
-												<TableCell className="club-details-table-body-cell">
-													{childName !== 'ללא ילד' ? (
-														<Chip label={childName} color="primary" size="small" />
-													) : (
-														<Typography variant="body2" color="text.secondary">
-															{childName}
-														</Typography>
-													)}
-												</TableCell>
-												<TableCell className="club-details-table-body-cell">
-													<Button
-														size="small"
-														variant="outlined"
+											<TableCell className="club-details-table-body-cell">
+												{childName !== 'ללא ילד' ? (
+													<Chip label={childName} size="small" className="club-details-child-chip" />
+												) : (
+													<Typography variant="body2" color="text.secondary">
+														{childName}
+													</Typography>
+												)}
+											</TableCell>
+											<TableCell className="club-details-table-body-cell">
+												<Tooltip title="עדכון ילד למתנדבת" arrow>
+													<IconButton
+														className="club-details-edit-icon-button"
 														onClick={() => handleEditVolunteerChild(fullVolunteer)}
 													>
-														עדכן ילד
-													</Button>
-													<IconButton color="error" onClick={() => handleRemoveVolunteer(volunteer)} title="הסר">
+														<EditIcon />
+													</IconButton>
+												</Tooltip>
+												<Tooltip title="הסרת מתנדבת" arrow>
+													<IconButton className="club-details-delete-icon-button" onClick={() => handleRemoveVolunteer(volunteer)}>
 														<DeleteIcon />
 													</IconButton>
-												</TableCell>
+												</Tooltip>
+											</TableCell>
 											</TableRow>
 										);
 									})
@@ -586,14 +568,15 @@ const ClubDetailsPage = () => {
 								)}
 							</TableBody>
 						</Table>
-					</TableContainer>
-				</Paper>
+						</TableContainer>
+					</Paper>
+				</>
 			)}
 
 			{/* Tab 2: Waiting Children */}
 			{tabValue === 2 && (
 				<Paper>
-					<TableContainer>
+					<TableContainer className="club-details-waiting-table-container">
 						<Table>
 							<TableHead>
 								<TableRow className="club-details-table-header">
@@ -606,30 +589,34 @@ const ClubDetailsPage = () => {
 							</TableHead>
 							<TableBody>
 								{clubData.waitingChildren?.length > 0 ? (
-									clubData.waitingChildren.map((child) => (
-										<TableRow key={child._id} hover>
-											<TableCell className="club-details-table-body-cell">{child.childId}</TableCell>
-											<TableCell className="club-details-table-body-cell">{child.Fname}</TableCell>
-											<TableCell className="club-details-table-body-cell">{child.Lname}</TableCell>
-											<TableCell className="club-details-table-body-cell">{child.phone1}</TableCell>
-											<TableCell className="club-details-table-body-cell">
-												<IconButton
-													color="success"
-													onClick={() => handleApproveWaitingChild(child._id)}
-													title="אשר בקשה"
-												>
-													<CheckIcon />
-												</IconButton>
-												<IconButton
-													color="error"
-													onClick={() => handleRejectWaitingChild(child)}
-													title="דחה בקשה"
-												>
-													<ClearIcon />
-												</IconButton>
-											</TableCell>
-										</TableRow>
-									))
+									[...clubData.waitingChildren]
+										.sort((a, b) => a.Fname.localeCompare(b.Fname, 'he'))
+										.map((child) => (
+											<TableRow key={child._id} hover>
+												<TableCell className="club-details-table-body-cell">{child.childId}</TableCell>
+												<TableCell className="club-details-table-body-cell">{child.Fname}</TableCell>
+												<TableCell className="club-details-table-body-cell">{child.Lname}</TableCell>
+												<TableCell className="club-details-table-body-cell">{child.phone1}</TableCell>
+												<TableCell className="club-details-table-body-cell">
+													<Tooltip title="אישור בקשה" arrow>
+														<IconButton
+															className="club-details-check-icon-button"
+															onClick={() => handleApproveWaitingChild(child)}
+														>
+															<CheckIcon />
+														</IconButton>
+													</Tooltip>
+													<Tooltip title="דחיית בקשה" arrow>
+														<IconButton
+															className="club-details-clear-icon-button"
+															onClick={() => handleRejectWaitingChild(child)}
+														>
+															<ClearIcon />
+														</IconButton>
+													</Tooltip>
+												</TableCell>
+											</TableRow>
+										))
 								) : (
 									<TableRow>
 										<TableCell colSpan={5} className="club-details-empty-message">
@@ -646,11 +633,35 @@ const ClubDetailsPage = () => {
 			)}
 
 			{/* Delete Child Dialog */}
-			<Dialog open={deleteChildDialog.open} onClose={() => setDeleteChildDialog({ open: false, childId: null, childName: "" })} dir="rtl">
-				<DialogTitle>אישור מחיקה</DialogTitle>
+			<Dialog 
+				open={deleteChildDialog.open} 
+				onClose={() => setDeleteChildDialog({ open: false, childId: null, childName: "" })}
+				aria-labelledby="delete-child-title"
+				PaperProps={{
+					className: "admin-management-container",
+					sx: {
+						borderRadius: '20px',
+						'@media (max-width: 768px)': {
+							width: '95%',
+							maxWidth: '450px',
+							margin: '16px',
+							borderRadius: '20px'
+						}
+					}
+				}}
+				dir="rtl"
+			>
+				<DialogTitle className="dialog-title">
+					<Typography variant="h5" className="dialog-title-text">
+						אישור מחיקה
+					</Typography>
+					<IconButton onClick={() => setDeleteChildDialog({ open: false, childId: null, childName: "" })} className="dialog-close-button">
+						<CloseIcon />
+					</IconButton>
+				</DialogTitle>
 				<DialogContent>
 					<Typography>
-						האם אתה בטוח שברצונך להסיר את {deleteChildDialog.childName} מהמועדונית?
+						האם אתה בטוח שברצונך להסיר את <strong>{deleteChildDialog.childName}</strong> מהמועדונית?
 					</Typography>
 				</DialogContent>
 				<DialogActions>
@@ -664,11 +675,35 @@ const ClubDetailsPage = () => {
 			</Dialog>
 
 			{/* Delete Volunteer Dialog */}
-			<Dialog open={deleteVolunteerDialog.open} onClose={() => setDeleteVolunteerDialog({ open: false, volunteerId: null, volunteerName: "" })} dir="rtl">
-				<DialogTitle>אישור מחיקה</DialogTitle>
+			<Dialog 
+				open={deleteVolunteerDialog.open} 
+				onClose={() => setDeleteVolunteerDialog({ open: false, volunteerId: null, volunteerName: "" })}
+				aria-labelledby="delete-volunteer-title"
+				PaperProps={{
+					className: "admin-management-container",
+					sx: {
+						borderRadius: '20px',
+						'@media (max-width: 768px)': {
+							width: '95%',
+							maxWidth: '450px',
+							margin: '16px',
+							borderRadius: '20px'
+						}
+					}
+				}}
+				dir="rtl"
+			>
+				<DialogTitle className="dialog-title">
+					<Typography variant="h5" className="dialog-title-text">
+						אישור מחיקה
+					</Typography>
+					<IconButton onClick={() => setDeleteVolunteerDialog({ open: false, volunteerId: null, volunteerName: "" })} className="dialog-close-button">
+						<CloseIcon />
+					</IconButton>
+				</DialogTitle>
 				<DialogContent>
 					<Typography>
-						האם אתה בטוח שברצונך להסיר את {deleteVolunteerDialog.volunteerName} מהמועדונית?
+						האם אתה בטוח שברצונך להסיר את <strong>{deleteVolunteerDialog.volunteerName}</strong> מהמועדונית?
 					</Typography>
 				</DialogContent>
 				<DialogActions>
@@ -682,11 +717,37 @@ const ClubDetailsPage = () => {
 			</Dialog>
 
 			{/* Edit Volunteer Child Dialog */}
-			<Dialog open={editVolunteerChild.open} onClose={() => setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null })} maxWidth="sm" fullWidth dir="rtl">
-				<DialogTitle>עדכון ילד למתנדבת</DialogTitle>
+			<Dialog 
+				open={editVolunteerChild.open} 
+				onClose={() => setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null })} 
+				maxWidth="sm" 
+				fullWidth
+				aria-labelledby="edit-volunteer-child-title"
+				PaperProps={{
+					className: "admin-management-container",
+					sx: {
+						borderRadius: '20px',
+						'@media (max-width: 768px)': {
+							width: '95%',
+							maxWidth: '450px',
+							margin: '16px',
+							borderRadius: '20px'
+						}
+					}
+				}}
+				dir="rtl"
+			>
+				<DialogTitle className="dialog-title">
+					<Typography variant="h5" className="dialog-title-text">
+						עדכון ילד למתנדבת
+					</Typography>
+					<IconButton onClick={() => setEditVolunteerChild({ open: false, volunteer: null, currentChild: null, clubEntry: null })} className="dialog-close-button">
+						<CloseIcon />
+					</IconButton>
+				</DialogTitle>
 				<DialogContent>
-					<div style={{ marginTop: '16px' }}>
-						<Typography variant="body2" style={{ marginBottom: '16px', fontWeight: 'bold' }}>
+					<div className="club-details-edit-volunteer-content">
+						<Typography variant="body2" className="club-details-edit-volunteer-subtitle">
 							מתנדבת: {editVolunteerChild.volunteer?.fname} {editVolunteerChild.volunteer?.lname}
 						</Typography>
 						<Autocomplete
@@ -732,11 +793,35 @@ const ClubDetailsPage = () => {
 			</Dialog>
 
 			{/* Reject Waiting Child Dialog */}
-			<Dialog open={confirmRejectWaitingChild.open} onClose={() => setConfirmRejectWaitingChild({ open: false, childId: null, childName: "" })} dir="rtl">
-				<DialogTitle>אישור דחייה</DialogTitle>
+			<Dialog 
+				open={confirmRejectWaitingChild.open} 
+				onClose={() => setConfirmRejectWaitingChild({ open: false, childId: null, childName: "" })}
+				aria-labelledby="reject-child-title"
+				PaperProps={{
+					className: "admin-management-container",
+					sx: {
+						borderRadius: '20px',
+						'@media (max-width: 768px)': {
+							width: '95%',
+							maxWidth: '450px',
+							margin: '16px',
+							borderRadius: '20px'
+						}
+					}
+				}}
+				dir="rtl"
+			>
+				<DialogTitle className="dialog-title">
+					<Typography variant="h5" className="dialog-title-text">
+						אישור דחייה
+					</Typography>
+					<IconButton onClick={() => setConfirmRejectWaitingChild({ open: false, childId: null, childName: "" })} className="dialog-close-button">
+						<CloseIcon />
+					</IconButton>
+				</DialogTitle>
 				<DialogContent>
 					<Typography>
-						האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של {confirmRejectWaitingChild.childName}?
+						האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של <strong>{confirmRejectWaitingChild.childName}</strong>?
 					</Typography>
 				</DialogContent>
 				<DialogActions>

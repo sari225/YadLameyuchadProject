@@ -61,6 +61,71 @@
 }
 
 /* Info Summary - Single Line */
+/* Action Icons Styling */
+.club-details-delete-icon-button {
+	color: #9e63a9 !important;
+	transition: all 0.2s ease;
+	padding: 8px !important;
+}
+
+.club-details-delete-icon-button:hover {
+	color: #8d5298 !important;
+	background-color: rgba(158, 99, 169, 0.1) !important;
+}
+
+.club-details-check-icon-button {
+	color: #87c8d2 !important;
+	transition: all 0.2s ease;
+	padding: 8px !important;
+}
+
+.club-details-check-icon-button:hover {
+	color: #6fb8c2 !important;
+	background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.club-details-clear-icon-button {
+	color: #9e63a9 !important;
+	transition: all 0.2s ease;
+	padding: 8px !important;
+}
+
+.club-details-clear-icon-button:hover {
+	color: #8d5298 !important;
+	background-color: rgba(158, 99, 169, 0.1) !important;
+}
+
+.club-details-edit-icon-button {
+	color: #87c8d2 !important;
+	transition: all 0.2s ease;
+	padding: 8px !important;
+}
+
+.club-details-edit-icon-button:hover {
+	color: #6fb8c2 !important;
+	background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.club-details-edit-button {
+	color: #87c8d2 !important;
+	border-color: #87c8d2 !important;
+	transition: all 0.2s ease;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-details-edit-button:hover {
+	color: #6fb8c2 !important;
+	border-color: #6fb8c2 !important;
+	background-color: rgba(135, 200, 210, 0.1) !important;
+}
+
+.club-details-child-chip {
+	background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+	color: white !important;
+	font-weight: 600 !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
 .club-details-info-summary {
 	padding: 0 !important;
 	margin-bottom: 16px !important;
@@ -98,39 +163,41 @@
 
 /* Managers Summary - Single Line */
 .club-details-managers-summary {
-	padding: 16px 20px;
-	margin: 0 auto 24px auto;
-	max-width: 900px;
-	border-radius: 16px;
-	background: rgba(255,255,255,0.5);
-	backdrop-filter: blur(10px);
-	box-shadow: 0 2px 8px rgba(135, 200, 210, 0.1);
-	border: 1px solid rgba(181, 226, 236, 0.3);
-}
-
-.club-details-managers-title {
+  padding: 16px 20px;
+  margin: 0 auto 24px auto;
+  max-width: 900px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(135, 200, 210, 0.1);
+  border: 1px solid rgba(181, 226, 236, 0.3);
+}.club-details-managers-title {
 	color: #87c8d2 !important;
 	font-weight: 700 !important;
 	margin-bottom: 12px !important;
 	font-family: 'Rubik', sans-serif !important;
 }
 
-.club-details-managers-summary .MuiChip-root {
+.club-details-manager-chip {
+	border-color: #87c8d2 !important;
+	color: #87c8d2 !important;
 	font-family: 'Rubik', sans-serif !important;
 	font-size: 0.9rem !important;
+	font-weight: 600 !important;
+	background: transparent !important;
 }
 
 .club-details-tabs-paper {
 	margin-bottom: 24px !important;
 	border-radius: 16px !important;
-	background: white !important;
-	box-shadow: 0 4px 12px rgba(135, 200, 210, 0.15) !important;
-	border: 1px solid #b5e2ec !important;
-	overflow: hidden !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	border: none !important;
+	overflow: visible !important;
 }
 
 .club-details-tabs-paper .MuiTabs-root {
-	border-bottom: 2px solid #87c8d2;
+	border-bottom: none;
 }
 
 .club-details-tabs-paper .MuiTab-root {
@@ -153,6 +220,76 @@
 
 .club-details-tab-content {
 	padding: 24px !important;
+}
+
+.club-details-controls-section {
+	margin-bottom: 24px;
+	padding: 20px;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(135, 200, 210, 0.15);
+}
+
+.club-details-controls-flex {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+}
+
+.club-details-autocomplete-wrapper {
+	flex: 1;
+}
+
+.club-details-controls-section .MuiOutlinedInput-root {
+	border-radius: 10px;
+	height: 56px;
+	background: white;
+}
+
+.club-details-controls-section .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+	border-color: #87c8d2 !important;
+	border-width: 2px !important;
+}
+
+.club-details-controls-section .MuiOutlinedInput-notchedOutline {
+	border-color: #87c8d2 !important;
+}
+
+.club-details-controls-section .MuiOutlinedInput-input {
+	padding: 12px 16px !important;
+}
+
+.club-details-controls-section input::placeholder {
+	color: #87c8d2 !important;
+	text-align: right;
+}
+
+.club-details-controls-section .MuiSvgIcon-root {
+	color: #87c8d2 !important;
+	font-size: 20px !important;
+}
+
+.club-details-add-button {
+	background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+	color: white !important;
+	font-weight: bold !important;
+	border-radius: 8px !important;
+	height: 56px !important;
+	width: 56px !important;
+	min-width: 56px !important;
+	padding: 0 !important;
+	box-shadow: 0 4px 12px rgba(135, 200, 210, 0.4) !important;
+	transition: all 0.3s ease !important;
+}
+
+.club-details-add-button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(135, 200, 210, 0.5) !important;
+}
+
+.club-details-add-button .MuiSvgIcon-root {
+	color: white !important;
+	font-size: 28px !important;
 }
 
 .club-details-autocomplete-grid,
@@ -266,6 +403,23 @@
 	background-color: rgba(135, 200, 210, 0.08) !important;
 }
 
+/* Alert Styles */
+.club-details-alert {
+	margin-bottom: 16px !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+/* Edit Volunteer Dialog Content */
+.club-details-edit-volunteer-content {
+	margin-top: 16px;
+}
+
+.club-details-edit-volunteer-subtitle {
+	margin-bottom: 16px !important;
+	font-weight: 700 !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
 	.club-details-container {
@@ -299,6 +453,24 @@
 	.club-details-table-body-cell {
 		padding: 12px 8px !important;
 		font-size: 0.875rem !important;
+	}
+
+	/* Hide email column in volunteers table on mobile */
+	.club-details-volunteers-table-container th:nth-child(4),
+	.club-details-volunteers-table-container td:nth-child(4) {
+		display: none;
+	}
+
+	/* Hide child column in volunteers table on mobile */
+	.club-details-volunteers-table-container th:nth-child(5),
+	.club-details-volunteers-table-container td:nth-child(5) {
+		display: none;
+	}
+
+	/* Hide ID column in waiting children table on mobile */
+	.club-details-waiting-table-container th:nth-child(1),
+	.club-details-waiting-table-container td:nth-child(1) {
+		display: none;
 	}
 }
 

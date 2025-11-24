@@ -23,11 +23,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import { useGetClubsQuery, useDeleteClubMutation } from "../../../api/clubApi";
 import { useNavigate } from "react-router-dom";
 import AddClubDialog from "./AddClubDialog";
 import EditClubDialog from "./EditClubDialog";
 import "./styles/ClubManagement.css";
+import "../ManagementPanel/styles/AdminManagement.css";
 import { parseServerError } from "../../../utils/errorHandler";
 
 const ClubManagement = () => {
@@ -244,8 +246,32 @@ const ClubManagement = () => {
 			/>
 
 			{/* דיאלוג מחיקת מועדונית */}
-			<Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} dir="rtl">
-				<DialogTitle>אישור מחיקה</DialogTitle>
+			<Dialog 
+				open={deleteDialogOpen} 
+				onClose={() => setDeleteDialogOpen(false)} 
+				dir="rtl"
+				aria-labelledby="delete-club-title"
+				PaperProps={{
+					className: "admin-management-container",
+					sx: {
+						borderRadius: '20px',
+						'@media (max-width: 768px)': {
+							width: '95%',
+							maxWidth: '450px',
+							margin: '16px',
+							borderRadius: '20px'
+						}
+					}
+				}}
+			>
+				<DialogTitle className="dialog-title">
+					<Typography variant="h5" className="dialog-title-text">
+						אישור מחיקה
+					</Typography>
+					<IconButton onClick={() => setDeleteDialogOpen(false)} className="dialog-close-button">
+						<CloseIcon />
+					</IconButton>
+				</DialogTitle>
 				<DialogContent>
 					{deleteError && (
 						<Typography color="error" className="club-management-delete-error">
@@ -253,7 +279,8 @@ const ClubManagement = () => {
 						</Typography>
 					)}
 					<Typography>
-						האם אתה בטוח שברצונך למחוק את המועדונית "{selectedClubForDelete?.name}"?
+						האם אתה בטוח שברצונך למחוק את המועדונית{" "}
+						<strong>{selectedClubForDelete?.name}</strong>?
 					</Typography>
 					<Typography variant="body2" color="error" className="club-management-delete-warning">
 						פעולה זו תמחק גם את כל הקשרים של המועדונית עם ילדים ומתנדבות.
@@ -269,7 +296,7 @@ const ClubManagement = () => {
 						variant="contained"
 						disabled={isDeleting}
 					>
-						{isDeleting ? "מוחק..." : "מחק"}
+						{isDeleting ? <CircularProgress size={24} /> : "מחק"}
 					</Button>
 				</DialogActions>
 			</Dialog>

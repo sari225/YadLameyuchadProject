@@ -26,7 +26,6 @@ import {
 	useDeleteClubRequestMutation,
 } from "../../../api/clubRequestApi";
 import { useAddChildToClubMutation, useRefuseChildFromClubMutation } from "../../../api/clubApi";
-import "./styles/ClubRequestsDialog.css";
 
 const ClubRequestsDialog = ({ open, onClose, onUpdate }) => {
 	const [errorDialog, setErrorDialog] = useState({ open: false, message: "" });
@@ -109,19 +108,19 @@ const ClubRequestsDialog = ({ open, onClose, onUpdate }) => {
 						<Table>
 						<TableHead>
 							<TableRow>
-								<TableCell className="club-requests-table-header-cell">
+								<TableCell>
 									שם הילד
-				תבח				</TableCell>
-								<TableCell className="club-requests-table-header-cell">
+								</TableCell>
+								<TableCell>
 									ת.ז ילד
 								</TableCell>
-								<TableCell className="club-requests-table-header-cell">
+								<TableCell>
 									מועדונית
 								</TableCell>
-								<TableCell className="club-requests-table-header-cell">
+								<TableCell>
 									תאריך בקשה
 								</TableCell>
-								<TableCell className="club-requests-table-header-cell">
+								<TableCell>
 									פעולות
 								</TableCell>
 							</TableRow>
@@ -129,19 +128,19 @@ const ClubRequestsDialog = ({ open, onClose, onUpdate }) => {
 							<TableBody>
 							{clubRequests.map((request) => (
 								<TableRow key={request._id} hover>
-									<TableCell className="club-requests-table-body-cell">
+									<TableCell>
 										{request.childId?.Fname} {request.childId?.Lname}
 									</TableCell>
-									<TableCell className="club-requests-table-body-cell">
+									<TableCell>
 										{request.childId?.childId}
 									</TableCell>
-									<TableCell className="club-requests-table-body-cell">
+									<TableCell>
 										{request.clubId?.name}
 									</TableCell>
-									<TableCell className="club-requests-table-body-cell">
+									<TableCell>
 										{new Date(request.createdAt).toLocaleDateString("he-IL")}
 									</TableCell>
-									<TableCell className="club-requests-table-body-cell">
+									<TableCell>
 											<Stack direction="row" spacing={1} justifyContent="center">
 												<IconButton
 													color="success"
@@ -176,7 +175,7 @@ const ClubRequestsDialog = ({ open, onClose, onUpdate }) => {
 				<DialogTitle>אישור דחייה</DialogTitle>
 				<DialogContent>
 					<Typography>
-						האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של {confirmRejectDialog.request?.childId?.firstName} {confirmRejectDialog.request?.childId?.lastName} למועדונית {confirmRejectDialog.request?.clubId?.name}?
+						האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של {confirmRejectDialog.request?.childId?.Fname} {confirmRejectDialog.request?.childId?.Lname} למועדונית {confirmRejectDialog.request?.clubId?.name}?
 					</Typography>
 				</DialogContent>
 				<DialogActions>
@@ -187,7 +186,7 @@ const ClubRequestsDialog = ({ open, onClose, onUpdate }) => {
 
 			{/* דיאלוג שגיאה */}
 			<Dialog open={errorDialog.open} onClose={() => setErrorDialog({ open: false, message: "" })} dir="rtl">
-				<DialogTitle className="club-requests-error-title">שגיאה</DialogTitle>
+				<DialogTitle>שגיאה</DialogTitle>
 				<DialogContent>
 					<Typography>{errorDialog.message}</Typography>
 				</DialogContent>

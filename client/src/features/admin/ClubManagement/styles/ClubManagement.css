@@ -151,33 +151,33 @@
 }
 
 .club-management-icon-button-view {
-    color: #1976d2 !important;
+    color: #87c8d2 !important;
     transition: all 0.2s ease;
 }
 
 .club-management-icon-button-view:hover {
-    color: #0d47a1 !important;
-    background-color: rgba(25, 118, 210, 0.1) !important;
+    color: #6bb5c1 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
 }
 
 .club-management-icon-button-edit {
-    color: #03a9f4 !important;
+    color: #87c8d2 !important;
     transition: all 0.2s ease;
 }
 
 .club-management-icon-button-edit:hover {
-    color: #0288d1 !important;
-    background-color: rgba(3, 169, 244, 0.1) !important;
+    color: #6bb5c1 !important;
+    background-color: rgba(135, 200, 210, 0.1) !important;
 }
 
 .club-management-icon-button-delete {
-    color: #d32f2f !important;
+    color: #9e63a9 !important;
     transition: all 0.2s ease;
 }
 
 .club-management-icon-button-delete:hover {
-    color: #b71c1c !important;
-    background-color: rgba(211, 47, 47, 0.1) !important;
+    color: #8a4d94 !important;
+    background-color: rgba(158, 99, 169, 0.1) !important;
 }
 
 .club-management-table-row-clickable {
@@ -190,6 +190,33 @@
 
 .club-management-delete-warning {
 	margin-top: 8px;
+}
+
+/* Delete Dialog Styles */
+.club-management-container .admin-management-container {
+	border-radius: 20px !important;
+}
+
+/* Chip Styles */
+.club-management-table-body-cell .MuiChip-colorPrimary {
+	background: linear-gradient(135deg, #87c8d2 0%, #b5e2ec 100%) !important;
+	color: white !important;
+	font-weight: 600 !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-management-table-body-cell .MuiChip-colorSecondary {
+	background: linear-gradient(135deg, #d687b9 0%, #9e63a9 100%) !important;
+	color: white !important;
+	font-weight: 600 !important;
+	font-family: 'Rubik', sans-serif !important;
+}
+
+.club-management-table-body-cell .MuiChip-colorWarning {
+	background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%) !important;
+	color: white !important;
+	font-weight: 600 !important;
+	font-family: 'Rubik', sans-serif !important;
 }
 
 /* Responsive Design */
@@ -215,6 +242,37 @@
 
 	.club-management-table-container {
 		overflow-x: auto;
+	}
+
+	/* הסתרת עמודות במובייל */
+	/* יום פעילות */
+	.club-management-table-header th:nth-child(2),
+	.club-management-table-body-row td:nth-child(2) {
+		display: none;
+	}
+
+	/* מיקום */
+	.club-management-table-header th:nth-child(4),
+	.club-management-table-body-row td:nth-child(4) {
+		display: none;
+	}
+
+	/* ילדים */
+	.club-management-table-header th:nth-child(5),
+	.club-management-table-body-row td:nth-child(5) {
+		display: none;
+	}
+
+	/* מתנדבות */
+	.club-management-table-header th:nth-child(6),
+	.club-management-table-body-row td:nth-child(6) {
+		display: none;
+	}
+
+	/* בקשות ממתינות */
+	.club-management-table-header th:nth-child(7),
+	.club-management-table-body-row td:nth-child(7) {
+		display: none;
 	}
 }
 

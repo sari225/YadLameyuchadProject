@@ -16,11 +16,10 @@ import {
 	FormControl,
 	InputLabel,
 	IconButton,
-	Paper,
-	Divider,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,7 +64,6 @@ const editClubSchema = z.object({
 // =============================
 const EditClubDialog = ({ open, onClose, club, onSuccess }) => {
 	const [serverError, setServerError] = useState("");
-	const [successDialog, setSuccessDialog] = useState(false);
 
 	const {
 		register,
@@ -121,7 +119,9 @@ const EditClubDialog = ({ open, onClose, club, onSuccess }) => {
 		try {
 			// clubApi.updateClub expects an object: { id, clubData }
 			await updateClub({ id: club._id, clubData: data }).unwrap();
-			setSuccessDialog(true);
+			if (onSuccess) onSuccess();
+			reset();
+			onClose();
 		} catch (error) {
 			const errorMessage = parseServerError(error, "❌ שגיאה בעדכון מועדונית. אנא בדוק את הנתונים ונסה שוב.");
 			setServerError(errorMessage);
@@ -135,138 +135,181 @@ const EditClubDialog = ({ open, onClose, club, onSuccess }) => {
 		onClose();
 	};
 
-	const handleSuccessClose = () => {
-		setSuccessDialog(false);
-		if (onSuccess) onSuccess();
-		onClose();
-	};
-
 	return (
-		<>
-			<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth dir="rtl" className="club-dialog-container">
-				<DialogTitle className="club-dialog-title">
-					ערוך מועדונית: {club?.name}
-				</DialogTitle>
+		<Dialog 
+			open={open} 
+			onClose={handleClose} 
+			maxWidth="md" 
+			fullWidth 
+			dir="rtl"
+			PaperProps={{
+				className: "admin-management-container",
+				sx: {
+					borderRadius: '20px',
+					maxHeight: '90vh',
+					overflowY: 'auto',
+					'&::-webkit-scrollbar': {
+						width: '10px'
+					},
+					'&::-webkit-scrollbar-track': {
+						background: '#f1f1f1',
+						borderRadius: '10px',
+						margin: '8px 0'
+					},
+					'&::-webkit-scrollbar-thumb': {
+						background: '#87c8d2',
+						borderRadius: '10px',
+						border: '2px solid #f1f1f1'
+					},
+					'&::-webkit-scrollbar-thumb:hover': {
+						background: '#6bb5c1'
+					},
+					'@media (max-width: 768px)': {
+						width: '95%',
+						margin: '16px',
+						borderRadius: '20px'
+					}
+				}
+			}}
+		>
+			<DialogTitle className="dialog-title" sx={{ flexShrink: 0 }}>
+				<Typography variant="h5" className="dialog-title-text">
+					עריכת מועדונית: {club?.name}
+				</Typography>
+				<IconButton onClick={handleClose} className="dialog-close-button">
+					<CloseIcon />
+				</IconButton>
+			</DialogTitle>
 
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<DialogContent dividers className="club-dialog-content">
-						{serverError && (
-							<Alert severity="error" className="club-dialog-error-alert" onClose={() => setServerError("")}>
-								{serverError}
-							</Alert>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<DialogContent>
+					{serverError && (
+						<Alert severity="error" sx={{ mb: 2 }}>
+							{serverError}
+						</Alert>
+					)}
+
+					<Grid container spacing={3}>
+						{/* שורה 1: שם ומיקום */}
+						<Grid item xs={12} sm={6}>
+							<TextField
+								fullWidth
+								label="שם המועדונית *"
+								{...register("name")}
+								error={!!errors.name}
+								helperText={errors.name?.message}
+							/>
+						</Grid>
+						<Grid item xs={12} sm={6}>
+							<TextField
+								fullWidth
+							label="מיקום *"
+							{...register("location")}
+							error={!!errors.location}
+							helperText={errors.location?.message}
+						/>
+			</Grid>
+
+			{/* שורה 2: יום פעילות ושעות */}
+			<Grid item xs={12} sm={5}>
+				<FormControl fullWidth error={!!errors.activityDay} sx={{ minWidth: '100%' }}>
+						<InputLabel>יום פעילות *</InputLabel>
+						<Controller
+							name="activityDay"
+							control={control}
+							render={({ field }) => (
+								<Select {...field} label="יום פעילות *">
+									<MenuItem value="ראשון">ראשון</MenuItem>
+									<MenuItem value="שני">שני</MenuItem>
+									<MenuItem value="שלישי">שלישי</MenuItem>
+									<MenuItem value="רביעי">רביעי</MenuItem>
+									<MenuItem value="חמישי">חמישי</MenuItem>
+									<MenuItem value="שישי">שישי</MenuItem>
+									<MenuItem value="שבת">שבת</MenuItem>
+								</Select>
+							)}
+						/>
+						{errors.activityDay && (
+							<Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
+								{errors.activityDay.message}
+							</Typography>
 						)}
+					</FormControl>
+				</Grid>
+				<Grid item xs={12} sm={3.5}>
+					<TextField
+						fullWidth
+						label="שעת התחלה *"
+						type="time"
+						{...register("startTime")}
+						error={!!errors.startTime}
+						helperText={errors.startTime?.message}
+						InputLabelProps={{ shrink: true }}
+					/>
+				</Grid>
+				<Grid item xs={12} sm={3.5}>
+					<TextField
+						fullWidth
+						label="שעת סיום *"
+						type="time"
+						{...register("endTime")}
+						error={!!errors.endTime}
+						helperText={errors.endTime?.message}
+						InputLabelProps={{ shrink: true }}
+					/>
+				</Grid>
 
-						<Grid container spacing={2}>
-							{/* שם המועדונית */}
-							<Grid item xs={12}>
-								<TextField
-									fullWidth
-									label="שם המועדונית *"
-									{...register("name")}
-									error={!!errors.name}
-									helperText={errors.name?.message}
-								/>
-							</Grid>
-
-							{/* יום פעילות */}
-							<Grid item xs={12} sm={6}>
-								<FormControl fullWidth error={!!errors.activityDay}>
-									<InputLabel>יום פעילות *</InputLabel>
-									<Controller
-										name="activityDay"
-										control={control}
-										render={({ field }) => (
-											<Select {...field} label="יום פעילות *">
-												<MenuItem value="ראשון">ראשון</MenuItem>
-												<MenuItem value="שני">שני</MenuItem>
-												<MenuItem value="שלישי">שלישי</MenuItem>
-												<MenuItem value="רביעי">רביעי</MenuItem>
-												<MenuItem value="חמישי">חמישי</MenuItem>
-												<MenuItem value="שישי">שישי</MenuItem>
-											</Select>
-										)}
-								/>
-								{errors.activityDay && (
-									<Typography variant="caption" color="error" className="club-dialog-error-text">
-										{errors.activityDay.message}
-									</Typography>
-								)}
-							</FormControl>
-							</Grid>
-
-							{/* שעת התחלה */}
-							<Grid item xs={12} sm={3}>
-								<TextField
-									fullWidth
-									label="שעת התחלה *"
-									type="time"
-									{...register("startTime")}
-									error={!!errors.startTime}
-									helperText={errors.startTime?.message}
-									InputLabelProps={{ shrink: true }}
-								/>
-							</Grid>
-
-							{/* שעת סיום */}
-							<Grid item xs={12} sm={3}>
-								<TextField
-									fullWidth
-									label="שעת סיום *"
-									type="time"
-									{...register("endTime")}
-									error={!!errors.endTime}
-									helperText={errors.endTime?.message}
-									InputLabelProps={{ shrink: true }}
-								/>
-							</Grid>
-
-							{/* מיקום */}
-							<Grid item xs={12}>
-								<TextField
-									fullWidth
-									label="מיקום *"
-									{...register("location")}
-									error={!!errors.location}
-									helperText={errors.location?.message}
-								/>
-							</Grid>
-
-						{/* מנהלי מועדונית */}
-						<Grid item xs={12}>
-							<Divider className="club-dialog-divider" />
-							<Box className="club-dialog-managers-header">
-								<Typography variant="h6">מנהלי המועדונית *</Typography>
-									<Button
-										variant="outlined"
-										startIcon={<AddIcon />}
-										onClick={() => append({ name: "", phone: "", email: "" })}
-										size="small"
-									>
-										הוסף מנהל
-									</Button>
-							</Box>
+				{/* שורה 3: כותרת מנהלים */}
+				<Grid item xs={12}>
+					<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+						<Typography variant="h6" sx={{ color: '#87c8d2', fontWeight: 600, fontFamily: 'Rubik' }}>
+							מנהלי המועדונית *
+						</Typography>
+						<IconButton
+							onClick={() => append({ name: "", phone: "", email: "" })}
+							sx={{
+							color: '#87c8d2',
+							'&:hover': {
+								backgroundColor: 'rgba(135, 200, 210, 0.1)'
+							}
+							}}
+						>
+							<AddIcon />
+						</IconButton>
+					</Box>
 							{errors.clubManagers && typeof errors.clubManagers.message === "string" && (
-								<Alert severity="error" className="club-dialog-error-alert">
+								<Alert severity="error" sx={{ mb: 2 }}>
 									{errors.clubManagers.message}
 								</Alert>
 							)}
-						</Grid>					{fields.map((field, index) => (
+						</Grid>
+
+					{/* רשימת מנהלים */}
+					{fields.map((field, index) => (
 						<Grid item xs={12} key={field.id}>
-							<Paper elevation={2} className="club-dialog-manager-paper">
-								<Box className="club-dialog-manager-header">
-									<Typography variant="subtitle2" color="primary">
+							<Box 
+								sx={{ 
+									p: 2.5,
+									border: '2px solid #e0e0e0',
+									borderRadius: '12px',
+									backgroundColor: 'white',
+									position: 'relative'
+								}}
+							>
+								<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+									<Typography variant="subtitle2" sx={{ color: '#87c8d2', fontWeight: 600, fontFamily: 'Rubik' }}>
 										מנהל {index + 1}
 									</Typography>
-											{fields.length > 1 && (
-												<IconButton
-													size="small"
-													color="error"
-													onClick={() => remove(index)}
-												>
-													<DeleteIcon />
-												</IconButton>
-											)}
-										</Box>
+									{fields.length > 1 && (
+										<IconButton
+											size="small"
+											onClick={() => remove(index)}
+											sx={{ color: '#9e63a9' }}
+										>
+											<DeleteIcon />
+										</IconButton>
+									)}
+								</Box>
 										<Grid container spacing={2}>
 											<Grid item xs={12} sm={4}>
 												<TextField
@@ -297,7 +340,7 @@ const EditClubDialog = ({ open, onClose, club, onSuccess }) => {
 												/>
 											</Grid>
 										</Grid>
-									</Paper>
+									</Box>
 								</Grid>
 							))}
 						</Grid>
@@ -318,24 +361,6 @@ const EditClubDialog = ({ open, onClose, club, onSuccess }) => {
 					</DialogActions>
 				</form>
 			</Dialog>
-
-		{/* דיאלוג הצלחה */}
-		<Dialog open={successDialog} onClose={handleSuccessClose}>
-			<DialogTitle className="club-dialog-success-title">
-				✅ המועדונית עודכנה בהצלחה!
-			</DialogTitle>
-				<DialogContent>
-					<Typography textAlign="center">
-						הנתונים עודכנו במערכת בהצלחה
-					</Typography>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleSuccessClose} variant="contained" fullWidth>
-						סגור
-					</Button>
-				</DialogActions>
-			</Dialog>
-		</>
 	);
 };
 

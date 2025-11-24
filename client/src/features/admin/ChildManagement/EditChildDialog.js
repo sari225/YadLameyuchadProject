@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./EditChildDialog.css";
+import "./style/EditChildDialog.css";
 import {
   Dialog,
   DialogTitle,

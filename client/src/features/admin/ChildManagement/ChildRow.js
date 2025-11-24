@@ -13,12 +13,14 @@ import {
     Button,
     CircularProgress,
     Tooltip,
+    Typography,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 import { useDeleteChildMutation } from "../../../api/childApi";
 import { useApproveChildMutation } from "../../../api/authApi";
 import ChildDetails from "./ChildDetails";
@@ -122,23 +124,53 @@ const ChildRow = ({ child, childClubs, onDeleted, isPending }) => {
             </TableRow>
 
             <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} aria-labelledby="delete-child-title">
-                <DialogTitle id="delete-child-title" sx={{ fontWeight: 'bold', textAlign: 'right' }}>
-                    {isPending ? "אישור דחיה" : "אישור מחיקה"}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText sx={{ textAlign: 'right' }}>
-                        {isPending
-                            ? `?האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של ${child.Fname} ${child.Lname}`
-                            : `?האם אתה בטוח שברצונך למחוק את הילד ${child.Fname} ${child.Lname}`
+                <Dialog
+                    open={confirmOpen}
+                    onClose={() => setConfirmOpen(false)}
+                    aria-labelledby="delete-child-title"
+                    PaperProps={{
+                        className: "admin-management-container",
+                        sx: {
+                            borderRadius: '20px',
+                            '@media (max-width: 768px)': {
+                                width: '95%',
+                                maxWidth: '450px',
+                                margin: '16px',
+                                borderRadius: '20px'
+                            }
                         }
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions sx={{ justifyContent: 'flex-start', direction: 'ltr' }}>
-                    <Button onClick={() => setConfirmOpen(false)} variant="outlined" color="primary">ביטול</Button>
-                    <Button onClick={handleDelete} variant="contained" color="error" disabled={isDeleting}>
-                        {isDeleting ? <CircularProgress size={18} color="inherit" /> : (isPending ? "דחיה סופית" : "מחיקה סופית")}
-                    </Button>
-                </DialogActions>
+                    }}
+                >
+                    <DialogTitle className="dialog-title">
+                        <Typography variant="h5" className="dialog-title-text">
+                            {isPending ? "אישור דחיה" : "אישור מחיקה"}
+                        </Typography>
+                        <IconButton onClick={() => setConfirmOpen(false)} className="dialog-close-button">
+                            <CloseIcon />
+                        </IconButton>
+                    </DialogTitle>
+                    <DialogContent>
+                        <Typography>
+                            {isPending
+                                ? `האם אתה בטוח שברצונך לדחות את בקשת ההצטרפות של ${child.Fname} ${child.Lname}?`
+                                : <>האם אתה בטוח שברצונך למחוק את הילד <strong>{child.Fname} {child.Lname}</strong>?</>
+                            }
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setConfirmOpen(false)}>
+                            ביטול
+                        </Button>
+                        <Button
+                            onClick={handleDelete}
+                            variant="contained"
+                            color="error"
+                            disabled={isDeleting}
+                        >
+                            {isDeleting ? <CircularProgress size={24} /> : (isPending ? "דחיה סופית" : "מחק")}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Dialog>
 
             <EditChildDialog

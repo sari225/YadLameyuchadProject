@@ -40,7 +40,7 @@ import {
     filterAndSortChildren,
     getChildClubs,
 } from "./childManagementHelpers";
-import "./childManagement.css";
+import "./style/childManagement.css";
 
 const ChildManagement = () => {
     const dispatch = useDispatch();

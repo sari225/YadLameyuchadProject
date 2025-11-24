@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Grid, Chip, Stack } from "@mui/material";
 import { formatDateHebrew } from "./childManagementHelpers";
-import "./ChildDetails.css";
+import "./style/ChildDetails.css";
 
 const ChildDetails = ({ child, childClubs }) => {
 	if (!child) return null;

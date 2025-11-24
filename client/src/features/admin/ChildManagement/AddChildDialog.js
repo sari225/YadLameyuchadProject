@@ -18,7 +18,7 @@ import { useCreateChildMutation } from "../../../api/childApi";
 import { parseServerError } from "../../../utils/errorHandler";
 import { childValidationSchema, defaultChildValues } from "./childValidationSchema";
 import { processAllergies } from "./childManagementHelpers";
-import "./AddChildDialog.css";
+import "./style/AddChildDialog.css";
 
 // ------ COMPONENT ------
 const AddChildDialog = ({ open, onClose, onSuccess }) => {
